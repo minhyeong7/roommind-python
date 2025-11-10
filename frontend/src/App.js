@@ -2,10 +2,12 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer"; 
+import TopButton from "./components/TopButton"; 
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
 
       {/* 모든 페이지 하단에 Footer 표시 */}
       <Footer />
+      <TopButton />
     </BrowserRouter>
   );
 }
