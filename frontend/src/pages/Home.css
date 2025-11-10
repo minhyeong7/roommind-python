@@ -1,4 +1,12 @@
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
 .home {
+  font-family: 'NanumSquareRound';
   width: 100%;              /* 🔥 전체 콘텐츠 폭을 80%로 제한 */
   margin: 0;          /* 🔥 화면 가운데 정렬 */
   padding: 0;         /* 상하 여백만 */

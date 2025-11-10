@@ -20,6 +20,13 @@ function Home() {
     { image: "/images/roundMirror.jpg", title: "라운드 거울", price: "69,000", originalPrice: "99,000", link: "/product/round-mirror" },
   ];
 
+  // ✅ 세 번째 섹션: 세일 상품
+  const saleProducts = [
+    { image: "/images/sofaSale.jpg", title: "세일 소파", price: "199,000", originalPrice: "299,000", link: "/product/sale-sofa" },
+    { image: "/images/tableSale.jpg", title: "세일 테이블", price: "79,000", originalPrice: "129,000", link: "/product/sale-table" },
+    { image: "/images/lampSale.jpg", title: "세일 조명", price: "49,000", originalPrice: "89,000", link: "/product/sale-lamp" },
+  ];
+
   return (
     <div className="home">
       <BannerSlider />
@@ -34,6 +41,12 @@ function Home() {
       <h2 className="section-title">요즘 핫한 인기상품!</h2>
       <div className="card-grid">
         {hotProducts.map((item, i) => <Card key={i} {...item} />)}
+      </div>
+
+      {/* 세 번째 섹션 */}
+      <h2 className="section-title">세일 중인 상품</h2>
+      <div className="card-grid">
+        {saleProducts.map((item, i) => <Card key={i} {...item} />)}
       </div>
     </div>
   );

@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearch = () => {
+    if (searchTerm.trim() !== "") {
+      // 예: 검색어를 쿼리 파라미터로 넘겨서 /search 페이지로 이동
+      navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
+  // 엔터 키 눌렀을 때 검색 실행
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <header className="navbar">
       {/* 왼쪽: 로고 */}
@@ -21,8 +42,14 @@ function Navbar() {
 
       {/* 중앙 오른쪽: 검색창 */}
       <div className="navbar-search">
-        <input type="text" placeholder="통합검색" />
-        <button>🔍</button>
+        <input
+          type="text"
+          placeholder="통합검색"
+          value={searchTerm}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+        />
+        <button onClick={handleSearch}>🔍</button>
       </div>
 
       {/* 오른쪽: 로그인 / 회원가입 */}
