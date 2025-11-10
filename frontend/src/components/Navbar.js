@@ -33,6 +33,9 @@ function Navbar() {
     navigate("/login");
   };
 
+  // 카트이동
+  const handleCartClick = () => navigate("/cart");
+
   return (
     <header className="navbar">
       {/* 왼쪽: 로고 */}
@@ -58,10 +61,17 @@ function Navbar() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
         />
-        <button onClick={handleSearch}>🔍</button>
+          <button onClick={handleSearch} className="search-btn">
+            <i className="bi bi-search"></i>
+          </button>
+      
       </div>
 
       {/* 오른쪽: 로그인 / 회원가입 */}
+      {/* 🛒 장바구니 버튼 */}
+        <button className="basket-btn" onClick={handleCartClick}>
+          <i className="bi bi-cart-fill"></i>
+        </button>
       <div className="navbar-auth">
         <button className="login" onClick={handleLoginClick}>로그인</button>
         <button className="signup" onClick={handleSignupClick}>회원가입</button>

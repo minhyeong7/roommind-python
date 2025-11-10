@@ -99,3 +99,66 @@ body {
 .signup-link:hover {
   text-decoration: underline;
 }
+
+.social-login-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.social-login-section p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  font-size: 15px;
+}
+
+.social-btn img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* 🎨 카카오 */
+.social-btn.kakao {
+  background-color: #fee500;
+}
+.social-btn.kakao:hover {
+  background-color: #f9dd00;
+}
+
+/* 🎨 네이버 */
+.social-btn.naver {
+  background-color: #03c75a;
+  color: white;
+}
+.social-btn.naver:hover {
+  background-color: #02b24f;
+}
+
+/* 🎨 구글 */
+.social-btn.google {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+}
+.social-btn.google:hover {
+  background-color: #f5f5f5;
+}

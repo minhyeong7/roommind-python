@@ -127,3 +127,37 @@ html, body {
   padding: 0;
   overflow-x: hidden;
 }
+
+/* 오른쪽 영역 전체 */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* ✅ 기존 15px → 25px 정도로 늘리기 */
+}
+
+/* 검색창 오른쪽 장바구니 간격 */
+.navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 10px; /* ✅ 검색창 오른쪽 여백 추가 */
+}
+
+/* 장바구니 버튼 */
+.basket-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #00aaff;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px; /* ✅ 로그인/회원가입과 간격 확보 */
+}
+
+.basket-btn:hover {
+  color: #0095dd;
+  transform: scale(1.1);
+}

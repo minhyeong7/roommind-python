@@ -23,23 +23,26 @@ function Login() {
 
       if (response.status === 200) {
         alert("✅ 로그인 성공! 메인 페이지로 이동합니다.");
-        console.log("로그인 성공:", response.data);
-
-        // 세션 or 토큰 저장 (JWT 사용 시)
         localStorage.setItem("token", response.data.token);
-
-        navigate("/"); // 메인 페이지로 이동
+        navigate("/");
       }
     } catch (error) {
       alert("❌ 로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
     }
   };
 
+  // ✅ 소셜 로그인 버튼 클릭 시
+  const handleSocialLogin = (provider) => {
+    window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+    // 🔹 provider = kakao, naver, google
+  };
+
   return (
-    <div className="signup-container">
+    <div className="login-container">
       <h2>로그인</h2>
       <p className="welcome-text">RoomMind에 다시 오신 것을 환영합니다 🪑</p>
 
+      {/* 일반 로그인 */}
       <form onSubmit={handleSubmit} className="signup-form">
         <label>이메일</label>
         <input
@@ -72,6 +75,36 @@ function Login() {
           </span>
         </p>
       </form>
+
+      {/* ✅ 소셜 로그인 버튼 섹션 */}
+      <div className="social-login-section">
+        <p>또는 간편 로그인</p>
+        <div className="social-buttons">
+          <button
+            className="social-btn kakao"
+            onClick={() => handleSocialLogin("kakao")}
+          >
+            <img src="/images/kakao.png" alt="카카오 로그인" />
+            카카오 로그인
+          </button>
+
+          <button
+            className="social-btn naver"
+            onClick={() => handleSocialLogin("naver")}
+          >
+            <img src="/images/naver.png" alt="네이버 로그인" />
+            네이버 로그인
+          </button>
+
+          <button
+            className="social-btn google"
+            onClick={() => handleSocialLogin("google")}
+          >
+            <img src="/images/google.png" alt="구글 로그인" />
+            Google 로그인
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
