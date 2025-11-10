@@ -1,0 +1,36 @@
+.banner-container {
+  width: 100%;
+  height: 400px; /* 🔥 배너 높이 넉넉하게 */
+  margin: 20px auto 50px; /* 위아래 간격 + 가운데 정렬 */
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Swiper 전체 높이 강제 맞춤 */
+.banner-container .swiper,
+.banner-container .swiper-wrapper,
+.banner-container .swiper-slide {
+  height: 100%;
+}
+
+/* 이미지 꽉 채우기 */
+.banner-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 네비게이션 버튼 (◀ ▶) */
+.swiper-button-prev,
+.swiper-button-next {
+  color: white; /* 버튼 색상 */
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  color: #00aaff; /* 호버 시 강조색 */
+}

@@ -1,0 +1,83 @@
+.detail {
+  display: flex;
+  justify-content: center;
+  padding: 80px 20px;
+  background: #fafafa;
+}
+
+.detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1000px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  padding: 30px;
+}
+
+.detail-image {
+  width: 450px;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.detail-discount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e53935;
+}
+
+.detail-original {
+  font-size: 1rem;
+  text-decoration: line-through;
+  color: #888;
+}
+
+.detail-rate {
+  font-size: 1rem;
+  color: #e53935;
+}
+
+.detail-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 20px 0;
+}
+
+.buy-btn {
+  background: #222;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.buy-btn:hover {
+  background: #444;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #555;
+  font-size: 0.9rem;
+}
