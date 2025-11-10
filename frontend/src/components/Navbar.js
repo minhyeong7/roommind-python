@@ -1,40 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserInfo, logoutUser } from "../api/userApi";
 
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState(null); // ✅ 로그인한 사용자 정보 저장
   const navigate = useNavigate();
 
+  // 🔹 검색어 입력 핸들러
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
+  // 🔹 검색 실행
   const handleSearch = () => {
     if (searchTerm.trim() !== "") {
-      // 예: 검색어를 쿼리 파라미터로 넘겨서 /search 페이지로 이동
       navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
   };
 
-  // 엔터 키 눌렀을 때 검색 실행
+  // 🔹 엔터로 검색
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
+    if (e.key === "Enter") handleSearch();
+  };
+
+  // 🔹 페이지 로드 시 로그인 상태 확인
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchUserInfo()
+        .then((data) => setUser(data))
+        .catch(() => {
+          logoutUser();
+          setUser(null);
+        });
     }
-  };
-    // 회원가입 버튼 클릭 시 이동
-  const handleSignupClick = () => {
-    navigate("/signup");
+  }, []);
+
+  // 🔹 로그아웃
+  const handleLogout = () => {
+    logoutUser();
+    setUser(null);
+    alert("👋 로그아웃되었습니다.");
+    navigate("/");
   };
 
-  // 로그인 버튼 클릭 시 이동 (나중에 로그인 페이지 만들면)
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
-  // 카트이동
+  // 🔹 이동 함수들
+  const handleSignupClick = () => navigate("/signup");
+  const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
+  const handleMypageClick = () => navigate("/mypage");
 
   return (
     <header className="navbar">
@@ -53,29 +69,48 @@ function Navbar() {
         <li><Link to="/qna">Q & A</Link></li>
       </ul>
 
-      {/* 중앙 오른쪽: 검색창 */}
-      <div className="navbar-search">
-        <input
-          type="text"
-          placeholder="통합검색"
-          value={searchTerm}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-        />
+      {/* 오른쪽: 검색 + 로그인 상태 */}
+      <div className="navbar-right">
+        {/* 검색창 */}
+        <div className="navbar-search">
+          <input
+            type="text"
+            placeholder="통합검색"
+            value={searchTerm}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+          />
           <button onClick={handleSearch} className="search-btn">
             <i className="bi bi-search"></i>
           </button>
-      
-      </div>
+        </div>
 
-      {/* 오른쪽: 로그인 / 회원가입 */}
-      {/* 🛒 장바구니 버튼 */}
+        {/* 장바구니 버튼 */}
         <button className="basket-btn" onClick={handleCartClick}>
           <i className="bi bi-cart-fill"></i>
         </button>
-      <div className="navbar-auth">
-        <button className="login" onClick={handleLoginClick}>로그인</button>
-        <button className="signup" onClick={handleSignupClick}>회원가입</button>
+
+        {/* ✅ 로그인 상태에 따른 표시 */}
+        <div className="navbar-auth">
+          {user ? (
+            <>
+              <span className="welcome-text">
+                환영합니다,&nbsp;<strong>{user.nickname || user.name || "회원"}</strong>님!
+              </span>
+              <button className="mypage-btn" onClick={handleMypageClick}>
+                마이페이지
+              </button>
+              <button className="logout-btn" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="login" onClick={handleLoginClick}>로그인</button>
+              <button className="signup" onClick={handleSignupClick}>회원가입</button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

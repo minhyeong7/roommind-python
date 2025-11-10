@@ -162,3 +162,59 @@ html, body {
   color: #0095dd;
   transform: scale(1.1);
 }
+/* ============================= */
+/* ✅ 로그인 상태 전용 스타일 */
+/* ============================= */
+
+/* 환영 문구 */
+.welcome-text {
+  font-size: 14px;
+  color: #333;
+  margin-right: 10px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* 마이페이지 / 로그아웃 버튼 */
+.mypage-btn,
+.logout-btn {
+  font-family: 'NanumSquareRound';
+  border: 1px solid #78a3f3;
+  background: white;
+  color: #78a3f3;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 마이페이지 hover */
+.mypage-btn:hover {
+  background: #e6f4ff;
+  color: #0066cc;
+}
+
+/* 로그아웃 버튼은 살짝 붉은 톤 */
+.logout-btn {
+  border-color: #ff7b7b;
+  color: #ff7b7b;
+}
+
+.logout-btn:hover {
+  background: #ff7b7b;
+  color: white;
+}
+
+/* 전체 정렬 정돈 */
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

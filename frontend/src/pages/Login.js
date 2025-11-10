@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/userApi";
-import "./Login.css"; 
+import Swal from "sweetalert2";
+import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -17,24 +18,43 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
+      // ✅ 전체 response 받기
       const response = await loginUser(form);
 
-      if (response.status === 200) {
-        alert("✅ 로그인 성공! 메인 페이지로 이동합니다.");
-        localStorage.setItem("token", response.data.token);
+      // ✅ token 존재 확인
+      const token = response?.data?.token;
+      if (token) {
+        // ✅ 토큰 로컬스토리지 저장 (userApi에서 이미 저장하지만, 안전하게 한 번 더)
+        localStorage.setItem("token", token);
+
+        Swal.fire({
+          icon: "success",
+          title: "로그인 성공 🎉",
+          text: "RoomMind에 오신 걸 환영합니다!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
         navigate("/");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "로그인 실패",
+          text: "이메일 또는 비밀번호를 확인해주세요.",
+        });
       }
     } catch (error) {
-      alert("❌ 로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
+      Swal.fire({
+        icon: "error",
+        title: "로그인 실패",
+        text: "서버 연결 오류 또는 잘못된 입력입니다.",
+      });
     }
   };
 
-  // ✅ 소셜 로그인 버튼 클릭 시
   const handleSocialLogin = (provider) => {
     window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
-    // 🔹 provider = kakao, naver, google
   };
 
   return (
@@ -76,7 +96,7 @@ function Login() {
         </p>
       </form>
 
-      {/* ✅ 소셜 로그인 버튼 섹션 */}
+      {/* ✅ 소셜 로그인 섹션 */}
       <div className="social-login-section">
         <p>또는 간편 로그인</p>
         <div className="social-buttons">
