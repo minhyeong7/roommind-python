@@ -34,7 +34,7 @@
 
 .footer-logo {
   font-size: 24px;
-  color: #00aaff;
+  color: #78a3f3;
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -74,7 +74,7 @@
 }
 
 .footer-links a:hover {
-  color: #00aaff;
+  color: #78a3f3;
 }
 
 /* 오른쪽 */
@@ -100,7 +100,7 @@
 
 .sns-icons a {
   margin-right: 10px;
-  color: #00aaff;
+  color: #78a3f3;
   font-size: 20px;
   transition: color 0.2s;
 }

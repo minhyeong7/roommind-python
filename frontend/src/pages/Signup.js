@@ -186,11 +186,11 @@ function Signup() {
         {/* ✅ 약관 */}
         <div className="agreement-section">
           <p>
-            회원가입 약관에{" "}
+            회원가입 약관에
+            동의하십니까? {" "}
             <span className="terms-link" onClick={() => setShowTerms(true)}>
               [내용보기]
             </span>{" "}
-            동의하십니까?
           </p>
           <div className="agreement-options">
             <label>

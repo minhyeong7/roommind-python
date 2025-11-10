@@ -35,7 +35,8 @@
 .logo {
   font-size: 22px;
   font-weight: 700;
-  color: #00aaff;
+  color: #78a3f3;
+  /* color: #78a3f3; */
   text-decoration: none;
   margin-right: 40px; /* 로고 ↔ 메뉴 간격 */
 }
@@ -61,7 +62,7 @@
 }
 
 .navbar-menu li a:hover {
-  color: #00aaff;
+  color: #0004ff;
 }
 
 /* 검색창 */
@@ -98,9 +99,9 @@
 .navbar-auth .login,
 .navbar-auth .signup {
   font-family: 'NanumSquareRound';
-  border: 1px solid #00aaff;
+  border: 1px solid #78a3f3;
   background: white;
-  color: #00aaff;
+  color: #78a3f3;
   padding: 6px 14px;
   border-radius: 6px;
   font-weight: 500;
@@ -109,7 +110,7 @@
 }
 
 .navbar-auth .signup {
-  background: #00aaff;
+  background: #78a3f3;
   color: white;
 }
 
@@ -149,7 +150,7 @@ html, body {
   border: none;
   cursor: pointer;
   font-size: 22px;
-  color: #00aaff;
+  color: #78a3f3;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
