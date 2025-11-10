@@ -1,0 +1,101 @@
+/* ✅ 폰트 통일 */
+@font-face {
+  font-family: 'NanumSquareRound';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'NanumSquareRound', sans-serif;
+  background-color: #f9fafc;
+  margin: 0;
+  padding: 0;
+}
+
+/* ✅ 컨테이너 */
+.login-container {
+  width: 90%;
+  max-width: 420px;
+  margin: 100px auto;
+  padding: 35px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 제목 */
+.login-container h2 {
+  text-align: center;
+  color: #00aaff;
+  margin-bottom: 10px;
+}
+
+/* 안내 텍스트 */
+.login-welcome {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+/* ✅ 폼 */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-form label {
+  font-weight: 600;
+  color: #333;
+}
+
+.login-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.login-form input:focus {
+  border-color: #00aaff;
+  outline: none;
+}
+
+/* ✅ 로그인 버튼 */
+.login-btn {
+  background: #00aaff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background: #0095dd;
+}
+
+/* ✅ 푸터 */
+.login-footer {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+  color: #555;
+}
+
+.signup-link {
+  color: #00aaff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}

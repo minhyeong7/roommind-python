@@ -1,6 +1,7 @@
 .signup-container {
-  width: 400px;
-  margin: 120px auto;
+  width: 90%;
+  max-width: 500px;
+  margin: 50px auto;
   padding: 30px;
   background: #fff;
   border-radius: 12px;
@@ -10,7 +11,15 @@
 .signup-container h2 {
   text-align: center;
   color: #00aaff;
+  margin-bottom: 10px;
+}
+
+.welcome-text {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
   margin-bottom: 25px;
+  line-height: 1.5;
 }
 
 .signup-form {
@@ -46,3 +55,145 @@
 .signup-btn:hover {
   background: #0095dd;
 }
+
+/* 🏠 주소 입력 줄 */
+.address-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.address-wrapper input {
+  flex: 1;
+}
+
+.address-btn {
+  background: #00aaff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.address-btn:hover {
+  background: #0090dd;
+}
+
+/* 약관 */
+.agreement-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.agreement-options {
+  display: flex;
+  gap: 20px;
+  margin-top: 5px;
+}
+
+.terms-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.terms-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 10px;
+  margin: 10px 0;
+  background: #fafafa;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.close-btn {
+  width: 100%;
+  background: #00aaff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #0090dd;
+}
+
+/* 이메일 입력 */
+.email-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.email-wrapper input {
+  flex: 1;
+}
+
+.email-wrapper span {
+  font-weight: 600;
+}
+
+.email-wrapper select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.email-direct {
+  margin-top: 6px;
+}
+.password-strength {
+  font-size: 13px;
+  margin-top: -6px;
+}
+
+.password-strength.weak {
+  color: #e74c3c;
+}
+
+.password-strength.medium {
+  color: #f1c40f;
+}
+
+.password-strength.strong {
+  color: #27ae60;
+}
+

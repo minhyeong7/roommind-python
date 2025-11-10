@@ -63,7 +63,7 @@ function Navbar() {
 
       {/* 오른쪽: 로그인 / 회원가입 */}
       <div className="navbar-auth">
-        <button className="login" onClick={handleSignupClick}>로그인</button>
+        <button className="login" onClick={handleLoginClick}>로그인</button>
         <button className="signup" onClick={handleSignupClick}>회원가입</button>
       </div>
     </header>
