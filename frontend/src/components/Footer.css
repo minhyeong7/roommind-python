@@ -1,0 +1,120 @@
+/* ✅ 폰트 통일 */
+@font-face {
+  font-family: 'NanumSquareRound';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+.footer {
+  font-family: 'NanumSquareRound', sans-serif;
+  background: #f8f9fb;
+  border-top: 1px solid #e3e3e3;
+  padding: 40px 0 20px;
+  color: #444;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+  
+}
+
+/* 왼쪽 */
+.footer-left {
+  flex: 1;
+  min-width: 240px;
+}
+
+.footer-logo {
+  font-size: 24px;
+  color: #00aaff;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.footer-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
+}
+
+/* 중앙 */
+.footer-links {
+  flex: 1;
+  min-width: 180px;
+}
+
+.footer-links h4 {
+  color: #333;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin: 6px 0;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #00aaff;
+}
+
+/* 오른쪽 */
+.footer-contact {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-contact h4 {
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.footer-contact p {
+  margin: 4px 0;
+  color: #555;
+}
+
+.sns-icons {
+  margin-top: 8px;
+}
+
+.sns-icons a {
+  margin-right: 10px;
+  color: #00aaff;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.sns-icons a:hover {
+  color: #0090dd;
+}
+
+/* 하단 */
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid #e1e1e1;
+  padding-top: 15px;
+  margin-top: 25px;
+  font-size: 13px;
+  color: #777;
+}
