@@ -23,6 +23,15 @@ function Navbar() {
       handleSearch();
     }
   };
+    // 회원가입 버튼 클릭 시 이동
+  const handleSignupClick = () => {
+    navigate("/signup");
+  };
+
+  // 로그인 버튼 클릭 시 이동 (나중에 로그인 페이지 만들면)
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
 
   return (
     <header className="navbar">
@@ -54,8 +63,8 @@ function Navbar() {
 
       {/* 오른쪽: 로그인 / 회원가입 */}
       <div className="navbar-auth">
-        <button className="login">로그인</button>
-        <button className="signup">회원가입</button>
+        <button className="login" onClick={handleSignupClick}>로그인</button>
+        <button className="signup" onClick={handleSignupClick}>회원가입</button>
       </div>
     </header>
   );

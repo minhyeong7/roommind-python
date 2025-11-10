@@ -97,6 +97,7 @@
 
 .navbar-auth .login,
 .navbar-auth .signup {
+  font-family: 'NanumSquareRound';
   border: 1px solid #00aaff;
   background: white;
   color: #00aaff;
