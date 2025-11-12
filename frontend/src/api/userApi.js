@@ -25,12 +25,16 @@ export const loginUser = async (loginData) => {
   try {
     const response = await api.post("/api/members/login", loginData);
 
-    // ✅ 로그인 성공 시 토큰 저장
-    if (response.data?.token) {
-      localStorage.setItem("token", response.data.token);
+    // ✅ 수정된 부분: data.data.token 접근
+    const token = response.data?.data?.token;
+    if (token) {
+      localStorage.setItem("token", token);
+      console.log("✅ 로그인 성공 — 토큰 저장 완료:", token);
+    } else {
+      console.warn("⚠️ 로그인 응답에 토큰이 없습니다:", response.data);
     }
 
-    return response; // 전체 응답 반환
+    return response.data; // data 전체 반환
   } catch (error) {
     console.error("로그인 오류:", error);
     throw error;
