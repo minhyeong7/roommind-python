@@ -10,11 +10,9 @@ function Navbar() {
 
   /** ✅ 로그인 상태 불러오기 */
   useEffect(() => {
-    // localStorage에 user 정보가 있으면 불러옴
     const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
 
-    // 로그인 성공 시 새로고침 없이 Navbar 갱신
     const handleLoginSuccess = () => {
       const updatedUser = localStorage.getItem("user");
       if (updatedUser) setUser(JSON.parse(updatedUser));
@@ -51,6 +49,7 @@ function Navbar() {
   const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
   const handleMypageClick = () => navigate("/mypage");
+  const handleAdminClick = () => navigate("/admin"); // ✅ 관리자 페이지 이동
 
   return (
     <header className="navbar">
@@ -93,26 +92,36 @@ function Navbar() {
         {/* 로그인 상태에 따른 표시 */}
         <div className={`navbar-auth ${user ? "logged-in" : ""}`}>
           {user ? (
-            <>
-              <span className="welcome-text">
-                환영합니다,&nbsp;
-                <strong>{user.username || user.name || "회원"}</strong>님!
-              </span>
-              <button className="mypage-btn" onClick={handleMypageClick}>
-                마이페이지
-              </button>
-              <button className="logout-btn" onClick={handleLogout}>
-                로그아웃
-              </button>
-            </>
+            user.role === "admin" ? (
+              // ✅ 관리자 계정인 경우
+              <>
+                <span className="welcome-text">환영합니다, <strong> 관리자</strong>님!</span>
+                <button className="mypage-btn" onClick={handleAdminClick}>
+                  관리자 페이지
+                </button>
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              // ✅ 일반 사용자
+              <>
+                <span className="welcome-text">
+                  환영합니다,&nbsp;
+                  <strong>{user.username || user.name || "회원"}</strong>님!
+                </span>
+                <button className="mypage-btn" onClick={handleMypageClick}>
+                  마이페이지
+                </button>
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </>
+            )
           ) : (
             <>
-              <button className="login" onClick={handleLoginClick}>
-                로그인
-              </button>
-              <button className="signup" onClick={handleSignupClick}>
-                회원가입
-              </button>
+              <button className="login" onClick={handleLoginClick}>로그인</button>
+              <button className="signup" onClick={handleSignupClick}>회원가입</button>
             </>
           )}
         </div>

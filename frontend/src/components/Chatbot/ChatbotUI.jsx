@@ -30,7 +30,7 @@ function ChatbotUI() {
         {messages.map((msg, i) => (
           <ChatMessage key={i} sender={msg.sender} text={msg.text} />
         ))}
-        {loading && <div className="loading">🤖 답변 생성 중...</div>}
+        {loading && <div className="loading">답변 생성 중...</div>}
       </div>
 
       <ChatbotInput onSend={handleSend} />

@@ -34,7 +34,7 @@
 
 /* 챗봇 박스 */
 .interior-chatbox {
-  width: 80%;
+  width: 100%;
   max-width: 900px;
   display: flex;
   justify-content: center;
