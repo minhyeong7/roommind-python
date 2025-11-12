@@ -7,9 +7,9 @@ function Home() {
   const products = [
     { image: "/images/whiteTable.jpg", title: "화이트 원목 테이블", price: "129,000", originalPrice: "169,000", link: "/product/white-table" },
     { image: "/images/minimalStand.jpg", title: "미니멀 조명 스탠드", price: "89,000", originalPrice: "119,000", link: "/product/minimal-stand" },
-    { image: "/images/fabricSofa.jpg", title: "패브릭 소파", price: "329,000", originalPrice: "389,000", link: "/product/fabric-sofa" },
-    { image: "/images/fabricSofa.jpg", title: "패브릭 소파", price: "329,000", originalPrice: "389,000", link: "/product/fabric-sofa" },
-    { image: "/images/fabricSofa.jpg", title: "패브릭 소파", price: "329,000", originalPrice: "389,000", link: "/product/fabric-sofa" },
+    { image: "/images/catTower.jpg", title: "캣타워", price: "176,000", originalPrice: "209,000", link: "/product/fabric-sofa" },
+    { image: "/images/catTower2.jpg", title: "원목 캣타워", price: "118,000", originalPrice: "159,000", link: "/product/fabric-sofa" },
+    { image: "/images/dressingTable.webp", title: "화이트 수납 화장대", price: "89,000", originalPrice: "168,000", link: "/product/fabric-sofa" },
   ];
 
   const hotProducts = [
