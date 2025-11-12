@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatbotInput from "./ChatbotInput";
-import { sendChatMessage } from "../../services/chatService";
+import { sendChatMessage } from "../../services/ChatService";
 import "./Chatbot.css";
 
 function ChatbotUI() {
