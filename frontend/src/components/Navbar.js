@@ -95,7 +95,7 @@ function Navbar() {
             user.role === "admin" ? (
               // ✅ 관리자 계정인 경우
               <>
-                <span className="welcome-text">환영합니다, <strong> 관리자</strong>님!</span>
+                <span className="welcome-text">환영합니다,&nbsp; <strong> 관리자</strong>님!</span>
                 <button className="mypage-btn" onClick={handleAdminClick}>
                   관리자 페이지
                 </button>
