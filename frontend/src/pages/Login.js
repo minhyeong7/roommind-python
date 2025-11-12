@@ -11,11 +11,13 @@ function Login() {
     password: "",
   });
 
+  // 🔹 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
+  // 🔹 로그인 요청
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,8 +27,11 @@ function Login() {
       // ✅ token 존재 확인
       const token = response?.data?.token;
       if (token) {
-        // ✅ 토큰 로컬스토리지 저장 (userApi에서 이미 저장하지만, 안전하게 한 번 더)
+        // ✅ 토큰 로컬스토리지 저장
         localStorage.setItem("token", token);
+
+        // ✅ Navbar에 로그인 성공 이벤트 전달 (🌟 핵심 추가 부분)
+        window.dispatchEvent(new Event("loginSuccess"));
 
         Swal.fire({
           icon: "success",
@@ -53,6 +58,7 @@ function Login() {
     }
   };
 
+  // 🔹 소셜 로그인
   const handleSocialLogin = (provider) => {
     window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
   };

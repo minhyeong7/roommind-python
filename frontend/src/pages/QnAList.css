@@ -10,7 +10,7 @@
 .qna-title-main {
   text-align: center;
   font-size: 2rem;
-  color: #78a3f3;
+  color: #fc9510;
   font-weight: 800;
   margin-bottom: 40px;
 }
@@ -34,7 +34,7 @@
 }
 
 .qna-write-btn {
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
   border: none;
   border-radius: 8px;
@@ -45,7 +45,7 @@
 }
 
 .qna-write-btn:hover {
-  background: #0090dd;
+  background: #fd7434;
 }
 
 /* 게시글 리스트 스타일 */
@@ -114,7 +114,7 @@
 .qna-title-main {
   text-align: center;
   font-size: 2rem;
-  color: #78a3f3;
+  color: #fc9510;
   font-weight: 800;
   margin-bottom: 10px;
 }

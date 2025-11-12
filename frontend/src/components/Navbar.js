@@ -5,37 +5,59 @@ import { fetchUserInfo, logoutUser } from "../api/userApi";
 
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [user, setUser] = useState(null); // ✅ 로그인한 사용자 정보 저장
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // 🔹 검색어 입력 핸들러
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  // 🔹 검색 실행
+  // 🔹 검색 관련
+  const handleInputChange = (e) => setSearchTerm(e.target.value);
   const handleSearch = () => {
     if (searchTerm.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
   };
-
-  // 🔹 엔터로 검색
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
   };
 
-  // 🔹 페이지 로드 시 로그인 상태 확인
-  useEffect(() => {
+  // ✅ 로그인 상태 확인 함수
+  const loadUser = async () => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetchUserInfo()
-        .then((data) => setUser(data))
-        .catch(() => {
-          logoutUser();
-          setUser(null);
-        });
+      try {
+        const data = await fetchUserInfo();
+        setUser(data);
+      } catch {
+        logoutUser();
+        setUser(null);
+      }
+    } else {
+      setUser(null);
     }
+  };
+
+  // ✅ 초기 실행 + 로그인/로그아웃 감지
+  useEffect(() => {
+    loadUser();
+
+    // ✅ 다른 탭 or 페이지에서 localStorage 바뀔 때 감지 (로그인/로그아웃 반영)
+    const handleStorageChange = (e) => {
+      if (e.key === "token") {
+        loadUser(); // 토큰이 바뀌면 상태 갱신
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    // ✅ cleanup
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  // ✅ 로그인 성공 후 직접 이벤트 트리거 (Login.js에서)
+  useEffect(() => {
+    const handleLoginEvent = () => loadUser();
+    window.addEventListener("loginSuccess", handleLoginEvent);
+    return () => window.removeEventListener("loginSuccess", handleLoginEvent);
   }, []);
 
   // 🔹 로그아웃
@@ -46,7 +68,7 @@ function Navbar() {
     navigate("/");
   };
 
-  // 🔹 이동 함수들
+  // 🔹 이동 함수
   const handleSignupClick = () => navigate("/signup");
   const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
@@ -69,7 +91,7 @@ function Navbar() {
         <li><Link to="/qna">Q & A</Link></li>
       </ul>
 
-      {/* 오른쪽: 검색 + 로그인 상태 */}
+      {/* 오른쪽 */}
       <div className="navbar-right">
         {/* 검색창 */}
         <div className="navbar-search">
@@ -85,12 +107,12 @@ function Navbar() {
           </button>
         </div>
 
-        {/* 장바구니 버튼 */}
+        {/* 장바구니 */}
         <button className="basket-btn" onClick={handleCartClick}>
           <i className="bi bi-cart-fill"></i>
         </button>
 
-        {/* ✅ 로그인 상태에 따른 표시 */}
+        {/* 로그인 상태 표시 */}
         <div className="navbar-auth">
           {user ? (
             <>

@@ -10,7 +10,7 @@
 
 .qna-write-title {
   text-align: center;
-  color: #78a3f3;
+  color: #fc9510;
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 30px;
@@ -39,7 +39,7 @@
 .qna-write-form input:focus,
 .qna-write-form textarea:focus {
   outline: none;
-  border-color: #78a3f3;
+  border-color: #fc9510;
   box-shadow: 0 0 5px rgba(0, 170, 255, 0.4);
 }
 
@@ -81,7 +81,7 @@
 }
 
 .btn-primary {
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
   font-weight: 600;
   border: none;
@@ -92,13 +92,13 @@
 }
 
 .btn-primary:hover {
-  background: #0090dd;
+  background: #fa7e2c;
 }
 
 .btn-outline {
   background: white;
-  color: #78a3f3;
-  border: 1.5px solid #78a3f3;
+  color: #fc9510;
+  border: 1.5px solid #fc9510;
   border-radius: 8px;
   padding: 10px 20px;
   cursor: pointer;
