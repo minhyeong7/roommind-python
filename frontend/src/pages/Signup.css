@@ -10,7 +10,7 @@
 
 .signup-container h2 {
   text-align: center;
-  color: #78a3f3;
+  color: #fc9510;
   margin-bottom: 10px;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .signup-btn {
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
   font-weight: 600;
   border: none;
@@ -53,7 +53,7 @@
 }
 
 .signup-btn:hover {
-  background: #0095dd;
+  background: #fa5d2d;
 }
 
 /* 🏠 주소 입력 줄 */
@@ -68,7 +68,7 @@
 }
 
 .address-btn {
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
   border: none;
   border-radius: 6px;
@@ -78,7 +78,7 @@
 }
 
 .address-btn:hover {
-  background: #0090dd;
+  background: #fa5d2d;
 }
 
 /* 약관 */
@@ -137,7 +137,7 @@
 
 .close-btn {
   width: 100%;
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
   border: none;
   border-radius: 8px;
@@ -149,7 +149,7 @@
 }
 
 .close-btn:hover {
-  background: #0090dd;
+  background: #fa5d2d;
 }
 
 /* 이메일 입력 */

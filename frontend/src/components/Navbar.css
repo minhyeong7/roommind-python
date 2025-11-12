@@ -35,8 +35,8 @@
 .logo {
   font-size: 22px;
   font-weight: 700;
-  color: #78a3f3;
-  /* color: #78a3f3; */
+  color: #fc9510;
+  /* color: #fc9510; */
   text-decoration: none;
   margin-right: 40px; /* 로고 ↔ 메뉴 간격 */
 }
@@ -99,9 +99,9 @@
 .navbar-auth .login,
 .navbar-auth .signup {
   font-family: 'NanumSquareRound';
-  border: 1px solid #78a3f3;
+  border: 1px solid #fc9510;
   background: white;
-  color: #78a3f3;
+  color: #fc9510;
   padding: 6px 14px;
   border-radius: 6px;
   font-weight: 500;
@@ -110,16 +110,16 @@
 }
 
 .navbar-auth .signup {
-  background: #78a3f3;
+  background: #fc9510;
   color: white;
 }
 
 .navbar-auth .login:hover {
-  background: #e6f4ff;
+  background: #f8d5b3;
 }
 
 .navbar-auth .signup:hover {
-  background: #0095dd;
+  background: #f35d30;
 }
 
 /* 전역 스크롤 방지 */
@@ -150,7 +150,7 @@ html, body {
   border: none;
   cursor: pointer;
   font-size: 22px;
-  color: #78a3f3;
+  color: #fc9510;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -159,7 +159,7 @@ html, body {
 }
 
 .basket-btn:hover {
-  color: #0095dd;
+  color: #ff3e03;
   transform: scale(1.1);
 }
 /* ============================= */
@@ -179,9 +179,9 @@ html, body {
 .mypage-btn,
 .logout-btn {
   font-family: 'NanumSquareRound';
-  border: 1px solid #78a3f3;
+  border: 1px solid #fc9510;
   background: white;
-  color: #78a3f3;
+  color: #fc9510;
   padding: 6px 14px;
   border-radius: 6px;
   font-weight: 500;
@@ -192,7 +192,7 @@ html, body {
 /* 마이페이지 hover */
 .mypage-btn:hover {
   background: #e6f4ff;
-  color: #0066cc;
+  color: #ff7300;
 }
 
 /* 로그아웃 버튼은 살짝 붉은 톤 */
