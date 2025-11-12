@@ -11,6 +11,7 @@ import CartPage from "./pages/CartPage";
 import QnAList from "./pages/QnAList";     // Q&A 목록
 import QnAWrite from "./pages/QnAWrite";   // Q&A 글쓰기
 import { CartProvider } from "./context/CartContext"; // 장바구니 Context
+import InteriorPage from "./pages/InteriorPage";
 
 function App() {
   return (
@@ -37,6 +38,9 @@ function App() {
           {/* ✅ Q&A 게시판 라우팅 추가 */}
           <Route path="/qna" element={<QnAList />} />
           <Route path="/qna/write" element={<QnAWrite />} />
+
+          <Route path="/interior" element={<InteriorPage />} />
+
         </Routes>
 
         <Footer />

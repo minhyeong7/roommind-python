@@ -1,10 +1,9 @@
 /* 전체 Navbar */
-
 @font-face {
-    font-family: 'NanumSquareRound';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
-    font-weight: normal;
-    font-display: swap;
+  font-family: 'NanumSquareRound';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
 }
 
 .navbar {
@@ -12,7 +11,7 @@
   width: 100%;
   height: 70px;
   display: flex;
-  justify-content: center; /* 내부 컨테이너 중앙 배치 */
+  justify-content: center;
   align-items: center;
   background: white;
   border-bottom: 1px solid #eee;
@@ -21,14 +20,14 @@
   z-index: 1000;
 }
 
-/* 안쪽 고정폭 컨테이너 */
+/* ✅ 내부 컨테이너 균형 맞춤 */
 .navbar-inner {
   width: 100%;
-  max-width: 1200px; /* ✅ 오늘의집 중앙폭 */
+  max-width: 1200px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px; /* 좌우 여백 */
+  padding: 0 40px;
 }
 
 /* 로고 */
@@ -36,9 +35,8 @@
   font-size: 22px;
   font-weight: 700;
   color: #fc9510;
-  /* color: #fc9510; */
   text-decoration: none;
-  margin-right: 40px; /* 로고 ↔ 메뉴 간격 */
+  margin-right: 40px;
 }
 
 /* 메뉴 */
@@ -48,17 +46,17 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  margin-right: 40px; /* 메뉴 ↔ 검색창 간격 */
+  margin-right: 40px;
 }
 
 .navbar-menu li a {
   text-decoration: none;
   color: #333;
   font-weight: 700;
-  display: flex;          
-  align-items: center;    
-  line-height: 1;         
-  white-space: nowrap;    
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .navbar-menu li a:hover {
@@ -68,11 +66,12 @@
 /* 검색창 */
 .navbar-search {
   display: flex;
+  align-items: center;
   background: #f3f4f6;
   border-radius: 20px;
   padding: 5px 10px;
-  align-items: center;
-  margin-right: 30px; /* 검색창 ↔ 로그인 간격 */
+  margin-right: 6px;
+  gap: 6px;
 }
 
 .navbar-search input {
@@ -90,12 +89,41 @@
   font-size: 16px;
 }
 
-/* 로그인 / 회원가입 */
-.navbar-auth {
+/* 오른쪽 영역 */
+.navbar-right {
   display: flex;
-  gap: 10px;
+  align-items: center;  /* ✅ 전체 수직 중앙 정렬 */
+  gap: 12px;
 }
 
+/* 장바구니 */
+.basket-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 21px;
+  color: #fc9510;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.basket-btn:hover {
+  color: #ff3e03;
+  transform: scale(1.1);
+}
+
+/* ============================= */
+/* ✅ 로그인 / 회원가입 영역 */
+/* ============================= */
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 로그인/회원가입 버튼 */
 .navbar-auth .login,
 .navbar-auth .signup {
   font-family: 'NanumSquareRound';
@@ -122,57 +150,29 @@
   background: #f35d30;
 }
 
-/* 전역 스크롤 방지 */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
+/* ============================= */
+/* ✅ 로그인 후 상태 스타일 */
+/* ============================= */
 
-/* 오른쪽 영역 전체 */
-.navbar-right {
+.navbar-auth.logged-in {
   display: flex;
-  align-items: center;
-  gap: 25px; /* ✅ 기존 15px → 25px 정도로 늘리기 */
-}
-
-/* 검색창 오른쪽 장바구니 간격 */
-.navbar-search {
-  display: flex;
-  align-items: center;
+  align-items: center;  /* ✅ 환영 문구/버튼 수직 중앙 */
   gap: 8px;
-  margin-right: 10px; /* ✅ 검색창 오른쪽 여백 추가 */
 }
-
-/* 장바구니 버튼 */
-.basket-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  color: #fc9510;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 15px; /* ✅ 로그인/회원가입과 간격 확보 */
-}
-
-.basket-btn:hover {
-  color: #ff3e03;
-  transform: scale(1.1);
-}
-/* ============================= */
-/* ✅ 로그인 상태 전용 스타일 */
-/* ============================= */
 
 /* 환영 문구 */
 .welcome-text {
-  font-size: 14px;
+  display: flex;
+  align-items: center;   
+  justify-content: center;
+  height: auto;
+  margin-right: 4px;
+  margin-top: 25px;       
+  line-height: 1.2;
+  font-size: 15px;
   color: #333;
-  margin-right: 10px;
-  white-space: nowrap;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 /* 마이페이지 / 로그아웃 버튼 */
@@ -187,15 +187,16 @@ html, body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 마이페이지 hover */
 .mypage-btn:hover {
-  background: #e6f4ff;
+  background: #fff4e8;
   color: #ff7300;
 }
 
-/* 로그아웃 버튼은 살짝 붉은 톤 */
 .logout-btn {
   border-color: #ff7b7b;
   color: #ff7b7b;
@@ -204,17 +205,4 @@ html, body {
 .logout-btn:hover {
   background: #ff7b7b;
   color: white;
-}
-
-/* 전체 정렬 정돈 */
-.navbar-auth {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
 }

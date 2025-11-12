@@ -11,7 +11,7 @@ function Login() {
     password: "",
   });
 
-  // 🔹 입력값 변경 핸들러
+  // 🔹 입력값 변경
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -21,16 +21,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // ✅ 전체 response 받기
       const response = await loginUser(form);
-
-      // ✅ token 존재 확인
       const token = response?.data?.token;
-      if (token) {
-        // ✅ 토큰 로컬스토리지 저장
-        localStorage.setItem("token", token);
+      const userData = response?.data; // 로그인 응답 전체
 
-        // ✅ Navbar에 로그인 성공 이벤트 전달 (🌟 핵심 추가 부분)
+      if (token) {
+        // ✅ 토큰과 사용자 정보 저장
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        // ✅ Navbar가 로그인 상태 감지하게 이벤트 발생
         window.dispatchEvent(new Event("loginSuccess"));
 
         Swal.fire({
@@ -68,7 +68,6 @@ function Login() {
       <h2>로그인</h2>
       <p className="welcome-text">RoomMind에 다시 오신 것을 환영합니다 🪑</p>
 
-      {/* 일반 로그인 */}
       <form onSubmit={handleSubmit} className="signup-form">
         <label>이메일</label>
         <input
@@ -102,30 +101,21 @@ function Login() {
         </p>
       </form>
 
-      {/* ✅ 소셜 로그인 섹션 */}
+      {/* ✅ 소셜 로그인 */}
       <div className="social-login-section">
         <p>또는 간편 로그인</p>
         <div className="social-buttons">
-          <button
-            className="social-btn kakao"
-            onClick={() => handleSocialLogin("kakao")}
-          >
+          <button className="social-btn kakao" onClick={() => handleSocialLogin("kakao")}>
             <img src="/images/kakao.png" alt="카카오 로그인" />
             카카오 로그인
           </button>
 
-          <button
-            className="social-btn naver"
-            onClick={() => handleSocialLogin("naver")}
-          >
+          <button className="social-btn naver" onClick={() => handleSocialLogin("naver")}>
             <img src="/images/naver.png" alt="네이버 로그인" />
             네이버 로그인
           </button>
 
-          <button
-            className="social-btn google"
-            onClick={() => handleSocialLogin("google")}
-          >
+          <button className="social-btn google" onClick={() => handleSocialLogin("google")}>
             <img src="/images/google.png" alt="구글 로그인" />
             Google 로그인
           </button>

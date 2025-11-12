@@ -1,35 +1,39 @@
-// ChatbotUI.jsx
-import React, { useState } from 'react';
-import ChatInput from './ChatInput';
-import ChatMessage from './ChatMessage';
-import './Chatbot.css';
+// src/components/Chatbot/ChatbotUI.jsx
+import React, { useState } from "react";
+import ChatMessage from "./ChatMessage";
+import ChatbotInput from "./ChatbotInput";
+import { sendChatMessage } from "../../services/chatService";
+import "./Chatbot.css";
 
 function ChatbotUI() {
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSend = async (text) => {
-    const userMsg = { sender: 'user', text };
-    setMessages(prev => [...prev, userMsg]);
+    if (!text.trim()) return;
 
-    const res = await fetch('http://localhost:5000/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
-    });
+    // 사용자 메시지 추가
+    const userMsg = { sender: "user", text };
+    setMessages((prev) => [...prev, userMsg]);
 
-    const data = await res.json();
-    const botMsg = { sender: 'bot', text: data.reply };
-    setMessages(prev => [...prev, botMsg]);
+    setLoading(true);
+    const reply = await sendChatMessage(text); // Flask 서버 호출
+    const botMsg = { sender: "bot", text: reply };
+
+    setMessages((prev) => [...prev, botMsg]);
+    setLoading(false);
   };
 
   return (
-    <div className="chatbot">
+    <div className="chatbot-container">
       <div className="chat-window">
         {messages.map((msg, i) => (
           <ChatMessage key={i} sender={msg.sender} text={msg.text} />
         ))}
+        {loading && <div className="loading">🤖 답변 생성 중...</div>}
       </div>
-      <ChatInput onSend={handleSend} />
+
+      <ChatbotInput onSend={handleSend} />
     </div>
   );
 }
