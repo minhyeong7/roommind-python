@@ -15,7 +15,7 @@ function Home() {
   const hotProducts = [
     { image: "/images/chair.jpg", title: "우드 체어", price: "99,000", originalPrice: "129,000", link: "/product/wood-chair" },
     { image: "/images/modernLamp.jpg", title: "모던 플로어 램프", price: "149,000", originalPrice: "199,000", link: "/product/modern-lamp" },
-    { image: "/images/roundMirror.jpg", title: "라운드 거울", price: "69,000", originalPrice: "99,000", link: "/product/round-mirror" },
+    { image: "/images/fabricSofa.jpg", title: "패브릭 소파", price: "269,000", originalPrice: "329,000", link: "/product/fabric-sofa" },
     { image: "/images/roundMirror.jpg", title: "라운드 거울", price: "69,000", originalPrice: "99,000", link: "/product/round-mirror" },
     { image: "/images/roundMirror.jpg", title: "라운드 거울", price: "69,000", originalPrice: "99,000", link: "/product/round-mirror" },
   ];

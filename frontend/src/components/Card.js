@@ -2,8 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Card.css";
 
-function Card({ image, title, price, originalPrice, link }) {
-  // 숫자만 추출해서 할인율 계산 (예: 169,000 → 169000)
+function Card({
+  image = "",
+  brand = "",              // 기본값 추가
+  title = "",
+  price = "",
+  originalPrice = "",
+  rating = 0,              // 기본값 추가
+  reviewCount = 0,         // 기본값 추가
+  link = "#"
+}) {
   const priceNum = parseInt(price.replace(/,/g, ""), 10);
   const originalNum = parseInt(originalPrice.replace(/,/g, ""), 10);
 
@@ -15,20 +23,43 @@ function Card({ image, title, price, originalPrice, link }) {
   return (
     <Link to={link} className="card-link">
       <div className="card">
-        <div className="image-wrapper">
+
+        {/* 이미지 영역 */}
+        <div className="card-image-wrapper">
           <img src={image} alt={title} className="card-image" />
-          {discountRate > 0 && (
-            <div className="discount-badge">-{discountRate}%</div>
-          )}
         </div>
+
+        {/* 아래 설명 영역 */}
         <div className="card-info">
-          <h3 className="card-title">{title}</h3>
-          <div className="card-price">
-            <span className="discount-price">{price}원</span>
-            {originalPrice && (
-              <span className="original-price">{originalPrice}원</span>
+
+          {/* 브랜드명 */}
+          {brand && <p className="card-brand">{brand}</p>}
+
+          {/* 상품명 */}
+          <p className="card-title">{title}</p>
+
+          {/* 가격 라인: 할인율 + 현재가격 */}
+          <div className="card-price-row">
+            {discountRate > 0 && (
+              <span className="discount-rate">{discountRate}%</span>
             )}
+
+            <span className="discount-price">
+              {price}원
+            </span>
           </div>
+
+          {/* 원래 가격 */}
+          {originalPrice && (
+            <p className="original-price">{originalPrice}원</p>
+          )}
+
+          {/* 리뷰 + 별점 */}
+          <div className="rating-row">
+            <span className="rating-star">⭐ {rating}</span>
+            <span className="review-count">리뷰 {reviewCount.toLocaleString()}</span>
+          </div>
+
         </div>
       </div>
     </Link>
