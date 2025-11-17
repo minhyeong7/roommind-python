@@ -1,0 +1,24 @@
+.product-qa {
+  width: 100%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.qa-item {
+  border-bottom: 1px solid #eee;
+  padding: 18px 0;
+  cursor: pointer;
+}
+
+.qa-question {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.qa-answer {
+  color: #555;
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 3px solid #fc9510;
+}

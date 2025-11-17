@@ -1,0 +1,85 @@
+.product-buy-box {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.product-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* 가격 영역 */
+.product-price-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.discount-rate {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fc9510;
+}
+
+.sale-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+}
+
+.original-price {
+  font-size: 16px;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+/* 옵션 */
+.option-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+/* 버튼 */
+.product-buy-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cart-btn {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #fc9510;
+  color: #fc9510;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.cart-btn:hover {
+  background: #fff3e4;
+}
+
+.buy-btn {
+  flex: 1;
+  background: #fc9510;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.buy-btn:hover {
+  background: #e27f00;
+}

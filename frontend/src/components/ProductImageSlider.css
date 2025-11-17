@@ -1,0 +1,16 @@
+.product-image-slider {
+  width: 100%;
+}
+
+.product-main-image {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.product-main-image img {
+  width: 100%;
+  display: block;
+}

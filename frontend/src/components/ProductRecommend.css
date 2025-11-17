@@ -1,0 +1,36 @@
+.product-recommend {
+  width: 100%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.recommend-item {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fff;
+  text-align: center;
+}
+
+.recommend-item img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.recommend-name {
+  font-size: 15px;
+  color: #333;
+}
+
+.recommend-price {
+  font-size: 17px;
+  margin-top: 5px;
+  font-weight: 600;
+  color: #fc9510;
+}
