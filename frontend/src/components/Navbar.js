@@ -49,7 +49,7 @@ function Navbar() {
   const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
   const handleMypageClick = () => navigate("/mypage");
-  const handleAdminClick = () => navigate("/admin"); // ✅ 관리자 페이지 이동
+  const handleAdminClick = () => navigate("/admin");
 
   return (
     <header className="navbar">
@@ -89,13 +89,14 @@ function Navbar() {
           <i className="bi bi-cart-fill"></i>
         </button>
 
-        {/* 로그인 상태에 따른 표시 */}
+        {/* 로그인 상태 표시 */}
         <div className={`navbar-auth ${user ? "logged-in" : ""}`}>
           {user ? (
             user.role === "admin" ? (
-              // ✅ 관리자 계정인 경우
               <>
-                <span className="welcome-text">환영합니다,&nbsp; <strong> 관리자</strong>님!</span>
+                <span className="welcome-text">
+                  환영합니다,&nbsp; <strong>관리자</strong>님!
+                </span>
                 <button className="mypage-btn" onClick={handleAdminClick}>
                   관리자 페이지
                 </button>
@@ -104,12 +105,24 @@ function Navbar() {
                 </button>
               </>
             ) : (
-              // ✅ 일반 사용자
               <>
+                {/* 일반 사용자 + 소셜 로그인 사용자 공통 */}
                 <span className="welcome-text">
                   환영합니다,&nbsp;
                   <strong>{user.username || user.name || "회원"}</strong>님!
                 </span>
+
+                {/* ⭐ 소셜 로그인 배지 ⭐ */}
+                {user.socialType === "KAKAO" && (
+                  <span className="social-badge kakao">카카오 로그인</span>
+                )}
+                {user.socialType === "NAVER" && (
+                  <span className="social-badge naver">네이버 로그인</span>
+                )}
+                {user.socialType === "GOOGLE" && (
+                  <span className="social-badge google">구글 로그인</span>
+                )}
+
                 <button className="mypage-btn" onClick={handleMypageClick}>
                   마이페이지
                 </button>
