@@ -34,3 +34,14 @@
 .swiper-button-next:hover {
   color: #fc9510; /* 호버 시 강조색 */
 }
+
+/* 페이지네이션 점(동그라미) 기본 색 */
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.7) !important; /* 연한 흰색 */
+  opacity: 1;
+}
+
+/* 활성된 점 색 */
+.swiper-pagination-bullet-active {
+  background: #fc9510 !important; /* 예쁜 주황색 */
+}
