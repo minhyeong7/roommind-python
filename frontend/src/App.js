@@ -20,6 +20,7 @@ import QnAWrite from "./pages/QnAWrite";
 
 /* 커뮤니티페이지 */
 import CommunityPage from "./pages/community/CommunityPage";
+import PopularPage from "./pages/popular/PopularPage";
 
 
 /* 맥락 */
@@ -63,6 +64,8 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
 
           <Route path="/community" element={<CommunityPage />} />
+
+          <Route path="/popular" element={<PopularPage />} />
 
           {/* Q&A */}
           <Route path="/qna" element={<QnAList />} />
