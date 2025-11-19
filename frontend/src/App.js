@@ -29,11 +29,13 @@ import ShopPage from "./components/shop/ShopPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductManage from "./pages/admin/ProductManage";
 import UserManage from "./pages/admin/UserManage";
+import QnaManage from "./pages/admin/QnaManage";
 
 /* 유저 마이페이지 */
 import MyPage from "./pages/user/MyPage";
 import OrderList from "./pages/user/OrderList";
 import ReviewList from "./pages/user/ReviewList";
+
 
 
 function App() {
@@ -93,6 +95,14 @@ function App() {
             element={
               <AdminRoute>
                 <UserManage />
+              </AdminRoute>
+            }
+          />
+           <Route
+            path="/admin/qna"
+            element={
+              <AdminRoute>
+                <QnaManage />
               </AdminRoute>
             }
           />
