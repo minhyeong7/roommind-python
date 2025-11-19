@@ -3,7 +3,7 @@ import axios from "axios";
 
 // ✅ Axios 기본 설정
 const api = axios.create({
-  baseURL: "http://localhost:8080", // 백엔드(Spring Boot) 주소
+  baseURL: "/api", // 백엔드(Spring Boot) 주소는 프록시로 옮겨감!
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,7 +12,7 @@ const api = axios.create({
 // ✅ 회원가입 API
 export const registerUser = async (userData) => {
   try {
-    const response = await api.post("/api/members/signup", userData);
+    const response = await api.post("/members/signup", userData);
     return response.data; // 백엔드 응답 반환
   } catch (error) {
     console.error("❌ 회원가입 오류:", error);
@@ -23,7 +23,7 @@ export const registerUser = async (userData) => {
 // ✅ 로그인 API (JWT)
 export const loginUser = async (loginData) => {
   try {
-    const response = await api.post("/api/members/login", loginData);
+    const response = await api.post("/members/login", loginData);
 
     // ✅ 백엔드 응답 구조 예시:
     // { status:200, message:"success", data:{ token:"JWT_TOKEN" } }
@@ -49,7 +49,7 @@ export const fetchUserInfo = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("토큰이 없습니다. 로그인 후 다시 시도해주세요.");
 
-    const response = await api.get("/api/members/me", {
+    const response = await api.get("/members/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
