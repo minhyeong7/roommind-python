@@ -18,6 +18,10 @@ import CartPage from "./pages/CartPage";
 import QnAList from "./pages/QnAList";
 import QnAWrite from "./pages/QnAWrite";
 
+/* 커뮤니티페이지 */
+import CommunityPage from "./pages/community/CommunityPage";
+
+
 /* 맥락 */
 import { CartProvider } from "./context/CartContext";
 
@@ -57,6 +61,8 @@ function App() {
 
           {/* 장바구니 */}
           <Route path="/cart" element={<CartPage />} />
+
+          <Route path="/community" element={<CommunityPage />} />
 
           {/* Q&A */}
           <Route path="/qna" element={<QnAList />} />
