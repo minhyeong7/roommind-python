@@ -1,41 +1,59 @@
-/* 전체 레이아웃 */
+/* ============================= */
+/*        전체 레이아웃           */
+/* ============================= */
+
 .popular-wrapper {
-  width: 1200px;
-  margin: 0 auto; /* 가운데 정렬 */
+  width: 1300px;
+  margin: 0 auto;
   padding: 40px 0;
 }
 
-/* 섹션 공통 */
 .popular-section {
-  margin-bottom: 60px;
+  margin-bottom: 70px;
 }
 
 .popular-section h2 {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  padding-left: 5px;
+  color: #222;
 }
 
-/* ============================= */
-/*        오늘의딜 영역          */
-/* ============================= */
+/* ========================================================= */
+/*                        오늘의 딜                           */
+/* ========================================================= */
+
 .deal-slider {
   display: flex;
-  gap: 20px;
+  gap: 22px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
+  scroll-behavior: smooth;
+}
+
+.deal-slider::-webkit-scrollbar {
+  display: none; /* 스크롤바 숨김 */
 }
 
 .deal-card {
-  min-width: 260px;
+  min-width: 280px;
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  padding: 12px;
+  padding: 14px;
+  transition: transform 0.2s;
+}
+
+.deal-card:hover {
+  transform: translateY(-4px);
 }
 
 .deal-card img {
   width: 100%;
+  height: 180px;          /* 기본 높이 추가 */
+  object-fit: cover;
+  background: #f6f6f6;    /* 이미지 없을 때 빈 박스처럼 보이게 */
   border-radius: 10px;
 }
 
@@ -46,145 +64,207 @@
 .deal-info .discount {
   color: #ff5c39;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .deal-info .title {
-  font-size: 14px;
-  margin: 5px 0 3px;
+  font-size: 15px;
+  margin: 6px 0 4px;
+  color: #333;
+  height: 38px;              /* 두 줄 고정 */
+  overflow: hidden;
 }
 
 .deal-info .price {
   font-weight: 700;
-  margin-top: 5px;
+  margin-top: 6px;
+  font-size: 15px;
 }
 
-/* ============================= */
-/*   유저 인테리어 리뷰          */
-/* ============================= */
+
+/* ========================================================= */
+/*                  유저 인테리어 리뷰                       */
+/* ========================================================= */
+
 .review-grid {
   display: flex;
-  gap: 20px;
+  gap: 22px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+}
+
+.review-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .review-card {
-  width: 240px;
+  min-width: 260px;
+  height: 340px;
   position: relative;
 }
 
 .review-card img {
   width: 100%;
+  height: 100%;
   border-radius: 14px;
+  object-fit: cover;
+  background: #f3f3f3;
 }
 
 .review-user {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 12px;
+  left: 14px;
   color: white;
-  font-weight: 600;
-  text-shadow: 0 0 4px rgba(0,0,0,0.4);
+  font-weight: 700;
+  font-size: 15px;
+  text-shadow: 0 0 6px rgba(0,0,0,0.4);
 }
 
-/* ============================= */
-/*         기획전 영역           */
-/* ============================= */
+
+/* ========================================================= */
+/*                         기획전 영역                        */
+/* ========================================================= */
+
 .event-banner {
   display: flex;
   gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.event-banner::-webkit-scrollbar {
+  display: none;
 }
 
 .event-card {
-  width: 360px;
+  min-width: 360px;
 }
 
 .event-card img {
   width: 100%;
+  height: 180px;
   border-radius: 14px;
+  object-fit: cover;
+  background: #f0f0f0;
 }
 
 .event-card p {
   font-size: 15px;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 12px;
+  color: #333;
 }
 
-/* ============================= */
-/*            베스트             */
-/* ============================= */
+
+/* ========================================================= */
+/*                        베스트 영역                         */
+/* ========================================================= */
+
 .best-tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .best-tabs button {
   border: none;
   background: #f5f5f5;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 9px 18px;
+  border-radius: 22px;
   cursor: pointer;
+  color: #444;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.best-tabs button:hover {
+  background: #ececec;
 }
 
 .best-tabs button.active {
   background: #fc9510;
   color: white;
+  font-weight: 600;
 }
 
 .best-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  gap: 28px;
 }
 
 .best-card {
   background: #fff;
   border-radius: 14px;
+  padding: 14px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  padding: 12px;
+  transition: transform 0.2s;
+}
+
+.best-card:hover {
+  transform: translateY(-4px);
 }
 
 .best-card img {
   width: 100%;
+  height: 200px;
   border-radius: 12px;
+  object-fit: cover;
+  background: #f2f2f2;
 }
 
 .best-title {
   font-size: 15px;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 12px;
+  height: 38px;
+  overflow: hidden;
 }
 
 .best-price {
-  margin-top: 5px;
+  margin-top: 6px;
   font-weight: 700;
+  color: #000;
 }
 
 .best-rating {
   font-size: 13px;
-  color: #888;
+  color: #777;
   margin-top: 3px;
 }
 
-/* ============================= */
-/*        추천 집들이 영역       */
-/* ============================= */
+
+/* ========================================================= */
+/*                    추천 집들이 영역                        */
+/* ========================================================= */
+
 .home-grid {
   display: flex;
-  gap: 25px;
+  gap: 22px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+}
+
+.home-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .home-card {
-  width: 380px;
+  min-width: 360px;
 }
 
 .home-card img {
   width: 100%;
+  height: 230px;
   border-radius: 12px;
+  object-fit: cover;
+  background: #f2f2f2;
 }
 
 .home-card p {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 15px;
   font-weight: 600;
+  color: #333;
 }
