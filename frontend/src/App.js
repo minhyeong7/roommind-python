@@ -1,23 +1,40 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminRoute from "./routes/AdminRoute";
 
+/* 공통 컴포넌트 */
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; 
-import TopButton from "./components/TopButton"; 
+import Footer from "./components/Footer";
+import TopButton from "./components/TopButton";
 
+/* 일반 페이지 */
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CartPage from "./pages/CartPage";
 
-import QnAList from "./pages/QnAList";     
+/* QnA */
+import QnAList from "./pages/QnAList";
 import QnAWrite from "./pages/QnAWrite";
 
+/* 맥락 */
 import { CartProvider } from "./context/CartContext";
 
+/* 기타 페이지 */
 import InteriorPage from "./pages/InteriorPage";
-import ShopPage from "./components/shop/ShopPage";   // ← 쇼핑 페이지 전용
+import ShopPage from "./components/shop/ShopPage";
+
+/* 관리자 페이지 */
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductManage from "./pages/admin/ProductManage";
+import UserManage from "./pages/admin/UserManage";
+
+/* 유저 마이페이지 */
+import MyPage from "./pages/user/MyPage";
+import OrderList from "./pages/user/OrderList";
+import ReviewList from "./pages/user/ReviewList";
+
 
 function App() {
   return (
@@ -29,7 +46,7 @@ function App() {
           {/* 홈 */}
           <Route path="/" element={<Home />} />
 
-          {/* 상품 상세페이지 */}
+          {/* 상품 상세 */}
           <Route path="/product/:id" element={<ProductDetail />} />
 
           {/* 회원가입 & 로그인 */}
@@ -39,15 +56,54 @@ function App() {
           {/* 장바구니 */}
           <Route path="/cart" element={<CartPage />} />
 
-          {/* Q&A 게시판 */}
+          {/* Q&A */}
           <Route path="/qna" element={<QnAList />} />
           <Route path="/qna/write" element={<QnAWrite />} />
 
           {/* 인테리어 */}
           <Route path="/interior" element={<InteriorPage />} />
 
-          {/* 쇼핑 (카테고리는 여기서만!) */}
+          {/* 쇼핑 */}
           <Route path="/shop" element={<ShopPage />} />
+
+
+          {/* ----------------------------- */}
+          {/* 👑 관리자 페이지(Admin 전용 보호) */}
+          {/* ----------------------------- */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <ProductManage />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <UserManage />
+              </AdminRoute>
+            }
+          />
+
+
+          {/* ----------------------------- */}
+          {/* 👤 일반 사용자 마이페이지 */}
+          {/* ----------------------------- */}
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/orders" element={<OrderList />} />
+          <Route path="/mypage/reviews" element={<ReviewList />} />
         </Routes>
 
         <Footer />

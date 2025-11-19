@@ -27,7 +27,7 @@
   font-size: 15px;
   margin-bottom: 6px;
   color: #333;
-  line-height: 1.3;
+  /* line-height: 1.3; */
 }
 
 .card-price-row {
@@ -51,7 +51,7 @@
 
 .original-price {
   font-size: 13px;
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
   color: #aaa;
   margin-bottom: 6px;
 }
