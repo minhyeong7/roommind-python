@@ -175,3 +175,15 @@
 .deal-slider:active {
   cursor: grabbing;
 }
+.bookmark {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bookmark.active {
+  color: #ff4b4b;
+}

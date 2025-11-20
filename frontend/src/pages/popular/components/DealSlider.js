@@ -8,11 +8,14 @@ export default function DealSlider({ items }) {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // 버튼 표시 여부
+  // 좋아요 저장
+  const [likes, setLikes] = useState({});
+
+  // 좌/우 버튼 표시
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(true);
 
-  // 카드 하나의 width + gap 계산
+  // 카드 크기 계산
   const getCardSize = () => {
     const slider = sliderRef.current;
     const card = slider?.querySelector(".deal-card");
@@ -22,18 +25,16 @@ export default function DealSlider({ items }) {
     const width = card.offsetWidth;
     const margin = parseFloat(style.marginRight);
 
-    return width + margin; // 카드 1개 전체 너비
+    return width + margin;
   };
 
-  // 페이지 단위 이동
+  // 4개씩 슬라이드
   const slidePage = (direction) => {
     const slider = sliderRef.current;
     const cardSize = getCardSize();
 
-    const moveAmount = cardSize * 4; // 🔥 한 번에 카드 4개 이동
-
     slider.scrollBy({
-      left: direction === "left" ? -moveAmount : moveAmount,
+      left: direction === "left" ? -cardSize * 4 : cardSize * 4,
       behavior: "smooth",
     });
 
@@ -47,37 +48,41 @@ export default function DealSlider({ items }) {
     setScrollLeft(sliderRef.current.scrollLeft);
   };
 
-  // 드래그 중
+  // 드래그 이동
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
 
     const x = e.pageX - sliderRef.current.offsetLeft;
     const walk = x - startX;
-
     sliderRef.current.scrollLeft = scrollLeft - walk;
+
     updateButtons();
   };
 
   // 드래그 종료
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const handleMouseUp = () => setIsDragging(false);
 
-  // 버튼 숨김 제어
+  // 버튼 업데이트
   const updateButtons = () => {
     const slider = sliderRef.current;
-
     const maxScroll = slider.scrollWidth - slider.clientWidth;
 
     setShowLeft(slider.scrollLeft > 0);
     setShowRight(slider.scrollLeft < maxScroll - 1);
   };
 
-  // 컴포넌트 로드시 한 번 체크
   useEffect(() => {
     updateButtons();
   }, []);
+
+  // 하트 토글
+  const toggleLike = (idx) => {
+    setLikes((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
 
   return (
     <div className="deal-slider-wrapper">
@@ -100,23 +105,43 @@ export default function DealSlider({ items }) {
         {items.map((item, idx) => (
           <div key={idx} className="deal-card">
 
+            {/* 이미지 */}
             <div className="image-wrapper">
               {item.image ? (
-                <img src={item.image} alt="" className="deal-image" />
+                <img src={item.image} alt={item.title} className="deal-image" />
               ) : (
-                <div className="img-placeholder">No Image</div>
+                <div className="img-placeholder">이미지 준비중</div>
               )}
-              <div className="bookmark">♡</div>
+
+              {/* 좋아요 */}
+              <div
+                className={`bookmark ${likes[idx] ? "active" : ""}`}
+                onClick={() => toggleLike(idx)}
+              >
+                {likes[idx] ? "❤️" : "🤍"}
+              </div>
             </div>
 
+            {/* 상세 정보 */}
             <div className="item-info">
-              <p className="brand">{item.brand}</p>
+              {item.brand && <p className="brand">{item.brand}</p>}
+
               <p className="title">{item.title}</p>
 
               <div className="price-box">
                 <span className="discount">{item.discount}%</span>
-                <span className="price">{item.price.toLocaleString()} 원</span>
+                <span className="price">{item.price.toLocaleString()}원</span>
               </div>
+
+              {/* ⭐ 별점 */}
+              {item.rating && (
+                <div className="best-rating">
+                  ⭐ {item.rating} 리뷰 {item.reviewCount?.toLocaleString()}
+                </div>
+              )}
+
+              {/* 무료배송 */}
+              {item.free && <div className="best-free">무료배송</div>}
             </div>
 
           </div>
