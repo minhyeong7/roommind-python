@@ -1,0 +1,44 @@
+/* ⭐ 슬라이더 전체 영역 */
+.best-section {
+  position: relative;
+  width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* ⭐ 슬라이더 (가로 스크롤) */
+.best-slider {
+  display: flex;
+  flex-wrap: nowrap;   /* 🔥 절대 줄바꿈 안됨 */
+  gap: 20px;
+  overflow-x: hidden;  /* 버튼으로만 이동 */
+  scroll-behavior: smooth;
+}
+
+/* ⭐ 카드: width 고정 */
+.best-card {
+  width: 300px;         /* 🔥 360px → 300px이 가장 안정적 */
+  flex: 0 0 auto;       /* 🔥 강제로 고정 너비 유지 */
+  cursor: pointer;
+}
+
+.best-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  font-size: 35px;
+  background: white;
+  color: #333;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 10;
+}
+
+.best-btn.left {
+  left: -50px;
+}
+.best-btn.right {
+  right: -50px;
+}

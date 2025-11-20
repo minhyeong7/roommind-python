@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import BestItemCard from "./BestItemCard";
+import BestList from "./BestList";
 import { bestItems } from "../dummy/bestItems";
+// import "./BestCategoryTabs.css";
 
 export default function BestCategoryTabs() {
   const [activeTab, setActiveTab] = useState("전체");
 
   const tabs = ["전체", "가구", "패브릭", "데코", "조명", "생활용품"];
 
+  const filtered =
+    activeTab === "전체"
+      ? bestItems
+      : bestItems.filter(item => item.category === activeTab);
+
   return (
-    <>
+    <div className="best-tabs-section">
       <div className="best-tabs">
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <button
             key={tab}
             className={activeTab === tab ? "active" : ""}
@@ -21,11 +27,7 @@ export default function BestCategoryTabs() {
         ))}
       </div>
 
-      <div className="best-grid">
-        {bestItems.map((item) => (
-          <BestItemCard key={item.id} item={item} />
-        ))}
-      </div>
-    </>
+      <BestList items={filtered} />
+    </div>
   );
 }

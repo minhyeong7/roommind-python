@@ -1,0 +1,81 @@
+.review-grid-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.review-grid {
+  width: 1200px;
+  min-height: 500px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* 카드 영역 */
+.review-card {
+  width: 31%;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+}
+
+/* 이미지 */
+.review-img {
+  width: 100%;
+  height: 270px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* 텍스트 영역 */
+.review-info {
+  margin-top: 12px;
+}
+
+.review-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/* 내용 2줄 말줄임 */
+.review-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #555;
+  height: 42px;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 더보기 버튼 영역 */
+.review-header {
+  width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 18px;
+
+  display: flex;
+  justify-content: flex-end;  /* 오른쪽 끝으로 이동 */
+}
+
+/* 더보기 버튼 */
+.review-more {
+  font-size: 15px;
+  color: #fa9f29;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.review-more:hover {
+  text-decoration: underline;
+}

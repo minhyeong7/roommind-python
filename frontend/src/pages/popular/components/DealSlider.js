@@ -1,28 +1,62 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./DealSlider.css";
 
 export default function DealSlider({ items }) {
   const sliderRef = useRef(null);
 
-  // Drag 상태
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // 마우스 드래그 시작
+  // 버튼 표시 여부
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(true);
+
+  // 카드 하나의 width + gap 계산
+  const getCardSize = () => {
+    const slider = sliderRef.current;
+    const card = slider?.querySelector(".deal-card");
+    if (!card) return 0;
+
+    const style = window.getComputedStyle(card);
+    const width = card.offsetWidth;
+    const margin = parseFloat(style.marginRight);
+
+    return width + margin; // 카드 1개 전체 너비
+  };
+
+  // 페이지 단위 이동
+  const slidePage = (direction) => {
+    const slider = sliderRef.current;
+    const cardSize = getCardSize();
+
+    const moveAmount = cardSize * 4; // 🔥 한 번에 카드 4개 이동
+
+    slider.scrollBy({
+      left: direction === "left" ? -moveAmount : moveAmount,
+      behavior: "smooth",
+    });
+
+    setTimeout(updateButtons, 350);
+  };
+
+  // 드래그 시작
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - sliderRef.current.offsetLeft);
     setScrollLeft(sliderRef.current.scrollLeft);
   };
 
-  // 마우스 드래그 중
+  // 드래그 중
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
+
     const x = e.pageX - sliderRef.current.offsetLeft;
     const walk = x - startX;
+
     sliderRef.current.scrollLeft = scrollLeft - walk;
+    updateButtons();
   };
 
   // 드래그 종료
@@ -30,19 +64,29 @@ export default function DealSlider({ items }) {
     setIsDragging(false);
   };
 
-  // 왼쪽 버튼 슬라이드
-  const slideLeft = () => {
-    sliderRef.current.scrollBy({ left: -400, behavior: "smooth" });
+  // 버튼 숨김 제어
+  const updateButtons = () => {
+    const slider = sliderRef.current;
+
+    const maxScroll = slider.scrollWidth - slider.clientWidth;
+
+    setShowLeft(slider.scrollLeft > 0);
+    setShowRight(slider.scrollLeft < maxScroll - 1);
   };
 
-  // 오른쪽 버튼 슬라이드
-  const slideRight = () => {
-    sliderRef.current.scrollBy({ left: 400, behavior: "smooth" });
-  };
+  // 컴포넌트 로드시 한 번 체크
+  useEffect(() => {
+    updateButtons();
+  }, []);
 
   return (
     <div className="deal-slider-wrapper">
-      <button className="slide-btn left" onClick={slideLeft}>❮</button>
+
+      {showLeft && (
+        <button className="slide-btn left" onClick={() => slidePage("left")}>
+          ❮
+        </button>
+      )}
 
       <div
         className="deal-slider"
@@ -51,25 +95,17 @@ export default function DealSlider({ items }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseUp}
         onMouseUp={handleMouseUp}
+        onScroll={updateButtons}
       >
         {items.map((item, idx) => (
           <div key={idx} className="deal-card">
 
             <div className="image-wrapper">
-              {item.timeLeft && (
-                <div className="time-badge">{item.timeLeft}</div>
-              )}
-
-              {item.tag && (
-                <div className="special-badge">{item.tag}</div>
-              )}
-
               {item.image ? (
                 <img src={item.image} alt="" className="deal-image" />
               ) : (
                 <div className="img-placeholder">No Image</div>
               )}
-
               <div className="bookmark">♡</div>
             </div>
 
@@ -79,24 +115,19 @@ export default function DealSlider({ items }) {
 
               <div className="price-box">
                 <span className="discount">{item.discount}%</span>
-                <span className="price">
-                  {item.price.toLocaleString()} 원
-                </span>
+                <span className="price">{item.price.toLocaleString()} 원</span>
               </div>
-
-              <div className="review-box">
-                ⭐ {item.rating}
-                <span className="review-count"> 리뷰 {item.reviews}</span>
-              </div>
-
-              {item.freeShipping && <div className="free">무료배송</div>}
             </div>
 
           </div>
         ))}
       </div>
 
-      <button className="slide-btn right" onClick={slideRight}>❯</button>
+      {showRight && (
+        <button className="slide-btn right" onClick={() => slidePage("right")}>
+          ❯
+        </button>
+      )}
     </div>
   );
 }
