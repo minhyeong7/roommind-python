@@ -124,3 +124,26 @@
   justify-content: space-between;
   gap: 30px 0;              /* 위아래 간격 */
 }
+/* 하트 버튼 기본 */
+.best-bookmark {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.9);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 하트 ON 상태 */
+.best-bookmark.active {
+  background: #ffebee;   /* 핑크톤 */
+  color: #ff3b3b;        /* 빨간 하트 색 */
+}
