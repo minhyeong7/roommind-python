@@ -21,7 +21,7 @@ import QnAWrite from "./pages/QnAWrite";
 /* 커뮤니티페이지 */
 import CommunityPage from "./pages/community/CommunityPage";
 import PopularPage from "./pages/popular/PopularPage";
-
+import CommunityDetailPage from "./pages/community/CommunityDetailPage";
 
 /* 맥락 */
 import { CartProvider } from "./context/CartContext";
@@ -64,6 +64,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
 
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/community/:id" element={<CommunityDetailPage />} />
 
           <Route path="/popular" element={<PopularPage />} />
 

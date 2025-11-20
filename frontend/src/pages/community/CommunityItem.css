@@ -1,0 +1,48 @@
+.community-item-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.community-item {
+  cursor: pointer;
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s ease;
+}
+
+.community-item:hover {
+  background: #fafafa;
+}
+
+.item-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #777;
+}
+
+.meta {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  gap: 10px;
+}

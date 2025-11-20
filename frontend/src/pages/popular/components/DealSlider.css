@@ -1,101 +1,177 @@
-/* 슬라이더 전체 래퍼 */
+/* 전체 컨테이너 */
 .deal-slider-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 40px;
+  margin: 30px 0;
 }
 
-/* 좌우 버튼 */
-.slide-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  font-size: 18px;
-  z-index: 10;
-}
-
-.slide-btn.left {
-  left: -18px;
-}
-
-.slide-btn.right {
-  right: -18px;
-}
-
-/* 슬라이드 영역 */
+/* 슬라이더 */
 .deal-slider {
   display: flex;
-  gap: 20px;
+  gap: 25px;
   overflow-x: auto;
+  padding: 10px 5px;
   scroll-behavior: smooth;
-  padding-bottom: 8px;
-
-  /* 스크롤바 숨김 */
-  scrollbar-width: none;
 }
+
 .deal-slider::-webkit-scrollbar {
   display: none;
 }
 
 /* 카드 */
 .deal-card {
-  min-width: 240px;
-  max-width: 240px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  padding: 12px;
+  min-width: 260px;
+  cursor: pointer;
 }
 
-/* 이미지 영역 고정 높이 */
-.deal-img {
-  width: 100%;
-  height: 180px;
+/* 이미지 영역 */
+.image-wrapper {
+  position: relative;
+  width: 260px;
+  height: 260px;
   border-radius: 12px;
   overflow: hidden;
-  background: #f7f7f7; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.deal-img img {
+.deal-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .2s ease;
 }
 
-/* 이미지가 없을 때 */
-.img-placeholder {
-  color: #aaa;
-  font-size: 14px;
+.deal-image:hover {
+  transform: scale(1.04);
 }
 
-/* 텍스트 */
-.deal-info {
-  margin-top: 12px;
+/* 남은시간 배지 */
+.time-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #ff6d6d;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.discount {
-  color: #ff5c39;
-  font-weight: 700;
-  font-size: 16px;
+/* 집요한특가 배지 */
+.special-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #003d8f;
+  color: white;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* 찜 아이콘 */
+.bookmark {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 20px;
+  background: rgba(255,255,255,0.8);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* 텍스트 영역 */
+.item-info {
+  margin-top: 10px;
+}
+
+.brand {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 3px;
 }
 
 .title {
-  margin-top: 6px;
   font-size: 14px;
   color: #333;
+  line-height: 1.4;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 가격 */
+.price-box {
+  margin-top: 8px;
+}
+
+.discount {
+  color: #ff3939;
+  font-size: 18px;
+  font-weight: 700;
+  margin-right: 6px;
 }
 
 .price {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* 리뷰 */
+.review-box {
+  font-size: 14px;
+  color: #555;
   margin-top: 6px;
-  color: #000;
-  font-weight: 700;
+}
+
+.review-count {
+  color: #777;
+}
+
+/* 무료배송 */
+.free {
+  display: inline-block;
+  margin-top: 6px;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* 버튼 */
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 5;
+}
+
+.slide-btn.left {
+  left: -20px;
+}
+
+.slide-btn.right {
+  right: -20px;
+}
+
+.slide-btn:hover {
+  background: #f6f6f6;
+}
+.deal-slider {
+  user-select: none;   /* 🔥 드래그할 때 텍스트 선택 방지 */
+  cursor: grab;        /* 🔥 드래그 느낌 */
+}
+.deal-slider:active {
+  cursor: grabbing;
 }
