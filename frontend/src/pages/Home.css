@@ -22,7 +22,8 @@
 
 .card-grid {
   display: flex;
+  gap: 30px;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center; /* 🔥 카드들을 중앙 정렬 */
+  justify-content: center;
+  margin-bottom: 40px;
 }
