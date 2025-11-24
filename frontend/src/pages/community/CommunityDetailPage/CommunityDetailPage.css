@@ -98,3 +98,23 @@
 .post-like-btn.liked {
   color: #ff4a4a; /* 빨간 하트 색상 */
 }
+.comment-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-like-btn {
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  transition: 0.2s;
+}
+
+.comment-like-btn:hover {
+  transform: scale(1.1);
+}
+
+.comment-like-btn.liked {
+  color: #ff4a4a;
+}
