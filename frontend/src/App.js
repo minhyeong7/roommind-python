@@ -21,7 +21,8 @@ import QnAWrite from "./pages/QnAWrite";
 /* 커뮤니티페이지 */
 import CommunityPage from "./pages/community/CommunityPage";
 import PopularPage from "./pages/popular/PopularPage";
-import CommunityDetailPage from "./pages/community/CommunityDetailPage";
+import CommunityDetailPage from "./pages/community/CommunityDetailPage/CommunityDetailPage";
+
 
 /* 맥락 */
 import { CartProvider } from "./context/CartContext";

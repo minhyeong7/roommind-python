@@ -1,0 +1,100 @@
+.detail-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.detail-inner {
+  width: 780px;
+}
+
+.post-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.post-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-info span {
+  margin-right: 15px;
+  color: #777;
+  font-size: 14px;
+}
+
+.post-content {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.comment-section {
+  margin-top: 40px;
+}
+
+.comment-list {
+  margin-top: 15px;
+}
+
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+}
+
+.comment-writer {
+  font-weight: bold;
+}
+
+.comment-date {
+  color: #888;
+  font-size: 12px;
+}
+
+.comment-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-form textarea {
+  resize: none;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.comment-form button {
+  width: 90px;
+  padding: 8px;
+  margin-top: 10px;
+  background: #ff7e29;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.post-like-btn {
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 12px;
+  user-select: none;
+  transition: 0.2s;
+}
+
+.post-like-btn:hover {
+  transform: scale(1.1);
+}
+
+.post-like-btn.liked {
+  color: #ff4a4a; /* 빨간 하트 색상 */
+}
