@@ -3,6 +3,7 @@ import { CartContext } from "../context/CartContext";
 import AddressModal from "../components/AddressModal";
 import "./OrderPage.css";
 
+
 function OrderPage() {
   const { cartItems, totalPrice } = useContext(CartContext);
 
@@ -43,6 +44,37 @@ function OrderPage() {
     }
     setOpenModal(false);
   };
+
+  const handlePayment = async () => {
+  const { PortOne } = window;
+
+  try {
+    const response = await PortOne.requestPayment({
+      storeId: "store_test_f9c981b0-xxxx-xxxx", // 테스트용 storeId
+      paymentId: `payment_${Date.now()}`,
+      orderName: `${cartItems[0].name} 외 ${cartItems.length - 1}개`,
+      totalAmount: totalPrice, // 총 결제 금액
+      currency: "KRW",
+      channelKey: "channel_test_6dd1b7cc-xxxx-xxxx",  // 카드결제 테스트 채널키
+      payMethod: "CARD",
+
+      customer: {
+        fullName: buyer.name,
+        phoneNumber: buyer.phone,
+        email: buyer.email,
+      },
+
+      redirectUrl: `http://localhost:3000/order/success`,
+    });
+
+    console.log("결제 응답:", response);
+
+  } catch (error) {
+    alert("결제 실패 또는 취소됨");
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="order-page">
@@ -219,7 +251,10 @@ function OrderPage() {
             </span>
           </div>
 
-          <button className="pay-btn">결제하기</button>
+          <button className="pay-btn" onClick={handlePayment}>
+          결제하기
+         </button>
+
         </div>
       </div>
 
@@ -231,6 +266,8 @@ function OrderPage() {
         />
       )}
     </div>
+
+    
   );
 }
 

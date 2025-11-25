@@ -16,7 +16,7 @@
 
 /* 하얀 작은 박스 */
 .address-form-box {
-  width: 420px;
+  width: 500px;
   background: #fff;
   padding: 24px;
   border-radius: 14px;
@@ -58,7 +58,7 @@
 }
 
 .address-form-box input {
-  width: 100%;
+  width: 90%;
   padding: 10px 12px;
   font-size: 14px;
   border: 1px solid #ddd;
@@ -106,4 +106,47 @@
 
 .address-form-save:hover {
   background: #ff6a00;
+}
+/* 우편번호 + 주소찾기 버튼 */
+.zipcode-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 80px;
+}
+
+.search-btn {
+  background: #ff9f1c;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* form-box input 기본 스타일 정렬 */
+.form-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.address-search-btn {
+  padding: 10px 14px;          /* 적당한 크기 */
+  background: #ff7f00;         /* 오렌지 포인트 컬러 */
+  border: none;
+  border-radius: 8px;          /* 둥글고 부드럽게 */
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;         /* 두 줄 방지 */
+  transition: background 0.2s;
+}
+
+.address-search-btn:hover {
+  background: #e86e00;         /* 호버 시 조금 어두운 오렌지 */
 }
