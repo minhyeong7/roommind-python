@@ -45,6 +45,9 @@ import ReviewList from "./pages/user/ReviewList";
 /* 주문서페이지 */
 import OrderPage from "./pages/OrderPage";
 
+import OrderSuccess from "./pages/OrderSuccess";
+import OrderBank from "./pages/OrderCompleteBank";
+
 
 
 function App() {
@@ -83,6 +86,9 @@ function App() {
           <Route path="/shop" element={<ShopPage />} />
 
           <Route path="/order" element={<OrderPage />} />
+          <Route path="/order/success" element={<OrderSuccess />} />
+          <Route path="/order/bank" element={<OrderBank />} />
+                    
 
 
           {/* ----------------------------- */}

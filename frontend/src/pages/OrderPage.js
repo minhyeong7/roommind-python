@@ -3,11 +3,10 @@ import { CartContext } from "../context/CartContext";
 import AddressModal from "../components/AddressModal";
 import "./OrderPage.css";
 
-
 function OrderPage() {
   const { cartItems, totalPrice } = useContext(CartContext);
 
-  // 배송지(기본값)
+  // 기본 배송지 정보
   const [address, setAddress] = useState({
     name: "김노아",
     phone: "010-0000-0000",
@@ -24,17 +23,15 @@ function OrderPage() {
     email: "noa@example.com",
   });
 
-  // 주문자 정보 = 배송지 정보 동일
   const [sameAsAddress, setSameAsAddress] = useState(true);
-
-  // 모달 표시
   const [openModal, setOpenModal] = useState(false);
 
-  // 배송지 선택 시 실행
+  // 선택된 결제수단
+  const [payMethod, setPayMethod] = useState("CARD");
+
+  // 주소 선택 시
   const handleSelectAddress = (addr) => {
     setAddress(addr);
-
-    // 주문자 정보도 함께 변경
     if (sameAsAddress) {
       setBuyer({
         name: addr.name,
@@ -45,49 +42,73 @@ function OrderPage() {
     setOpenModal(false);
   };
 
-  const handlePayment = async () => {
-  const { PortOne } = window;
+  // =============================
+  // PortOne 결제 요청
+  // =============================
+  const requestPortOne = async (method) => {
+    if (!window.PortOne) {
+      alert("결제 모듈 로딩 실패! 새로고침 후 다시 시도해주세요.");
+      return;
+    }
 
-  try {
-    const response = await PortOne.requestPayment({
-      storeId: "store_test_f9c981b0-xxxx-xxxx", // 테스트용 storeId
-      paymentId: `payment_${Date.now()}`,
-      orderName: `${cartItems[0].name} 외 ${cartItems.length - 1}개`,
-      totalAmount: totalPrice, // 총 결제 금액
-      currency: "KRW",
-      channelKey: "channel_test_6dd1b7cc-xxxx-xxxx",  // 카드결제 테스트 채널키
-      payMethod: "CARD",
+    const channelKeyMap = {
+      CARD: "channel_test_81cb64f5-4954-47bf-85d3-1fa9d6af4540",
+      TOSSPAY: "channel_test_ed04567d-9a71-487b-9c63-e38d1f00cbba",
+      NAVERPAY: "channel_test_55bba057-85ce-4fb1-af98-dc4c8c7f5555",
+      KAKAOPAY: "channel_test_c11c113c-a31a-4a7e-9f8b-3123123bbb11",
+    };
 
-      customer: {
-        fullName: buyer.name,
-        phoneNumber: buyer.phone,
-        email: buyer.email,
-      },
+    try {
+      const response = await window.PortOne.requestPayment({
+        storeId: "store_test_72bbef3b-8348-47f9-9a6a-65cc5e9022d3",
+        channelKey: channelKeyMap[method],
+        payMethod: method,
+        paymentId: `payment_${Date.now()}`,
+        orderName:
+          cartItems.length > 1
+            ? `${cartItems[0].name} 외 ${cartItems.length - 1}개`
+            : cartItems[0].name,
+        totalAmount: totalPrice,
+        currency: "KRW",
 
-      redirectUrl: `http://localhost:3000/order/success`,
-    });
+        customer: {
+          fullName: buyer.name,
+          phoneNumber: buyer.phone,
+          email: buyer.email,
+        },
 
-    console.log("결제 응답:", response);
+        // ⭐ 결제 완료 페이지로 이동
+        redirectUrl: `${window.location.origin}/order/success`,
+      });
 
-  } catch (error) {
-    alert("결제 실패 또는 취소됨");
-    console.error(error);
-  }
-};
+      console.log("결제 응답:", response);
+    } catch (err) {
+      console.error(err);
+      alert("결제 실패 또는 취소되었습니다.");
+    }
+  };
 
+  // =============================
+  // 결제하기 버튼 클릭
+  // =============================
+  const handlePayment = () => {
+    if (payMethod === "BANK") {
+      // ⭐ 무통장입금은 바로 완료 페이지 이동
+      window.location.href = "/order/bank";
+      return;
+    }
+
+    requestPortOne(payMethod);
+  };
 
   return (
     <div className="order-page">
-
-      {/* ============================= */}
-      {/* 배송지 정보 */}
-      {/* ============================= */}
       <div className="order-left">
-
+        
+        {/* 배송지 정보 */}
         <section className="order-box address-box">
           <div className="box-header">
             <h3>배송지 정보</h3>
-
             <div className="address-actions">
               <button onClick={() => setOpenModal(true)}>배송지 변경</button>
             </div>
@@ -114,9 +135,7 @@ function OrderPage() {
           </div>
         </section>
 
-        {/* ============================= */}
         {/* 주문자 정보 */}
-        {/* ============================= */}
         <section className="order-box">
           <h3>주문자 정보</h3>
 
@@ -126,7 +145,6 @@ function OrderPage() {
               checked={sameAsAddress}
               onChange={(e) => {
                 setSameAsAddress(e.target.checked);
-
                 if (e.target.checked) {
                   setBuyer({
                     name: address.name,
@@ -143,9 +161,7 @@ function OrderPage() {
             <label>이름</label>
             <input
               value={buyer.name}
-              onChange={(e) =>
-                setBuyer((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => setBuyer((prev) => ({ ...prev, name: e.target.value }))}
             />
           </div>
 
@@ -153,9 +169,7 @@ function OrderPage() {
             <label>전화번호</label>
             <input
               value={buyer.phone}
-              onChange={(e) =>
-                setBuyer((prev) => ({ ...prev, phone: e.target.value }))
-              }
+              onChange={(e) => setBuyer((prev) => ({ ...prev, phone: e.target.value }))}
             />
           </div>
 
@@ -163,16 +177,12 @@ function OrderPage() {
             <label>이메일</label>
             <input
               value={buyer.email}
-              onChange={(e) =>
-                setBuyer((prev) => ({ ...prev, email: e.target.value }))
-              }
+              onChange={(e) => setBuyer((prev) => ({ ...prev, email: e.target.value }))}
             />
           </div>
         </section>
 
-        {/* ============================= */}
         {/* 주문 상품 */}
-        {/* ============================= */}
         <section className="order-box">
           <h3>주문 상품</h3>
 
@@ -193,9 +203,7 @@ function OrderPage() {
           ))}
         </section>
 
-        {/* ============================= */}
-        {/* 쿠폰 / 포인트 */}
-        {/* ============================= */}
+        {/* 쿠폰/포인트 */}
         <section className="order-box">
           <h3>쿠폰 / 포인트</h3>
 
@@ -210,24 +218,21 @@ function OrderPage() {
           </div>
         </section>
 
-        {/* ============================= */}
         {/* 결제수단 */}
-        {/* ============================= */}
         <section className="order-box">
           <h3>결제수단</h3>
+
           <div className="payment-methods">
-            <button className="pm active">카드</button>
-            <button className="pm">토스페이</button>
-            <button className="pm">네이버페이</button>
-            <button className="pm">카카오페이</button>
-            <button className="pm">무통장입금</button>
+            <button className={`pm ${payMethod === "CARD" ? "active" : ""}`} onClick={() => setPayMethod("CARD")}>카드 결제</button>
+            <button className={`pm ${payMethod === "TOSSPAY" ? "active" : ""}`} onClick={() => setPayMethod("TOSSPAY")}>토스페이</button>
+            <button className={`pm ${payMethod === "NAVERPAY" ? "active" : ""}`} onClick={() => setPayMethod("NAVERPAY")}>네이버페이</button>
+            <button className={`pm ${payMethod === "KAKAOPAY" ? "active" : ""}`} onClick={() => setPayMethod("KAKAOPAY")}>카카오페이</button>
+            <button className={`pm ${payMethod === "BANK" ? "active" : ""}`} onClick={() => setPayMethod("BANK")}>무통장입금</button>
           </div>
         </section>
       </div>
 
-      {/* ============================= */}
-      {/* 오른쪽 결제 요약 */}
-      {/* ============================= */}
+      {/* 결제 요약 */}
       <div className="order-right">
         <div className="summary-box">
           <h3>결제 금액</h3>
@@ -246,19 +251,16 @@ function OrderPage() {
 
           <div className="sum-final">
             <span>최종 결제 금액</span>
-            <span className="final-price">
-              {totalPrice.toLocaleString()}원
-            </span>
+            <span className="final-price">{totalPrice.toLocaleString()}원</span>
           </div>
 
           <button className="pay-btn" onClick={handlePayment}>
-          결제하기
-         </button>
-
+            결제하기
+          </button>
         </div>
       </div>
 
-      {/* 배송지 변경/추가 모달 */}
+      {/* 주소 모달 */}
       {openModal && (
         <AddressModal
           closeModal={() => setOpenModal(false)}
@@ -266,8 +268,6 @@ function OrderPage() {
         />
       )}
     </div>
-
-    
   );
 }
 
