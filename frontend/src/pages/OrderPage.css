@@ -1,0 +1,87 @@
+.order-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.order-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.order-section {
+  margin-bottom: 40px;
+}
+
+.address-box,
+.order-user,
+.order-item,
+.price-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.order-user label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.order-user input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.order-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-info {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.order-total {
+  font-weight: bold;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.price-row.final span:last-child {
+  color: #fc9510;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  background: #fc9510;
+  border: none;
+  color: white;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}

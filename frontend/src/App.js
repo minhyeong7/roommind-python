@@ -42,6 +42,9 @@ import MyPage from "./pages/user/MyPage";
 import OrderList from "./pages/user/OrderList";
 import ReviewList from "./pages/user/ReviewList";
 
+/* 주문서페이지 */
+import OrderPage from "./pages/OrderPage";
+
 
 
 function App() {
@@ -78,6 +81,8 @@ function App() {
 
           {/* 쇼핑 */}
           <Route path="/shop" element={<ShopPage />} />
+
+          <Route path="/order" element={<OrderPage />} />
 
 
           {/* ----------------------------- */}

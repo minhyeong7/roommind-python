@@ -13,29 +13,30 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // ⭐ 상품 추가
+  // 상품 추가
   const addToCart = (item) => {
-    // 🔥 이름까지 포함해서 uniqueId 생성
-    const uniqueId = `${item.id}_${item.name}_${item.option}`;
+    const uniqueId = `${item.id}_${item.option}`;
+    item.uniqueId = uniqueId;
 
-    const existing = cartItems.find(
-      (cartItem) => cartItem.uniqueId === uniqueId
-    );
+    const existing = cartItems.find((i) => i.uniqueId === uniqueId);
 
     if (existing) {
       setCartItems((prev) =>
-        prev.map((cartItem) =>
-          cartItem.uniqueId === uniqueId
-            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-            : cartItem
+        prev.map((i) =>
+          i.uniqueId === uniqueId
+            ? { ...i, quantity: i.quantity + item.quantity }
+            : i
         )
       );
     } else {
-      setCartItems((prev) => [...prev, { ...item, uniqueId }]);
+      setCartItems((prev) => [
+        ...prev,
+        { ...item, uniqueId, allOptions: item.allOptions || item.options || ["기본옵션"] }
+      ]);
     }
   };
 
-  // ⭐ 수량 변경
+  // 수량 변경
   const updateQuantity = (uniqueId, newQty) => {
     if (newQty < 1) return;
 
@@ -46,38 +47,50 @@ export function CartProvider({ children }) {
     );
   };
 
+  // 옵션 변경
   // ⭐ 옵션 변경
-  const updateOption = (uniqueId, id, name, newOption) => {
-    const item = cartItems.find((i) => i.uniqueId === uniqueId);
-    if (!item) return;
+const updateOption = (uniqueId, id, newOption) => {
+  const oldItem = cartItems.find((i) => i.uniqueId === uniqueId);
+  if (!oldItem) return;
 
-    // 🔥 옵션 변경 후 새로운 uniqueId 생성
-    const newUniqueId = `${id}_${name}_${newOption}`;
+  const newUniqueId = `${id}_${newOption}`;
 
-    const exists = cartItems.find((i) => i.uniqueId === newUniqueId);
+  const exists = cartItems.find((i) => i.uniqueId === newUniqueId);
 
+  // 새 옵션 상품이 이미 장바구니에 존재한다면 → 합치기
+  if (exists) {
     setCartItems((prev) =>
       prev
-        .map((i) => {
-          if (i.uniqueId !== uniqueId) return i;
-
-          if (exists) {
-            // 이미 같은 상품+옵션이 존재 → 수량 합치기
-            return { ...exists, quantity: exists.quantity + i.quantity };
+        .map((item) => {
+          // 기존 같은 옵션의 상품 → 수량 합쳐짐
+          if (item.uniqueId === newUniqueId) {
+            return { ...item, quantity: item.quantity + oldItem.quantity };
           }
-
-          return { ...i, option: newOption, uniqueId: newUniqueId };
+          return item;
         })
-        .filter(Boolean)
+        // 변경했던 옛 상품 제거
+        .filter((item) => item.uniqueId !== uniqueId)
     );
-  };
+  } 
+  // 새 옵션 상품이 없다면 → 그냥 uniqueId 변경
+  else {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.uniqueId === uniqueId
+          ? { ...item, option: newOption, uniqueId: newUniqueId }
+          : item
+      )
+    );
+  }
+};
 
-  // ⭐ 삭제
+
+  // 삭제
   const removeFromCart = (uniqueId) => {
-    setCartItems((prev) => prev.filter((item) => item.uniqueId !== uniqueId));
+    setCartItems((prev) => prev.filter((i) => i.uniqueId !== uniqueId));
   };
 
-  // ⭐ 총 금액
+  // 총 금액
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
