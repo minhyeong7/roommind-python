@@ -68,7 +68,7 @@ function ProductDetail() {
       </div>
 
       {/* 아래 컨텐츠 */}
-      <div className="product-section">
+     <div className={`product-section ${activeTab === "review" ? "review-mode" : ""}`}>
         {activeTab === "info" && <ProductDetailContent product={product} />}
         {activeTab === "review" && <ProductReviews />}
         {activeTab === "qa" && <ProductQA />}

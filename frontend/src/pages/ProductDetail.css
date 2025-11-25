@@ -200,6 +200,12 @@
   margin-bottom: 15px;
   color: #333;
 }
+/* 리뷰 탭일 때는 더 넓게 펼친다 */
+.product-section.review-mode {
+  max-width: 1280px !important;
+  width: 100% !important;
+  padding: 20px !important;
+}
 
 
 

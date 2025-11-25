@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./ProductReviews.css";
 
-
 const dummyReviews = [
   {
     id: 1,
@@ -10,9 +9,8 @@ const dummyReviews = [
     date: "2025.11.20",
     option: "캘린더형 / S",
     content:
-      "제가 교대근무 하는데 매번 남편이 까먹어 현관문에 붙여놔요ㅋㅋㅋ 활용도 어마어마 합니다 남편도 만족하고 저도 까먹을 일 없어 좋아요!!",
-    image:
-      "https://via.placeholder.com/120x120.png?text=Review+Image",
+      "제가 교대근무 하는데 남편이 맨날 까먹어서 현관문에 붙여놨어요ㅋㅋ 활용도 최고예요!!",
+    image: "https://via.placeholder.com/120x120.png?text=Review",
     helpful: 14,
   },
   {
@@ -21,30 +19,31 @@ const dummyReviews = [
     rating: 4,
     date: "2025.09.12",
     option: "화이트 / M",
-    content: "깔끔하고 좋아요! 배송도 빨라서 만족합니다.",
-    image:
-      "https://via.placeholder.com/120x120.png?text=Review+Image",
+    content: "깔끔하고 예뻐요! 배송도 빨라서 만족!",
+    image: "https://via.placeholder.com/120x120.png?text=Review",
     helpful: 9,
   },
 ];
 
-function ReviewSection() {
+function ProductReviews() {
   const [sortType, setSortType] = useState("best");
   const [filterStar, setFilterStar] = useState("");
   const [filterOption, setFilterOption] = useState("");
 
-  const sortedReviews = [...dummyReviews]
+  const sorted = [...dummyReviews]
     .filter((r) => (filterStar ? r.rating === Number(filterStar) : true))
-    .filter((r) =>
-      filterOption ? r.option.includes(filterOption) : true
-    )
+    .filter((r) => (filterOption ? r.option.includes(filterOption) : true))
     .sort((a, b) =>
-      sortType === "best" ? b.helpful - a.helpful : new Date(b.date) - new Date(a.date)
+      sortType === "best"
+        ? b.helpful - a.helpful
+        : new Date(b.date) - new Date(a.date)
     );
 
   return (
-    <div className="review-container">
-      <div className="review-top">
+    <div className="review-wrapper">
+
+      {/* 정렬 + 필터 */}
+      <div className="review-header">
         <div className="review-sort-left">
           <button
             className={sortType === "best" ? "active" : ""}
@@ -52,7 +51,6 @@ function ReviewSection() {
           >
             베스트순
           </button>
-
           <button
             className={sortType === "latest" ? "active" : ""}
             onClick={() => setSortType("latest")}
@@ -86,28 +84,26 @@ function ReviewSection() {
         </div>
       </div>
 
+      {/* 리뷰 목록 */}
       <div className="review-list">
-        {sortedReviews.map((review) => (
+        {sorted.map((review) => (
           <div className="review-card" key={review.id}>
-            <img
-              className="review-img"
-              src={review.image}
-              alt="review"
-            />
+            <img src={review.image} className="review-img" alt="review" />
 
             <div className="review-content">
-              <div className="review-user-info">
+              <div className="review-header-line">
                 <span className="review-user">{review.user}</span>
                 <span className="review-rating">{"★".repeat(review.rating)}</span>
                 <span className="review-date">{review.date}</span>
               </div>
 
               <div className="review-option">{review.option}</div>
+
               <div className="review-text">{review.content}</div>
 
-              <div className="help-btn">
+              <button className="help-btn">
                 👍 도움이 돼요 {review.helpful}
-              </div>
+              </button>
             </div>
           </div>
         ))}
@@ -116,4 +112,4 @@ function ReviewSection() {
   );
 }
 
-export default ReviewSection;
+export default ProductReviews;

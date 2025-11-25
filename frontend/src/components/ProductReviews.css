@@ -1,42 +1,43 @@
-.review-container {
+/* 전체 리뷰 영역 */
+.review-wrapper {
   width: 100%;
-  padding: 25px 0;
-   flex-basis: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
-.review-top {
+/* 상단 정렬 / 필터 */
+.review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-/* ==== 왼쪽 정렬 버튼 ==== */
 .review-sort-left button {
-  border: none;
   background: none;
+  border: none;
+  margin-right: 10px;
+  padding-bottom: 6px;
   font-size: 15px;
-  margin-right: 12px;
-  padding-bottom: 4px;
   cursor: pointer;
-  color: #666;
+  color: #777;
 }
 
 .review-sort-left button.active {
-  border-bottom: 2px solid #FF8B00;
-  color: #FF8B00;
+  border-bottom: 2px solid #ff8b00;
+  color: #ff8b00;
   font-weight: 600;
 }
 
-/* ==== 오른쪽 필터 드롭다운 ==== */
 .review-filter-right select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  padding: 7px 10px;
   border-radius: 6px;
+  border: 1px solid #ddd;
   margin-left: 10px;
 }
 
-/* ==== 리뷰 카드 ==== */
+/* 리뷰 카드 */
 .review-list {
   display: flex;
   flex-direction: column;
@@ -45,12 +46,11 @@
 
 .review-card {
   display: flex;
-  width: 100%;
-  gap: 18px;
-  padding: 20px;
   background: #fff;
-  border-radius: 12px;
   border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px;
+  gap: 16px;
 }
 
 .review-img {
@@ -64,11 +64,10 @@
   flex: 1;
 }
 
-.review-user-info {
+.review-header-line {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
 }
 
 .review-user {
@@ -76,33 +75,31 @@
 }
 
 .review-rating {
-  color: #FF8B00;
-  font-size: 14px;
+  color: #ff8b00;
 }
 
 .review-date {
-  font-size: 13px;
   color: #888;
+  font-size: 14px;
 }
 
 .review-option {
+  margin: 6px 0;
   font-size: 14px;
-  color: #777;
-  margin-bottom: 10px;
+  color: #666;
 }
 
 .review-text {
   font-size: 15px;
   line-height: 1.5;
-  margin-bottom: 12px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .help-btn {
-  display: inline-block;
-  background: #f5f5f5;
   padding: 6px 12px;
   border-radius: 6px;
+  background: #f6f6f6;
+  border: 1px solid #ddd;
   cursor: pointer;
-  color: #333;
-  font-size: 14px;
 }
