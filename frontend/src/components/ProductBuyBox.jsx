@@ -28,11 +28,12 @@ function ProductBuyBox({ product }) {
       return;
     }
 
-    addToCart({
+      addToCart({
+      uniqueId: `${product.id}_${selectedOption}`,
       id: product.id,
       name: product.title,
       option: selectedOption,
-      quantity: quantity,          // ⭐ 선택한 수량 그대로 들어감
+      quantity: quantity,
       price: product.price,
       image: product.image,
     });
