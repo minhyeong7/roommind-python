@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { CartContext } from "../context/CartContext"; // 🔥 CartContext 연결
+import { CartContext } from "../context/CartContext"; 
 import "./ProductBuyBox.css";
 
 function ProductBuyBox({ product }) {
 
-  // 🔥 옵션 없는 상품 → 기본옵션 자동 생성
+  // 🔥 옵션 없는 상품이면 기본옵션 자동 생성
   const optionList =
     product.options && product.options.length > 0
       ? product.options
@@ -13,7 +13,6 @@ function ProductBuyBox({ product }) {
   const [selectedOption, setSelectedOption] = useState("");
   const [quantity, setQuantity] = useState(1);
 
-  // 🔥 CartContext에서 addToCart 받기
   const { addToCart } = useContext(CartContext);
 
   const totalPrice = product.price * quantity;
@@ -23,7 +22,6 @@ function ProductBuyBox({ product }) {
     setQuantity(1);
   };
 
-  // 🔥 CartContext 방식 장바구니 추가
   const handleAddToCart = () => {
     if (!selectedOption) {
       alert("옵션을 선택해주세요!");
@@ -34,7 +32,7 @@ function ProductBuyBox({ product }) {
       id: product.id,
       name: product.title,
       option: selectedOption,
-      quantity: quantity,
+      quantity: quantity,          // ⭐ 선택한 수량 그대로 들어감
       price: product.price,
       image: product.image,
     });
@@ -48,12 +46,14 @@ function ProductBuyBox({ product }) {
       {/* 상품명 */}
       <h2 className="buy-title">{product.title}</h2>
 
-      {/* 가격 */}
+      {/* 가격 박스 */}
       <div className="price-box">
         <span className="discount">{product.discount}%</span>
         <span className="price">{product.price.toLocaleString()}원</span>
       </div>
-      <div className="original">{product.originalPrice.toLocaleString()}원</div>
+      <div className="original">
+        {product.originalPrice.toLocaleString()}원
+      </div>
 
       {/* 옵션 선택 */}
       <select
@@ -63,11 +63,13 @@ function ProductBuyBox({ product }) {
       >
         <option value="">옵션 선택</option>
         {optionList.map((op, i) => (
-          <option key={i} value={op}>{op}</option>
+          <option key={i} value={op}>
+            {op}
+          </option>
         ))}
       </select>
 
-      {/* 옵션 박스 */}
+      {/* 선택된 옵션 박스 */}
       {selectedOption && (
         <div className="selected-item-box">
           <div className="selected-info">
@@ -75,7 +77,7 @@ function ProductBuyBox({ product }) {
               {product.title} - {selectedOption}
             </div>
 
-            {/* 수량 */}
+            {/* 수량 조절 버튼 */}
             <div className="quantity-box">
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
                 -
@@ -87,6 +89,7 @@ function ProductBuyBox({ product }) {
             </div>
           </div>
 
+          {/* 옵션 가격 */}
           <div className="selected-price">
             {(product.price * quantity).toLocaleString()}원
           </div>
@@ -96,7 +99,9 @@ function ProductBuyBox({ product }) {
       {/* 총 금액 */}
       <div className="total-price-box">
         <span>총 상품금액</span>
-        <span className="total-price">{totalPrice.toLocaleString()}원</span>
+        <span className="total-price">
+          {totalPrice.toLocaleString()}원
+        </span>
       </div>
 
       {/* 버튼 */}
@@ -104,7 +109,9 @@ function ProductBuyBox({ product }) {
         <button className="cart-btn" onClick={handleAddToCart}>
           장바구니
         </button>
-        <button className="buy-btn">바로구매</button>
+        <button className="buy-btn">
+          바로구매
+        </button>
       </div>
     </div>
   );
