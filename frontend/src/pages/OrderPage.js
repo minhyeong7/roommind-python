@@ -1,136 +1,235 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import AddressModal from "../components/AddressModal";
 import "./OrderPage.css";
 
 function OrderPage() {
   const { cartItems, totalPrice } = useContext(CartContext);
 
+  // 배송지(기본값)
+  const [address, setAddress] = useState({
+    name: "김노아",
+    phone: "010-0000-0000",
+    email: "noa@example.com",
+    zipcode: "12345",
+    address1: "인천광역시 남동구 석산로 216번길",
+    address2: "6 (구월동, 금영빌라) 금영빌라 202호",
+  });
+
   // 주문자 정보
-  const [orderInfo, setOrderInfo] = useState({
+  const [buyer, setBuyer] = useState({
     name: "김노아",
     phone: "010-0000-0000",
     email: "noa@example.com",
   });
 
-  // 배송지
-  const [address, setAddress] = useState({
-    address: "인천광역시 남동구 석산로216번길 6",
-    detail: "금영빌라 202호",
-  });
+  // 주문자 정보 = 배송지 정보 동일
+  const [sameAsAddress, setSameAsAddress] = useState(true);
 
-  const handleChange = (e) => {
-    setOrderInfo({
-      ...orderInfo,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // 모달 표시
+  const [openModal, setOpenModal] = useState(false);
 
-  const handlePay = () => {
-    alert("💳 결제 API 연동 예정입니다!");
+  // 배송지 선택 시 실행
+  const handleSelectAddress = (addr) => {
+    setAddress(addr);
+
+    // 주문자 정보도 함께 변경
+    if (sameAsAddress) {
+      setBuyer({
+        name: addr.name,
+        phone: addr.phone,
+        email: addr.email,
+      });
+    }
+    setOpenModal(false);
   };
 
   return (
     <div className="order-page">
 
-      <div className="order-container">
+      {/* ============================= */}
+      {/* 배송지 정보 */}
+      {/* ============================= */}
+      <div className="order-left">
 
-        {/* 좌측 영역 */}
-        <div className="order-left">
-
-          {/* 배송지 */}
-          <div className="order-box">
+        <section className="order-box address-box">
+          <div className="box-header">
             <h3>배송지 정보</h3>
 
-            <input value={address.address} readOnly />
-            <input value={address.detail} readOnly />
-
-            <button className="addr-btn">배송지 변경</button>
+            <div className="address-actions">
+              <button onClick={() => setOpenModal(true)}>배송지 변경</button>
+            </div>
           </div>
 
-          {/* 주문자 정보 */}
-          <div className="order-box">
-            <h3>주문자 정보</h3>
+          <div className="input-row">
+            <label>우편번호</label>
+            <input value={address.zipcode} readOnly />
+          </div>
 
+          <div className="input-row">
+            <label>주소</label>
+            <input value={address.address1} readOnly />
+          </div>
+
+          <div className="input-row">
+            <label>상세주소</label>
             <input
-              name="name"
-              value={orderInfo.name}
-              onChange={handleChange}
-              placeholder="이름"
+              value={address.address2}
+              onChange={(e) =>
+                setAddress((prev) => ({ ...prev, address2: e.target.value }))
+              }
             />
+          </div>
+        </section>
 
+        {/* ============================= */}
+        {/* 주문자 정보 */}
+        {/* ============================= */}
+        <section className="order-box">
+          <h3>주문자 정보</h3>
+
+          <label className="checkbox-row">
             <input
-              name="phone"
-              value={orderInfo.phone}
-              onChange={handleChange}
-              placeholder="전화번호"
+              type="checkbox"
+              checked={sameAsAddress}
+              onChange={(e) => {
+                setSameAsAddress(e.target.checked);
+
+                if (e.target.checked) {
+                  setBuyer({
+                    name: address.name,
+                    phone: address.phone,
+                    email: address.email,
+                  });
+                }
+              }}
             />
+            주문 정보와 동일
+          </label>
 
+          <div className="input-row">
+            <label>이름</label>
             <input
-              name="email"
-              value={orderInfo.email}
-              onChange={handleChange}
-              placeholder="이메일"
+              value={buyer.name}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, name: e.target.value }))
+              }
             />
           </div>
 
-          {/* 주문 상품 */}
-          <div className="order-box">
-            <h3>주문 상품</h3>
+          <div className="input-row">
+            <label>전화번호</label>
+            <input
+              value={buyer.phone}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, phone: e.target.value }))
+              }
+            />
+          </div>
 
-            {cartItems.map((item) => (
-              <div className="order-item" key={item.uniqueId}>
-                <img src={item.image} alt={item.name} />
+          <div className="input-row">
+            <label>이메일</label>
+            <input
+              value={buyer.email}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, email: e.target.value }))
+              }
+            />
+          </div>
+        </section>
 
-                <div className="order-item-info">
-                  <p className="name">{item.name}</p>
-                  <p>옵션: {item.option}</p>
-                  <p>수량: {item.quantity}</p>
-                </div>
+        {/* ============================= */}
+        {/* 주문 상품 */}
+        {/* ============================= */}
+        <section className="order-box">
+          <h3>주문 상품</h3>
 
-                <div className="order-item-price">
-                  {(item.price * item.quantity).toLocaleString()}원
-                </div>
+          {cartItems.map((item) => (
+            <div className="order-product" key={item.uniqueId}>
+              <img src={item.image} alt="" />
+
+              <div className="p-info">
+                <p className="p-name">{item.name}</p>
+                <p className="p-option">옵션: {item.option}</p>
+                <p className="p-qty">수량: {item.quantity}</p>
               </div>
-            ))}
+
+              <div className="p-price">
+                {(item.price * item.quantity).toLocaleString()}원
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* ============================= */}
+        {/* 쿠폰 / 포인트 */}
+        {/* ============================= */}
+        <section className="order-box">
+          <h3>쿠폰 / 포인트</h3>
+
+          <div className="input-row">
+            <label>쿠폰</label>
+            <input placeholder="사용 가능한 쿠폰이 없습니다" readOnly />
           </div>
 
-        </div>
-
-        {/* 우측 결제 박스 */}
-        <div className="order-right">
-
-          <div className="order-summary">
-
-            <h3>결제 금액</h3>
-
-            <div className="summary-row">
-              <span>총 상품 금액</span>
-              <span>{totalPrice.toLocaleString()}원</span>
-            </div>
-
-            <div className="summary-row">
-              <span>배송비</span>
-              <span>0원</span>
-            </div>
-
-            <hr />
-
-            <div className="summary-total">
-              <span>최종 결제 금액</span>
-              <span className="total-price">
-                {totalPrice.toLocaleString()}원
-              </span>
-            </div>
-
-            <button className="pay-btn" onClick={handlePay}>
-              결제하기
-            </button>
-
+          <div className="input-row">
+            <label>포인트</label>
+            <input placeholder="0" readOnly />
           </div>
+        </section>
 
-        </div>
-
+        {/* ============================= */}
+        {/* 결제수단 */}
+        {/* ============================= */}
+        <section className="order-box">
+          <h3>결제수단</h3>
+          <div className="payment-methods">
+            <button className="pm active">카드</button>
+            <button className="pm">토스페이</button>
+            <button className="pm">네이버페이</button>
+            <button className="pm">카카오페이</button>
+            <button className="pm">무통장입금</button>
+          </div>
+        </section>
       </div>
+
+      {/* ============================= */}
+      {/* 오른쪽 결제 요약 */}
+      {/* ============================= */}
+      <div className="order-right">
+        <div className="summary-box">
+          <h3>결제 금액</h3>
+
+          <div className="sum-row">
+            <span>총 상품 금액</span>
+            <span>{totalPrice.toLocaleString()}원</span>
+          </div>
+
+          <div className="sum-row">
+            <span>배송비</span>
+            <span>0원</span>
+          </div>
+
+          <hr />
+
+          <div className="sum-final">
+            <span>최종 결제 금액</span>
+            <span className="final-price">
+              {totalPrice.toLocaleString()}원
+            </span>
+          </div>
+
+          <button className="pay-btn">결제하기</button>
+        </div>
+      </div>
+
+      {/* 배송지 변경/추가 모달 */}
+      {openModal && (
+        <AddressModal
+          closeModal={() => setOpenModal(false)}
+          onSelect={handleSelectAddress}
+        />
+      )}
     </div>
   );
 }
