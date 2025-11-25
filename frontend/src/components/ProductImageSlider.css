@@ -1,16 +1,23 @@
-.product-image-slider {
-  width: 100%;
+/* 상단 구조 전체 */
+.detail-top-wrapper {
+  display: flex;
+  width: 1200px;
+  margin: 40px auto;
+  gap: 40px;
 }
 
-.product-main-image {
+/* 이미지 영역 */
+.detail-left {
+  flex: 1;
+  max-width: 600px;
+}
+
+.detail-main-img {
   width: 100%;
   border-radius: 10px;
-  border: 1px solid #eee;
-  overflow: hidden;
-  background: #fafafa;
 }
 
-.product-main-image img {
-  width: 100%;
-  display: block;
+/* 구매 박스 영역 */
+.detail-right {
+  width: 380px;
 }

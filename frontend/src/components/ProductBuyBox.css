@@ -1,70 +1,119 @@
-.product-buy-box {
+.buy-box {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.product-name {
+.buy-title {
   font-size: 22px;
   font-weight: 600;
-  color: #222;
+  margin-bottom: 5px;
 }
 
-/* 가격 영역 */
-.product-price-box {
+.price-box {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
 }
 
-.discount-rate {
-  font-size: 28px;
+.discount {
+  font-size: 24px;
   font-weight: 700;
   color: #fc9510;
 }
 
-.sale-price {
-  font-size: 28px;
+.price {
+  font-size: 24px;
   font-weight: 700;
-  color: #333;
 }
 
-.original-price {
-  font-size: 16px;
-  color: #aaa;
+.original {
+  font-size: 15px;
+  color: #bbb;
   text-decoration: line-through;
 }
 
-/* 옵션 */
 .option-select {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 선택된 상품 카드 */
+.selected-item-box {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.selected-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-name {
   font-size: 15px;
+  font-weight: 500;
+}
+
+.quantity-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-box button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.selected-price {
+  margin-top: 10px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* 총 금액 */
+.total-price-box {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.total-price {
+  font-weight: 700;
+  color: #222;
 }
 
 /* 버튼 */
 .product-buy-btns {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
 }
 
 .cart-btn {
   flex: 1;
-  background: #fff;
   border: 2px solid #fc9510;
   color: #fc9510;
+  background: #fff;
   padding: 14px;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: 0.2s;
 }
 
 .cart-btn:hover {
-  background: #fff3e4;
+  background: #fff5e9;
 }
 
 .buy-btn {
@@ -74,10 +123,8 @@
   border: none;
   padding: 14px;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: 0.2s;
 }
 
 .buy-btn:hover {

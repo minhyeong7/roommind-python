@@ -167,6 +167,21 @@
   background: #fc9510;
   border-radius: 2px;
 }
+.product-main-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* 정사각형 느낌 */
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background: #fafafa;
+}
+
+.product-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 🔥 가장 자연스럽다 */
+}
+
 
 
 

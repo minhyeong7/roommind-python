@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import ProductImageSlider from "../components/ProductImageSlider";
 import ProductBuyBox from "../components/ProductBuyBox";
 
@@ -10,8 +12,14 @@ import ProductRecommend from "../components/ProductRecommend";
 import "./ProductDetail.css";
 
 function ProductDetail() {
-  // ⭐ 현재 선택된 탭
+  const { state } = useLocation();
+  const product = state?.product;
+
   const [activeTab, setActiveTab] = useState("info");
+
+  if (!product) {
+    return <div style={{ padding: "40px" }}>상품 정보 없음</div>;
+  }
 
   return (
     <div className="product-detail-page">
@@ -19,15 +27,16 @@ function ProductDetail() {
       {/* 상단: 이미지 + 구매박스 */}
       <div className="product-detail-wrapper">
         <div className="product-detail-left">
-          <ProductImageSlider />
+      <ProductImageSlider images={[product.image]} />
         </div>
 
+
         <div className="product-detail-right">
-          <ProductBuyBox />
+          <ProductBuyBox product={product} />
         </div>
       </div>
 
-      {/* ⭐ 탭 */}
+      {/* 탭 */}
       <div className="product-detail-tabs">
         <div
           className={activeTab === "info" ? "active" : ""}
@@ -58,9 +67,9 @@ function ProductDetail() {
         </div>
       </div>
 
-      {/* ⭐ 선택된 탭만 보여주기 */}
+      {/* 아래 컨텐츠 */}
       <div className="product-section">
-        {activeTab === "info" && <ProductDetailContent />}
+        {activeTab === "info" && <ProductDetailContent product={product} />}
         {activeTab === "review" && <ProductReviews />}
         {activeTab === "qa" && <ProductQA />}
         {activeTab === "recommend" && <ProductRecommend />}

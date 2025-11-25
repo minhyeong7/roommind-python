@@ -29,12 +29,14 @@
 .card-scrap {
   position: absolute;
   right: 12px;
-  top: 12px;
+  bottom: 12px;   /* ← top 대신 bottom! */
   font-size: 22px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 4px;
-  border-radius: 50%;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
 }
+
 
 .card-info {
   margin-top: 10px;
