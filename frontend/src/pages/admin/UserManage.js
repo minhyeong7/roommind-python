@@ -5,16 +5,23 @@ import "./UserManage.css";
 
 export default function UserManage() {
   const [users, setUsers] = useState([]);
+  const [keyword, setKeyword] = useState("");      // 🔍 검색 입력값
+  const [filterRole, setFilterRole] = useState(""); // 🔽 권한 필터
+
   const [selectedUser, setSelectedUser] = useState(null);
 
-  /**  전체 회원 불러오기 */
-  useEffect(() => {
-    fetchAllUsers()
+  /** 전체 회원 조회 */
+  const loadUsers = () => {
+    fetchAllUsers(keyword, filterRole)
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("회원 조회 실패:", err));
-  }, []);
+  };
 
-  /**  관리자 권한 변경 */
+  useEffect(() => {
+    loadUsers();
+  }, [keyword, filterRole]);
+
+  /** 관리자 권한 변경 */
   const handleRoleChange = async (id, currentRole) => {
     const newRole = currentRole === "admin" ? "user" : "admin";
 
@@ -22,17 +29,15 @@ export default function UserManage() {
 
     try {
       await updateUserRole(id, newRole);
-
-      // UI 업데이트 (새로고침 없이 최신화)
       setUsers((prev) =>
         prev.map((user) =>
-          user.user_id === id ? { ...user, role: newRole } : user
+          user.userId === id ? { ...user, role: newRole } : user
         )
       );
-      alert("권한이 성공적으로 변경되었습니다!");
+      alert("권한 변경 성공!");
     } catch (error) {
       console.error("권한 변경 실패:", error);
-      alert("권한 변경에 실패했습니다.");
+      alert("실패했습니다.");
     }
   };
 
@@ -40,6 +45,22 @@ export default function UserManage() {
     <AdminLayout>
       <h1>회원 관리 페이지</h1>
       <p>전체 회원을 조회하고 관리합니다.</p>
+
+      {/* 🔍 검색 + 🔽 권한 드롭다운 */}
+      <div className="user-search-filter">
+        <input
+          type="text"
+          placeholder="이름 / 이메일 검색"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+
+        <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)}>
+          <option value="">전체 권한</option>
+          <option value="user">일반회원</option>
+          <option value="admin">관리자</option>
+        </select>
+      </div>
 
       {/* 사용자 목록 테이블 */}
       <table className="user-table">
@@ -55,18 +76,19 @@ export default function UserManage() {
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.user_id} onClick={() => setSelectedUser(u)}>
-              <td>{u.user_id}</td>
-              <td>{u.user_name}</td>
+            <tr key={u.userId} onClick={() => setSelectedUser(u)}>
+              <td>{u.userId}</td>
+              <td>{u.userName}</td>
               <td>{u.phone || "-"}</td>
               <td>{u.email}</td>
               <td>{u.role}</td>
+
               <td>
                 <button
                   className="role-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleRoleChange(u.user_id, u.role);
+                    handleRoleChange(u.userId, u.role);
                   }}
                 >
                   {u.role === "admin" ? "일반회원으로 변경" : "관리자 권한 부여"}
@@ -77,13 +99,14 @@ export default function UserManage() {
         </tbody>
       </table>
 
-      {/* 상세 정보 모달 */}
+      {/* 상세 모달 */}
       {selectedUser && (
         <div className="modal-backdrop" onClick={() => setSelectedUser(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2>회원 상세 정보</h2>
-            <p><strong>ID:</strong> {selectedUser.user_id}</p>
-            <p><strong>이름:</strong> {selectedUser.user_name}</p>
+
+            <p><strong>ID:</strong> {selectedUser.userId}</p>
+            <p><strong>이름:</strong> {selectedUser.userName}</p>
             <p><strong>전화번호:</strong> {selectedUser.phone}</p>
             <p><strong>이메일:</strong> {selectedUser.email}</p>
             <p><strong>주소:</strong> {selectedUser.address}</p>

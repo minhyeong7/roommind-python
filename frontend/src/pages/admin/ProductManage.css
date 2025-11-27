@@ -7,7 +7,7 @@
 
 /* 헤더 영역 (제목 + 등록 버튼) */
 .product-manage-header {
-  width: 80%;
+  width: 90%;
   display: flex;
   justify-content: space-between; /* 제목 왼쪽 / 버튼 오른쪽 */
   align-items: center;
@@ -26,7 +26,7 @@
 
 /* 필터 영역도 폭 맞추기 */
 .product-filter-box {
-  width: 80%;
+  width: 90%;
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
@@ -34,7 +34,7 @@
 
 /* 테이블은 가운데 정렬 */
 .product-table {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   border-collapse: collapse;
 }
@@ -76,4 +76,17 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+.admin-layout {
+  display: flex;
+}
+
+.admin-layout > .admin-sidebar {
+  width: 250px; 
+  flex-shrink: 0;
+}
+
+.product-manage-wrapper {
+  flex: 1;
+  padding: 30px;
 }
