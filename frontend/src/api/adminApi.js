@@ -1,12 +1,20 @@
-import api from "./userApi";  // 기존 axios + interceptor 그대로 사용
+// src/api/adminApi.js
+import api from "./userApi";
 
-// 전체 회원 조회
-export const fetchAllUsers = () => api.get("/admin/users");
+// ===============================
+//  관리자 회원 API
+// ===============================
 
-// 특정 회원 상세 조회
+// 전체 회원 조회 (검색 + 필터 + 정렬)
+export const fetchAllUsers = (keyword, role, sort) =>
+  api.get("/admin/users", {
+    params: { keyword, role, sort },
+  });
+
+// 회원 상세 조회
 export const fetchUserDetail = (id) => api.get(`/admin/users/${id}`);
 
-// 회원 권한 변경 (user ↔ admin)
+// 회원 권한 변경
 export const updateUserRole = (id, role) =>
   api.put(`/admin/users/${id}/role`, { role });
 
@@ -15,7 +23,6 @@ export const updateUserRole = (id, role) =>
 //  관리자 상품 API
 // ===============================
 
-// 전체 상품 조회
 export const fetchProducts = () => api.get("/admin/products");
 
 // 필터 조회

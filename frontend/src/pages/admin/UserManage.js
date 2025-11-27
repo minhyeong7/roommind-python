@@ -5,23 +5,24 @@ import "./UserManage.css";
 
 export default function UserManage() {
   const [users, setUsers] = useState([]);
-  const [keyword, setKeyword] = useState("");      // 🔍 검색 입력값
-  const [filterRole, setFilterRole] = useState(""); // 🔽 권한 필터
+  const [keyword, setKeyword] = useState("");
+  const [filterRole, setFilterRole] = useState("");
+  const [sort, setSort] = useState("created_desc");
 
   const [selectedUser, setSelectedUser] = useState(null);
 
   /** 전체 회원 조회 */
   const loadUsers = () => {
-    fetchAllUsers(keyword, filterRole)
+    fetchAllUsers(keyword, filterRole, sort)
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("회원 조회 실패:", err));
   };
 
   useEffect(() => {
     loadUsers();
-  }, [keyword, filterRole]);
+  }, [keyword, filterRole, sort]);
 
-  /** 관리자 권한 변경 */
+  /** 권한 변경 */
   const handleRoleChange = async (id, currentRole) => {
     const newRole = currentRole === "admin" ? "user" : "admin";
 
@@ -46,23 +47,41 @@ export default function UserManage() {
       <h1>회원 관리 페이지</h1>
       <p>전체 회원을 조회하고 관리합니다.</p>
 
-      {/* 🔍 검색 + 🔽 권한 드롭다운 */}
+      {/* 검색 + 권한 + 정렬 */}
       <div className="user-search-filter">
         <input
+          className="search-input"
           type="text"
           placeholder="이름 / 이메일 검색"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
 
-        <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)}>
+        <select
+          className="filter-select"
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+        >
           <option value="">전체 권한</option>
           <option value="user">일반회원</option>
           <option value="admin">관리자</option>
         </select>
+
+        <select
+          className="filter-select"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="created_desc">가입일 최신순</option>
+          <option value="created_asc">가입일 오래된순</option>
+          <option value="id_asc">ID 오름차순</option>
+          <option value="id_desc">ID 내림차순</option>
+          <option value="name_asc">이름 가나다순</option>
+          <option value="name_desc">이름 역순</option>
+        </select>
       </div>
 
-      {/* 사용자 목록 테이블 */}
+      {/* 사용자 목록 */}
       <table className="user-table">
         <thead>
           <tr>
@@ -70,19 +89,28 @@ export default function UserManage() {
             <th>이름</th>
             <th>전화번호</th>
             <th>이메일</th>
+            <th>가입일</th>
             <th>권한</th>
             <th>관리</th>
           </tr>
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.userId} onClick={() => setSelectedUser(u)}>
+            <tr
+              key={u.userId}
+              className={u.role === "admin" ? "admin-row" : ""}
+              onClick={() => setSelectedUser(u)}
+            >
               <td>{u.userId}</td>
               <td>{u.userName}</td>
               <td>{u.phone || "-"}</td>
               <td>{u.email}</td>
-              <td>{u.role}</td>
-
+              <td>{u.createdDate}</td>
+              <td>
+                <span className={u.role === "admin" ? "admin-label" : ""}>
+                  {u.role === "admin" ? "관리자" : "일반회원"}
+                </span>
+              </td>
               <td>
                 <button
                   className="role-btn"
@@ -103,16 +131,25 @@ export default function UserManage() {
       {selectedUser && (
         <div className="modal-backdrop" onClick={() => setSelectedUser(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setSelectedUser(null)}>
+              ✕
+            </button>
+
             <h2>회원 상세 정보</h2>
 
             <p><strong>ID:</strong> {selectedUser.userId}</p>
             <p><strong>이름:</strong> {selectedUser.userName}</p>
-            <p><strong>전화번호:</strong> {selectedUser.phone}</p>
+            <p><strong>전화번호:</strong> {selectedUser.phone || "-"}</p>
             <p><strong>이메일:</strong> {selectedUser.email}</p>
-            <p><strong>주소:</strong> {selectedUser.address}</p>
-            <p><strong>권한:</strong> {selectedUser.role}</p>
-
-            <button onClick={() => setSelectedUser(null)}>닫기</button>
+            <p><strong>주소:</strong> {selectedUser.address || "-"}</p>
+            <p>
+              <strong>권한:</strong>
+              {selectedUser.role === "admin" ? (
+                <span className="admin-badge">관리자</span>
+              ) : (
+                "일반회원"
+              )}
+            </p>
           </div>
         </div>
       )}
