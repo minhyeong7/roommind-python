@@ -48,8 +48,8 @@ export default function ProductManage() {
       <div className="product-manage-wrapper">
 
         <div className="product-manage-header">
-          <h2>상품 관리 페이지</h2>
-
+          <h1>상품 관리 페이지</h1>
+        
           <button
             className="add-product-btn"
             onClick={() => navigate("/admin/products/new")}
