@@ -3,10 +3,12 @@
 /* ============================= */
 
 .popular-wrapper {
-  width: 1300px;
+  max-width: 1300px;   /* width → max-width */
+  width: 100%;         /* 전체 가로를 꽉 채움 */
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 40px 20px;  /* 양쪽 패딩 추가 (레이아웃 고정) */
 }
+
 
 .popular-section {
   margin-bottom: 70px;
