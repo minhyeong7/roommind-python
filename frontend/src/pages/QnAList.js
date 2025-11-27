@@ -9,6 +9,14 @@ function QnAList() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 🔍 검색 + 정렬
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("latest");
+
+  // 📄 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
   const defaultImage = process.env.PUBLIC_URL + "/default-thumbnail.png";
 
   useEffect(() => {
@@ -22,9 +30,36 @@ function QnAList() {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
+
+  // 🔎 검색 + 정렬 적용된 리스트
+  const filteredPosts = posts
+    .filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "latest") {
+        return new Date(b.createdDate) - new Date(a.createdDate);
+      }
+      return new Date(a.createdDate) - new Date(b.createdDate);
+    });
+
+  // 📄 전체 페이지 수 계산
+  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
+
+  // 📌 현재 페이지에 해당하는 게시글만 slice
+  const pagePosts = filteredPosts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // 🔄 검색어/정렬 변경 시 1페이지로 이동
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortOrder]);
 
   if (loading) {
     return (
@@ -40,6 +75,26 @@ function QnAList() {
       <h1 className="qna-title-main">Q&A 게시판</h1>
       <p className="qna-subtitle">💬 궁금한 점을 자유롭게 질문해보세요!</p>
 
+      {/* 🔍 검색 + 정렬 UI */}
+      <div className="qna-filter-box">
+        <input
+          type="text"
+          placeholder="검색어를 입력하세요"
+          className="qna-search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <select
+          className="qna-select"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+        >
+          <option value="latest">최신순</option>
+          <option value="oldest">오래된순</option>
+        </select>
+      </div>
+
       <div className="qna-container">
         <div className="qna-header">
           <button className="qna-write-btn" onClick={() => navigate("/qna/write")}>
@@ -47,20 +102,25 @@ function QnAList() {
           </button>
         </div>
 
-        {posts.length > 0 ? (
+        {pagePosts.length > 0 ? (
           <div className="qna-list">
-            {posts.map((post) => {
-              // 🔥 이미지가 있으면 첫 번째 이미지 URL 만들기
+            {pagePosts.map((post) => {
               let imageSrc = defaultImage;
 
               if (post.images && post.images.length > 0) {
-                const img = post.images[0]; // 첫 이미지 사용
-                imageSrc = `http://localhost:8080/uploads/qna/${img.createdDate.slice(0,10)}/${img.fileName}`;
+                const img = post.images[0];
+                imageSrc = `http://localhost:8080/uploads/qna/${img.createdDate.slice(
+                  0,
+                  10
+                )}/${img.fileName}`;
               }
 
               const formattedDate = post.createdDate
                 ? post.createdDate.replace("T", " ").slice(0, 16)
                 : "";
+
+              const isAnswered =
+                post.answer && post.answer.trim() !== ""; // 답변 여부
 
               return (
                 <div
@@ -72,7 +132,17 @@ function QnAList() {
 
                   <div className="qna-content">
                     <h3 className="qna-title">{post.title}</h3>
+
+                    <div className="qna-status">
+                      {isAnswered ? (
+                        <span className="answered">답변완료</span>
+                      ) : (
+                        <span className="pending">답변미완료</span>
+                      )}
+                    </div>
+
                     <p className="qna-preview">{post.content}</p>
+
                     <div className="qna-meta">
                       <span className="qna-author">{post.userName}</span>
                       <span className="qna-date">{formattedDate}</span>
@@ -83,7 +153,40 @@ function QnAList() {
             })}
           </div>
         ) : (
-          <p className="no-data">등록된 게시글이 없습니다 😢</p>
+          <p className="no-data">게시글이 없습니다 😢</p>
+        )}
+
+        {/* 📄 페이지네이션 */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="page-btn"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              이전
+            </button>
+
+            {[...Array(totalPages)].map((_, idx) => (
+              <button
+                key={idx}
+                className={`page-number ${
+                  currentPage === idx + 1 ? "active" : ""
+                }`}
+                onClick={() => setCurrentPage(idx + 1)}
+              >
+                {idx + 1}
+              </button>
+            ))}
+
+            <button
+              className="page-btn"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              다음
+            </button>
+          </div>
         )}
       </div>
     </div>

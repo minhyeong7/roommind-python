@@ -1,32 +1,64 @@
-/* 페이지 전체 컨테이너 */
+/* 전체 페이지 */
 .qna-page {
   width: 100%;
   min-height: 100vh;
   background-color: #f8fafc;
-  padding-top: 50px;
+  padding-top: 40px;
 }
 
-/* ✅ 중앙 상단 제목 */
+/* 타이틀 */
 .qna-title-main {
   text-align: center;
   font-size: 2rem;
   color: #fc9510;
   font-weight: 800;
-  margin-bottom: 40px;
+  margin-bottom: 8px;
 }
 
-/* 기존 컨테이너 유지 */
+.qna-subtitle {
+  text-align: center;
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+/* 메인 컨테이너 */
 .qna-container {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
   background: #fff;
-  padding: 30px;
+  padding: 25px 30px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
 
-/* 나머지는 그대로 유지 */
+/* 검색 + 정렬 */
+.qna-filter-box {
+  display: flex;
+  gap: 10px;
+  justify-content: center;   
+  margin-bottom: 20px;
+}
+
+.qna-search-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 250px;
+  font-size: 14px;
+}
+
+.qna-select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* 글쓰기 버튼 */
 .qna-header {
   display: flex;
   justify-content: flex-end;
@@ -48,27 +80,30 @@
   background: #fd7434;
 }
 
-/* 게시글 리스트 스타일 */
+/* 게시글 리스트 */
 .qna-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
+/* 게시글 1개 */
 .qna-post {
   display: flex;
+  align-items: flex-start;
   gap: 15px;
+  padding-bottom: 18px;
   border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
   cursor: pointer;
-  transition: transform 0.1s ease, background 0.2s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .qna-post:hover {
-  background: #f9f9f9;
+  background: #fafafa;
   transform: translateY(-2px);
 }
 
+/* 썸네일 이미지 */
 .qna-image {
   width: 100px;
   height: 100px;
@@ -76,11 +111,11 @@
   object-fit: cover;
 }
 
+/* 내용 */
 .qna-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .qna-title {
@@ -90,13 +125,32 @@
   color: #333;
 }
 
+/* 답변 상태 표시 */
+.qna-status {
+  margin: 4px 0 8px;
+}
+
+.answered {
+  color: #1a73e8;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.pending {
+  color: #e83a3a;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* 내용 미리보기 */
 .qna-preview {
   font-size: 14px;
   color: #555;
-  margin-bottom: 8px;
-  line-height: 1.4;
+  margin-bottom: 6px;
+  line-height: 1.45;
 }
 
+/* 작성자 + 날짜 */
 .qna-meta {
   font-size: 13px;
   color: #888;
@@ -104,26 +158,39 @@
   justify-content: space-between;
 }
 
+/* 게시글 없음 */
 .no-data {
   text-align: center;
-  color: #999;
-  margin-top: 50px;
+  color: #777;
+  padding: 40px 0;
+  font-size: 15px;
 }
 
-/* 제목 */
-.qna-title-main {
-  text-align: center;
-  font-size: 2rem;
-  color: #fc9510;
-  font-weight: 800;
-  margin-bottom: 10px;
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 25px;
 }
 
-/*  소제목 추가 */
-.qna-subtitle {
-  text-align: center;
-  color: #555;
-  font-size: 1rem;
-  margin-bottom: 40px;
-  font-weight: 500;
+.page-number,
+.page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.page-number.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.page-btn:disabled {
+  background: #eee;
+  cursor: not-allowed;
 }
