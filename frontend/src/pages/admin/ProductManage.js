@@ -52,7 +52,7 @@ export default function ProductManage() {
 
           <button
             className="add-product-btn"
-            onClick={() => navigate("/admin/product/new")}
+            onClick={() => navigate("/admin/products/new")}
           >
             + 상품 등록
           </button>
