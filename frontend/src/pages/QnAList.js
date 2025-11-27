@@ -6,26 +6,69 @@ import "./QnAList.css";
 function QnAList() {
   const navigate = useNavigate();
 
-  const [posts] = useState([
-    {
-      id: 1,
-      image: "", // 이미지 없음
-      title: "가구 추천 관련 질문 있습니다.",
-      content: "AI 추천이 정확하지 않은 것 같아요. 조건을 다르게 해야 할까요?",
-      author: "노아",
-      date: "2025-11-10 14:30",
-    },
-    {
-      id: 2,
-      image: "https://via.placeholder.com/100",
-      title: "AI 인테리어 컬러 조합 문의",
-      content: "방 색상이 어두운데 밝은 가구를 써도 괜찮을까요?",
-      author: "윤헌",
-      date: "2025-11-09 19:12",
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 🔍 검색 + 정렬
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("latest");
+
+  // 📄 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
 
   const defaultImage = process.env.PUBLIC_URL + "/default-thumbnail.png";
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchQnAList();
+        setPosts(data || []);
+      } catch (error) {
+        alert("❌ 게시글을 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  // 🔎 검색 + 정렬 적용된 리스트
+  const filteredPosts = posts
+    .filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "latest") {
+        return new Date(b.createdDate) - new Date(a.createdDate);
+      }
+      return new Date(a.createdDate) - new Date(b.createdDate);
+    });
+
+  // 📄 전체 페이지 수 계산
+  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
+
+  // 📌 현재 페이지에 해당하는 게시글만 slice
+  const pagePosts = filteredPosts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // 🔄 검색어/정렬 변경 시 1페이지로 이동
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortOrder]);
+
+  if (loading) {
+    return (
+      <div className="qna-page">
+        <h1 className="qna-title-main">Q&A 게시판</h1>
+        <p className="qna-subtitle">⏳ 게시글을 불러오는 중입니다...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="qna-page">
@@ -61,9 +104,24 @@ function QnAList() {
 
         {pagePosts.length > 0 ? (
           <div className="qna-list">
-            {posts.map((post) => {
-              // ✅ 미리 이미지 경로 확정 (onError 안 써도 깜빡임 없음)
-              const imageSrc = post.image && post.image.trim() !== "" ? post.image : defaultImage;
+            {pagePosts.map((post) => {
+              let imageSrc = defaultImage;
+
+              if (post.images && post.images.length > 0) {
+                const img = post.images[0];
+                imageSrc = `http://localhost:8080/uploads/qna/${img.createdDate.slice(
+                  0,
+                  10
+                )}/${img.fileName}`;
+              }
+
+              const formattedDate = post.createdDate
+                ? post.createdDate.replace("T", " ").slice(0, 16)
+                : "";
+
+              const isAnswered =
+                post.answer && post.answer.trim() !== ""; // 답변 여부
+
               return (
                 <div
                   className="qna-post"
