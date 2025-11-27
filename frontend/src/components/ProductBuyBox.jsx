@@ -28,15 +28,15 @@ function ProductBuyBox({ product }) {
       return;
     }
 
-      addToCart({
-      uniqueId: `${product.id}_${selectedOption}`,
-      id: product.id,
+     addToCart({
+      id: product.id ?? product.title,   // ★ 요거 추가
       name: product.title,
       option: selectedOption,
       quantity: quantity,
       price: product.price,
       image: product.image,
     });
+
 
     alert("장바구니에 상품이 담겼습니다!");
   };

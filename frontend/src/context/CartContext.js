@@ -14,27 +14,43 @@ export function CartProvider({ children }) {
   }, [cartItems]);
 
   // 상품 추가
-  const addToCart = (item) => {
-    const uniqueId = `${item.id}_${item.option}`;
-    item.uniqueId = uniqueId;
+ // 상품 추가
+const addToCart = (item) => {
 
-    const existing = cartItems.find((i) => i.uniqueId === uniqueId);
+  // 상품 고유 ID를 정확히 찾기
+  const realId = 
+    item.id || 
+    item.productId || 
+    item.pno || 
+    item.pid || 
+    item.name;
 
-    if (existing) {
-      setCartItems((prev) =>
-        prev.map((i) =>
-          i.uniqueId === uniqueId
-            ? { ...i, quantity: i.quantity + item.quantity }
-            : i
-        )
-      );
-    } else {
-      setCartItems((prev) => [
-        ...prev,
-        { ...item, uniqueId, allOptions: item.allOptions || item.options || ["기본옵션"] }
-      ]);
-    }
-  };
+
+  const uniqueId = `${realId}_${item.option}`;
+  item.uniqueId = uniqueId;
+
+  const existing = cartItems.find((i) => i.uniqueId === uniqueId);
+
+  if (existing) {
+    setCartItems((prev) =>
+      prev.map((i) =>
+        i.uniqueId === uniqueId
+          ? { ...i, quantity: i.quantity + item.quantity }
+          : i
+      )
+    );
+  } else {
+    setCartItems((prev) => [
+      ...prev,
+      {
+        ...item,
+        uniqueId,
+        allOptions: item.allOptions || item.options || ["기본옵션"],
+      },
+    ]);
+  }
+};
+
 
   // 수량 변경
   const updateQuantity = (uniqueId, newQty) => {

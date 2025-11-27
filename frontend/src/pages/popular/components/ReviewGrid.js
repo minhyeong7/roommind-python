@@ -5,27 +5,25 @@ import "./ReviewGrid.css";
 
 export default function ReviewGrid() {
   return (
-    <div className="review-grid-section">
+    <div className="review-section">
 
-      {/* 제목 + 더보기 버튼 */}
-      <div className="review-header">
-        <Link to="/community" className="review-more">더보기</Link>
+      {/* 더보기 버튼만 */}
+      <div className="review-top-bar">
+        <Link to="/community" className="review-more-btn">더보기</Link>
       </div>
 
-      {/* 리뷰 카드 grid */}
-      <div className="review-grid-wrapper">
-        <div className="review-grid">
-          {reviews.map((item) => (
-            <div className="review-card" key={item.id}>
-              <img src={item.image} alt="review" className="review-img" />
+      {/* 카드 3개 */}
+      <div className="review-grid">
+        {reviews.slice(0, 3).map((item) => (
+          <div className="review-card" key={item.id}>
+            <img src={item.image} alt="review" className="review-img" />
 
-              <div className="review-info">
-                <p className="review-title">{item.title}</p>
-                <p className="review-text">{item.text}</p>
-              </div>
+            <div className="review-info">
+              <p className="review-title">{item.title}</p>
+              <p className="review-text">{item.text}</p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
     </div>
