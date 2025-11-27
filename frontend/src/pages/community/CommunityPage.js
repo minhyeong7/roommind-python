@@ -1,48 +1,61 @@
 // src/pages/community/CommunityPage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CommunityPage.css";
 import CommunityItem from "./CommunityItem";
 import CommunitySidebar from "./CommunitySidebar";
+import { fetchCommunityList } from "../../api/cmtboardApi";  // ✅ API 추가
 
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState("all"); // 기본값 전체로 변경
+  const [activeTab, setActiveTab] = useState("all"); 
+  const [posts, setPosts] = useState([]);             // 🔥 백엔드 데이터 저장
+  const [loading, setLoading] = useState(true);       // 로딩 상태
+  const [error, setError] = useState(null);           // 에러 상태
 
-  const dummyPosts = [
-    {
-      id: 1,
-      title: "조명 입문하고 금만먹고 질렀다가 욕실 무한확장중",
-      subtitle: "집 처음 꾸미는데 조명부터 넣었어요. 도움돼요!",
-      writer: "오다나락",
-      date: "1일 전",
-      views: 82,
-      likes: 14,
-      image: "/images/sample1.jpg"
-    },
-    {
-      id: 2,
-      title: "털갈이하는 고양이가 있으신가요? 이불 써야해요",
-      subtitle: "털땜에 이불 3개 버렸어요...",
-      writer: "두현맘",
-      date: "2일 전",
-      views: 176,
-      likes: 2,
-      image: "/images/sample2.jpg"
-    },
-    {
-      id: 3,
-      title: "첫 셀프 인테리어 도전기",
-      subtitle: "도배부터 장판까지 직접 해봤어요!",
-      writer: "인테리러버",
-      date: "3일 전",
-      views: 350,
-      likes: 18,
-      image: "/images/sample3.jpg"
-    }
-  ];
+  /* ================================
+     🔥 커뮤니티 전체 리스트 가져오기
+  ================================== */
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchCommunityList();
+        setPosts(data);        // 리스트 저장
+      } catch (err) {
+        console.error("커뮤니티 목록 로딩 실패:", err);
+        setError("데이터를 불러올 수 없습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  /* ================================
+     🔥 로딩 / 에러 / 빈 데이터 처리
+  ================================== */
+  if (loading) return <div className="community-wrapper">⏳ 불러오는 중...</div>;
+  if (error) return <div className="community-wrapper">❌ {error}</div>;
+  if (posts.length === 0)
+    return (
+      <div className="community-wrapper">
+        <CommunitySidebar />
+        <div className="community-main">
+          <div className="top-bar">
+            <div className="tab-menu">
+              <button className={activeTab === "all" ? "active" : ""}>전체</button>
+              <button className={activeTab === "popular" ? "active" : ""}>인기</button>
+              <button className={activeTab === "new" ? "active" : ""}>최신</button>
+              <button className={activeTab === "weekly" ? "active" : ""}>주간</button>
+            </div>
+            <button className="write-btn-top">글쓰기</button>
+          </div>
+          <p>📭 아직 등록된 게시글이 없습니다.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="community-wrapper">
-
       {/* 왼쪽 사이드 메뉴 */}
       <CommunitySidebar />
 
@@ -51,10 +64,7 @@ export default function CommunityPage() {
 
         {/* 상단 탭 + 글쓰기 */}
         <div className="top-bar">
-
           <div className="tab-menu">
-
-            {/* 전체 탭 추가 */}
             <button
               className={activeTab === "all" ? "active" : ""}
               onClick={() => setActiveTab("all")}
@@ -62,7 +72,7 @@ export default function CommunityPage() {
               전체
             </button>
 
-            <button 
+            <button
               className={activeTab === "popular" ? "active" : ""}
               onClick={() => setActiveTab("popular")}
             >
@@ -84,15 +94,13 @@ export default function CommunityPage() {
             </button>
           </div>
 
-          {/* 글쓰기 버튼 */}
           <button className="write-btn-top">글쓰기</button>
         </div>
 
-        {/* 게시글 리스트 */}
-        {dummyPosts.map(post => (
-          <CommunityItem key={post.id} post={post} />
+        {/* 🔥 실제 API 데이터로 리스트 렌더링 */}
+        {posts.map((post) => (
+          <CommunityItem key={post.communityBoardId} post={post} />
         ))}
-
       </div>
     </div>
   );
