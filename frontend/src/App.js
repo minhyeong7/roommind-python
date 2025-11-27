@@ -50,6 +50,10 @@ import OrderPage from "./pages/OrderPage";
 import OrderSuccess from "./pages/OrderSuccess";
 import OrderBank from "./pages/OrderCompleteBank";
 
+/* 소셜 로그인 처리 페이지들 */
+import LoginSuccess from "./pages/LoginSuccess";
+import LoginError from "./pages/LoginError";
+
 
 
 function App() {
@@ -69,6 +73,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
+           {/* 소셜 로그인 성공/실패 페이지 */}
+          <Route path="/login-success" element={<LoginSuccess />} />
+          <Route path="/login-error" element={<LoginError />} />
+
           {/* 장바구니 */}
           <Route path="/cart" element={<CartPage />} />
 
@@ -86,6 +94,8 @@ function App() {
 
           {/* 쇼핑 */}
           <Route path="/shop" element={<ShopPage />} />
+
+          
 
           <Route path="/order" element={<OrderPage />} />
           <Route path="/order/success" element={<OrderSuccess />} />
