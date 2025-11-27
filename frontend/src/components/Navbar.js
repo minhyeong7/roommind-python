@@ -109,7 +109,7 @@ function Navbar() {
                 {/* 일반 사용자 + 소셜 로그인 사용자 공통 */}
                 <span className="welcome-text">
                   환영합니다,&nbsp;
-                  <strong>{user.username || user.name || "회원"}</strong>님!
+                  <strong>{user.userName || user.name || "회원"}</strong>님!
                 </span>
 
                 {/* ⭐ 소셜 로그인 배지 ⭐ */}

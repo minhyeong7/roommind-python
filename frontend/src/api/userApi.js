@@ -3,7 +3,7 @@ import axios from "axios";
 
 // ✅ Axios 기본 설정
 const api = axios.create({
-  baseURL: "/api", // 백엔드(Spring Boot) 주소는 프록시로 옮겨감!
+  baseURL: "http://localhost:8080/api", // 백엔드(Spring Boot) 주소는 프록시로 옮겨감!
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,7 +12,7 @@ const api = axios.create({
 // ✅ 회원가입 API
 export const registerUser = async (userData) => {
   try {
-    const response = await api.post("/members/signup", userData);
+    const response = await api.post("/users/signup", userData);
     return response.data; // 백엔드 응답 반환
   } catch (error) {
     console.error("❌ 회원가입 오류:", error);
@@ -23,7 +23,7 @@ export const registerUser = async (userData) => {
 // ✅ 로그인 API (JWT)
 export const loginUser = async (loginData) => {
   try {
-    const response = await api.post("/members/login", loginData);
+    const response = await api.post("/users/login", loginData);
 
     // ✅ 백엔드 응답 구조 예시:
     // { status:200, message:"success", data:{ token:"JWT_TOKEN" } }
@@ -49,7 +49,8 @@ export const fetchUserInfo = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("토큰이 없습니다. 로그인 후 다시 시도해주세요.");
 
-    const response = await api.get("/members/me", {
+    // 일단 여기 /users/me라는 api는 스프링 컨트롤러 에서 현재 없음 - smh
+    const response = await api.get("/users/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
