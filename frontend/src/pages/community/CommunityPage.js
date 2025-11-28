@@ -1,5 +1,6 @@
 // src/pages/community/CommunityPage.js
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./CommunityPage.css";
 import CommunityItem from "./CommunityItem";
 import CommunitySidebar from "./CommunitySidebar";
@@ -10,6 +11,7 @@ export default function CommunityPage() {
   const [posts, setPosts] = useState([]);             // 🔥 백엔드 데이터 저장
   const [loading, setLoading] = useState(true);       // 로딩 상태
   const [error, setError] = useState(null);           // 에러 상태
+  const navigate = useNavigate();
 
   /* ================================
      🔥 커뮤니티 전체 리스트 가져오기
@@ -47,7 +49,13 @@ export default function CommunityPage() {
               <button className={activeTab === "new" ? "active" : ""}>최신</button>
               <button className={activeTab === "weekly" ? "active" : ""}>주간</button>
             </div>
-            <button className="write-btn-top">글쓰기</button>
+           <button
+            className="write-btn"
+            onClick={() => navigate("/community/write")}
+          >
+            글쓰기
+          </button>
+
           </div>
           <p>📭 아직 등록된 게시글이 없습니다.</p>
         </div>

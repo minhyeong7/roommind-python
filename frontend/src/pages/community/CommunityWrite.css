@@ -1,64 +1,90 @@
-.write-container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
-}
-
-.write-container h2 {
-  font-size: 28px;
-  margin-bottom: 25px;
-  font-weight: bold;
-}
-
-.write-form {
+.cmt-write-container {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  padding: 50px 0;
+  background: #f8f9fb;
 }
 
-.write-title {
+.cmt-write-box {
+  width: 900px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.cmt-write-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cmt-writer-info {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.cmt-input-title {
   width: 100%;
-  padding: 15px;
-  font-size: 18px;
+  padding: 14px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.write-content {
-  width: 100%;
-  height: 300px;
-  padding: 15px;
   font-size: 16px;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  resize: none;
+  margin-bottom: 20px;
 }
 
-.write-buttons {
+.cmt-input-content {
+  width: 100%;
+  height: 350px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: none;
+  margin-bottom: 20px;
+}
+
+.cmt-file-box {
+  margin-bottom: 25px;
+}
+
+.cmt-file-label {
+  font-size: 15px;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.cmt-file-input {
+  font-size: 15px;
+}
+
+.cmt-btn-box {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
 }
 
-.cancel-btn {
+.cmt-cancel-btn {
   padding: 12px 20px;
-  font-size: 16px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
+  font-size: 15px;
+  border: 1px solid #ccc;
   background: #f5f5f5;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.submit-btn {
+.cmt-submit-btn {
   padding: 12px 20px;
-  font-size: 16px;
-  background: #ff922b;
-  color: #fff;
+  font-size: 15px;
+  background: #ff9800;
+  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-}
-
-.submit-btn:hover {
-  background: #ff7f00;
 }

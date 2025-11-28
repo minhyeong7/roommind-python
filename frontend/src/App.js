@@ -20,6 +20,7 @@ import QnAWrite from "./pages/QnAWrite";
 
 /* 커뮤니티페이지 */
 import CommunityPage from "./pages/community/CommunityPage";
+import CommunityWrite from "./pages/community/CommunityWrite";
 import PopularPage from "./pages/popular/PopularPage";
 import CommunityDetailPage from "./pages/community/CommunityDetailPage/CommunityDetailPage";
 
@@ -82,6 +83,7 @@ function App() {
 
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/:id" element={<CommunityDetailPage />} />
+          <Route path="/community/write" element={<CommunityWrite />} />
 
           <Route path="/popular" element={<PopularPage />} />
 
