@@ -5,7 +5,7 @@ import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../api/userApi";
-            // ⭐ axios 대신 api 사용
+// ⭐ axios 대신 api 사용
 
 export default function ProductManage() {
   const navigate = useNavigate();
@@ -50,6 +50,23 @@ export default function ProductManage() {
     if (!sale || !original) return "-";
     const rate = Math.round((1 - sale / original) * 100);
     return rate + "%";
+  };
+
+  // ⭐ 이미지 URL 생성 헬퍼 (프론트만 수정)
+  const getProductImage = (images) => {
+    if (!images || images.length === 0) return "/no-image.png";
+
+    const img = images[0];
+
+    // Windows 경로 → 웹 경로 변환
+    const fixedDir = img.saveDir.replace(/\\/g, "/");
+
+    // uploads/product/ 뒤의 날짜폴더 가져오기
+    const folderName = fixedDir.split("uploads/product/")[1];
+
+    if (!folderName) return "/no-image.png";
+
+    return `/uploads/product/${folderName}/${img.fileName}`;
   };
 
   return (
@@ -115,11 +132,7 @@ export default function ProductManage() {
                 <tr key={p.productId}>
                   <td>
                     <img
-                      src={
-                        p.fileName
-                          ? `/uploads/${p.saveDir}/${p.fileName}`
-                          : "/no-image.png"
-                      }
+                      src={getProductImage(p.images)}
                       alt=""
                       className="product-img"
                     />
