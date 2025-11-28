@@ -32,8 +32,12 @@ export const filterProducts = (params) =>
 // 단일 상품 조회
 export const fetchProduct = (id) => api.get(`/admin/products/${id}`);
 
-// 상품 등록
-export const addProduct = (data) => api.post("/admin/products", data);
+// 상품 등록 (이미지 + JSON)
+export const addProduct = (formData) =>
+  api.post("/admin/products", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
 
 // 상품 수정
 export const updateProduct = (id, data) =>
@@ -41,4 +45,8 @@ export const updateProduct = (id, data) =>
 
 // 상품 삭제
 export const deleteProduct = (id) =>
-  api.delete(`/admin/products/${id}`);
+  api.delete(`/admin/products/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  });

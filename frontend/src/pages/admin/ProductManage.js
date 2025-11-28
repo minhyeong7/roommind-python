@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import "./ProductManage.css";
 import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+import api from "../../api/userApi";
+            // ⭐ axios 대신 api 사용
 
 export default function ProductManage() {
   const navigate = useNavigate();
@@ -13,43 +15,50 @@ export default function ProductManage() {
   const [sort, setSort] = useState("latest");
   const [category, setCategory] = useState("");
 
-  // 상품 불러오기
+  // ⭐ 상품 불러오기(API 인스턴스 사용!)
   const fetchProducts = async () => {
-    const res = await axios.get("/api/admin/products", {
-      params: { 
-        search: search || "",
+    const res = await api.get("/admin/products", {
+      params: {
+        keyword: search || "",
         sort: sort || "latest",
-        category: category || ""   // undefined 방지!
+        categoryId: category || "",
       },
     });
-    setProducts(res.data);
-  };
 
+    console.log("응답 데이터:", res.data);
+    setProducts(res.data || []);
+  };
 
   useEffect(() => {
     fetchProducts();
   }, [search, sort, category]);
 
-  // 삭제
+  // ⭐ 삭제 API도 반드시 api 인스턴스로!
   const handleDelete = async (productId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
-    await axios.delete(`/api/admin/products/${productId}`);
+    await api.delete(`/admin/products/${productId}`);
     fetchProducts();
+  };
+
+  const formatNumber = (value) => {
+    if (value === null || value === undefined || value === "") return "-";
+    return Number(value).toLocaleString();
+  };
+
+  const calcDiscount = (sale, original) => {
+    if (!sale || !original) return "-";
+    const rate = Math.round((1 - sale / original) * 100);
+    return rate + "%";
   };
 
   return (
     <div className="admin-layout">
-
-      {/* 🔥 왼쪽 사이드바 */}
       <AdminSidebar />
 
-      {/* 🔥 오른쪽 콘텐츠 */}
       <div className="product-manage-wrapper">
-
         <div className="product-manage-header">
           <h1>상품 관리 페이지</h1>
-        
           <button
             className="add-product-btn"
             onClick={() => navigate("/admin/products/new")}
@@ -58,7 +67,6 @@ export default function ProductManage() {
           </button>
         </div>
 
-        {/* 검색 + 정렬 */}
         <div className="product-filter-box">
           <input
             type="text"
@@ -82,7 +90,6 @@ export default function ProductManage() {
           </select>
         </div>
 
-        {/* 상품 테이블 */}
         <table className="product-table">
           <thead>
             <tr>
@@ -97,38 +104,54 @@ export default function ProductManage() {
           </thead>
 
           <tbody>
-            {products.map((p) => (
-              <tr key={p.product_id}>
-                <td>
-                  <img src={p.thumbnail} alt="" className="product-img" />
-                </td>
-
-                <td
-                  className="product-name-link"
-                  onClick={() =>
-                    navigate(`/admin/product/${p.product_id}`)
-                  }
-                >
-                  {p.product_name}
-                </td>
-
-                <td>{p.sale_price.toLocaleString()}원</td>
-                <td>{Math.round((1 - p.sale_price / p.original_price) * 100)}%</td>
-                <td>{p.stock}</td>
-                <td>{p.created_date.slice(0, 10)}</td>
-
-                <td>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(p.product_id)}
-                  >
-                    삭제
-                  </button>
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center", padding: "40px" }}>
+                  등록된 상품이 없습니다.
                 </td>
               </tr>
-            ))}
-          </tbody>
+            ) : (
+              products.map((p) => (
+                <tr key={p.productId}>
+                  <td>
+                    <img
+                      src={
+                        p.fileName
+                          ? `/upload/${p.saveDir}/${p.fileName}`
+                          : "/no-image.png"
+                      }
+                      alt=""
+                      className="product-img"
+                    />
+                  </td>
 
+                  <td
+                    className="product-name-link"
+                    onClick={() => navigate(`/admin/product/${p.productId}`)}
+                  >
+                    {p.productName || "-"}
+                  </td>
+
+                  <td>{formatNumber(p.salePrice)}원</td>
+
+                  <td>{calcDiscount(p.salePrice, p.originalPrice)}</td>
+
+                  <td>{formatNumber(p.stock)}</td>
+
+                  <td>{p.createdDate?.slice(0, 10) || "-"}</td>
+
+                  <td>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(p.productId)}
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
     </div>

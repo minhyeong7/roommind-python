@@ -8,15 +8,17 @@ export default function CategoryModal({
 }) {
   const [majorInput, setMajorInput] = useState("");
   const [middleInput, setMiddleInput] = useState("");
-  const [selectedMajor, setSelectedMajor] = useState("");
 
-  // 🔥 현재 major 목록
+  // 모든 대분류 목록
   const majorList = [...new Set(categories.map(c => c.major_category))];
 
-  // 🔥 major 선택 시 해당 중분류 목록 필터링
-  const middleList = selectedMajor
-    ? categories.filter(c => c.major_category === selectedMajor)
-    : [];
+  // 탭에서 선택된 대분류
+  const [activeMajor, setActiveMajor] = useState(majorList[0] || "");
+
+  // 해당 대분류의 중분류
+  const middleList = categories.filter(
+    c => c.major_category === activeMajor && c.middle_category !== null
+  );
 
   // 대분류 추가
   const handleAddMajor = () => {
@@ -30,23 +32,21 @@ export default function CategoryModal({
     const newMajor = {
       category_id: Date.now(),
       major_category: majorInput,
-      middle_category: null // 중분류 X
+      middle_category: null
     };
 
     setCategories([...categories, newMajor]);
     setMajorInput("");
+    setActiveMajor(majorInput);
   };
 
   // 중분류 추가
   const handleAddMiddle = () => {
-    if (!middleInput.trim() || !selectedMajor) {
-      alert("대분류를 먼저 선택해주세요.");
-      return;
-    }
+    if (!middleInput.trim()) return;
 
     const newMiddle = {
       category_id: Date.now(),
-      major_category: selectedMajor,
+      major_category: activeMajor,
       middle_category: middleInput
     };
 
@@ -61,14 +61,20 @@ export default function CategoryModal({
 
   // 대분류 삭제
   const handleDeleteMajor = (major) => {
-    const hasChildren = categories.some(c => c.major_category === major && c.middle_category);
+    const hasChildren = categories.some(
+      (c) => c.major_category === major && c.middle_category
+    );
 
     if (hasChildren) {
-      alert("해당 대분류에 속한 중분류가 있어 삭제할 수 없습니다.");
+      alert("중분류가 있어 삭제할 수 없습니다.");
       return;
     }
 
-    setCategories(categories.filter(c => c.major_category !== major));
+    setCategories(categories.filter((c) => c.major_category !== major));
+
+    // 탭이 삭제된 경우 자동으로 첫 번째 대분류로 이동
+    const updated = majorList.filter(m => m !== major);
+    setActiveMajor(updated[0] || "");
   };
 
   return (
@@ -78,18 +84,13 @@ export default function CategoryModal({
 
         <h2>카테고리 관리</h2>
 
-        {/* ===================== */}
-        {/* 대분류 관리 */}
-        {/* ===================== */}
+        {/* 대분류 */}
         <h3>대분류</h3>
         <ul className="category-list">
           {majorList.map((major) => (
             <li key={major}>
               {major}
-              <button
-                className="delete-btn"
-                onClick={() => handleDeleteMajor(major)}
-              >
+              <button className="delete-btn" onClick={() => handleDeleteMajor(major)}>
                 ✕
               </button>
             </li>
@@ -103,60 +104,50 @@ export default function CategoryModal({
             value={majorInput}
             onChange={(e) => setMajorInput(e.target.value)}
           />
-          <button className="add-btn" onClick={handleAddMajor}>
-            추가
-          </button>
+          <button className="add-btn" onClick={handleAddMajor}>추가</button>
         </div>
 
-        {/* ===================== */}
-        {/* 중분류 관리 */}
-        {/* ===================== */}
-        <h3 style={{ marginTop: "20px" }}>중분류</h3>
+        {/* 중분류 */}
+        <h3 style={{ marginTop: "25px" }}>중분류</h3>
 
-        {/* 대분류 선택 */}
-        <select
-          value={selectedMajor}
-          onChange={(e) => setSelectedMajor(e.target.value)}
-        >
-          <option value="">대분류 선택</option>
-          {majorList.map((m) => (
-            <option key={m} value={m}>{m}</option>
+        {/* 탭 메뉴 */}
+        <div className="major-tabs">
+          {majorList.map((major) => (
+            <div
+              key={major}
+              className={`major-tab ${activeMajor === major ? "active" : ""}`}
+              onClick={() => setActiveMajor(major)}
+            >
+              {major}
+            </div>
           ))}
-        </select>
+        </div>
 
-        {/* 해당 대분류의 중분류 목록 */}
-        {selectedMajor && (
-          <ul className="category-list" style={{ marginTop: "10px" }}>
-            {middleList.map((c) =>
-              c.middle_category ? (
-                <li key={c.category_id}>
-                  {c.middle_category}
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDeleteMiddle(c.category_id)}
-                  >
-                    ✕
-                  </button>
-                </li>
-              ) : null
-            )}
-          </ul>
-        )}
+        {/* 중분류 리스트 */}
+        <ul className="category-list">
+          {middleList.map((c) => (
+            <li key={c.category_id}>
+              {c.middle_category}
+              <button
+                className="delete-btn"
+                onClick={() => handleDeleteMiddle(c.category_id)}
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
 
-        {/* 중분류 추가 입력 */}
-        {selectedMajor && (
-          <div className="add-category-row">
-            <input
-              type="text"
-              placeholder={`${selectedMajor}의 새 중분류 입력`}
-              value={middleInput}
-              onChange={(e) => setMiddleInput(e.target.value)}
-            />
-            <button className="add-btn" onClick={handleAddMiddle}>
-              추가
-            </button>
-          </div>
-        )}
+        {/* 중분류 추가 */}
+        <div className="add-category-row">
+          <input
+            type="text"
+            placeholder={`${activeMajor}의 새 중분류 입력`}
+            value={middleInput}
+            onChange={(e) => setMiddleInput(e.target.value)}
+          />
+          <button className="add-btn" onClick={handleAddMiddle}>추가</button>
+        </div>
       </div>
     </div>
   );
