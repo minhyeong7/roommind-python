@@ -8,7 +8,7 @@ import "./ProductNew.css";
 export default function ProductNew() {
   const [form, setForm] = useState({
     productName: "",
-    categoryId: "",
+    categoryId: null,   // ✔ null로 초기화 (빈문자열 X)
     originalPrice: "",
     salePrice: "",
     stock: "",
@@ -27,6 +27,7 @@ export default function ProductNew() {
       try {
         const res = await api.get("/admin/categories");
         setCategories(res.data);
+        console.log("카테고리 데이터:", res.data);
       } catch (err) {
         console.error("카테고리 불러오기 실패:", err);
       }
@@ -34,22 +35,26 @@ export default function ProductNew() {
     loadCategories();
   }, []);
 
-  // 🔥 대분류 리스트 (camelCase!)
+  // 🔥 대분류 리스트
   const majorList = [...new Set(categories.map((c) => c.majorCategory))];
 
   // 🔥 중분류 필터링
   useEffect(() => {
     if (major) {
       setMiddleList(categories.filter((c) => c.majorCategory === major));
+      // ✔ 대분류 바뀌면 선택했던 중분류만 초기화
+      setForm((prev) => ({ ...prev, categoryId: null }));
     } else {
       setMiddleList([]);
     }
   }, [major, categories]);
 
+  // 입력 변경
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // 이미지 선택
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -58,17 +63,16 @@ export default function ProductNew() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("제출 전 form:", form);
+    console.log("categoryId 타입:", typeof form.categoryId);
+
     if (!form.categoryId) return alert("카테고리를 선택해주세요!");
     if (!image) return alert("이미지를 선택해주세요!");
 
     const formData = new FormData();
 
-    const formDataObj = {
-      ...form,
-      categoryId: Number(form.categoryId),
-    };
-
-    const productJson = new Blob([JSON.stringify(formDataObj)], {
+    // 이미 categoryId는 number 상태임 → 그대로 전송
+    const productJson = new Blob([JSON.stringify(form)], {
       type: "application/json",
     });
 
@@ -105,8 +109,7 @@ export default function ProductNew() {
             <select
               value={major}
               onChange={(e) => {
-                setMajor(e.target.value);
-                setForm({ ...form, categoryId: "" });
+                setMajor(e.target.value); // ✔ categoryId 초기화는 여기서 안함!
               }}
             >
               <option value="">대분류 선택</option>
@@ -120,9 +123,12 @@ export default function ProductNew() {
             <label>중분류</label>
             <div className="category-row">
               <select
-                value={form.categoryId}
+                value={form.categoryId || ""}
                 onChange={(e) =>
-                  setForm({ ...form, categoryId: e.target.value })
+                  setForm({
+                    ...form,
+                    categoryId: Number(e.target.value), // ✔ 숫자로 변환!!
+                  })
                 }
                 required
                 disabled={!major}
@@ -197,7 +203,7 @@ export default function ProductNew() {
           onClose={() => setShowModal(false)}
           currentCategoryId={form.categoryId}
           clearSelectedCategory={() =>
-            setForm({ ...form, categoryId: "" })
+            setForm({ ...form, categoryId: null })
           }
         />
       )}

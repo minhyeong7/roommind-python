@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
-import api from "../../api/userApi"; // axios 말고 api 인스턴스 사용
+import api from "../../api/userApi";
 import "./AdminProductDetail.css";
 
 export default function ProductDetail() {
@@ -11,7 +11,6 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✔ 상품 상세 불러오기
   const fetchProduct = async () => {
     const res = await api.get(`/admin/products/${id}`);
     setProduct(res.data);
@@ -25,6 +24,11 @@ export default function ProductDetail() {
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
+  // ⭐ 이미지 경로 처리
+  const firstImage = product.images && product.images.length > 0
+    ? `/upload/${product.images[0].saveDir}/${product.images[0].fileName}`
+    : "/no-image.png";
+
   return (
     <AdminLayout>
       <div className="product-detail-container">
@@ -33,16 +37,9 @@ export default function ProductDetail() {
 
         <div className="detail-top">
 
-          {/* 왼쪽 이미지 */}
+          {/* ✔ 왼쪽 이미지 */}
           <div className="detail-image-box">
-            <img
-              src={
-                product.fileName
-                  ? `/uploads/${product.saveDir}/${product.fileName}`
-                  : "/no-image.png"
-              }
-              alt=""
-            />
+            <img src={firstImage} alt="상품 이미지" />
           </div>
 
           {/* 오른쪽 정보 */}
