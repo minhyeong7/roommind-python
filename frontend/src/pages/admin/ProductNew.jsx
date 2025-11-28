@@ -4,7 +4,7 @@ import { addProduct } from "../../api/adminApi";
 import CategoryModal from "./CategoryModal";   // ⭐ 모달 import
 import "./ProductNew.css";
 
-export default function ProductAdd() {
+export default function ProductNew() {
   const [form, setForm] = useState({
     productName: "",
     categoryId: "",
