@@ -50,3 +50,19 @@ export const deleteProduct = (id) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`
     }
   });
+  
+// 카테고리 전체 조회
+export const fetchCategories = () =>
+  api.get("/admin/categories");
+
+// 카테고리 등록
+export const addCategory = (data) =>
+  api.post("/admin/categories", data);
+
+// 카테고리 수정
+export const updateCategory = (id, data) =>
+  api.put(`/admin/categories/${id}`, data);
+
+// 카테고리 삭제
+export const deleteCategory = (id) =>
+  api.delete(`/admin/categories/${id}`);

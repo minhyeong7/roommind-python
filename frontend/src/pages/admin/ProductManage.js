@@ -117,7 +117,7 @@ export default function ProductManage() {
                     <img
                       src={
                         p.fileName
-                          ? `/upload/${p.saveDir}/${p.fileName}`
+                          ? `/uploads/${p.saveDir}/${p.fileName}`
                           : "/no-image.png"
                       }
                       alt=""

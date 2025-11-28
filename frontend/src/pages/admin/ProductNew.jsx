@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "./AdminLayout";
 import { addProduct } from "../../api/adminApi";
 import CategoryModal from "./CategoryModal";
+import api from "../../api/userApi";
 import "./ProductNew.css";
 
 export default function ProductNew() {
-  // ✔ form
   const [form, setForm] = useState({
     productName: "",
     categoryId: "",
@@ -16,27 +16,31 @@ export default function ProductNew() {
   });
 
   const [image, setImage] = useState(null);
-
-  // ✔ 카테고리
-  const [categories, setCategories] = useState([
-    { category_id: 1, major_category: "가구", middle_category: "침대" },
-    { category_id: 2, major_category: "가구", middle_category: "소파" },
-    { category_id: 3, major_category: "가구", middle_category: "책상" },
-    { category_id: 4, major_category: "디지털", middle_category: "TV" },
-    { category_id: 5, major_category: "디지털", middle_category: "냉장고" },
-  ]);
-
+  const [categories, setCategories] = useState([]);
   const [major, setMajor] = useState("");
   const [middleList, setMiddleList] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
 
-  const majorList = [...new Set(categories.map((c) => c.major_category))];
+  // 🔥 카테고리 불러오기
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await api.get("/admin/categories");
+        setCategories(res.data);
+      } catch (err) {
+        console.error("카테고리 불러오기 실패:", err);
+      }
+    };
+    loadCategories();
+  }, []);
 
+  // 🔥 대분류 리스트 (camelCase!)
+  const majorList = [...new Set(categories.map((c) => c.majorCategory))];
+
+  // 🔥 중분류 필터링
   useEffect(() => {
     if (major) {
-      const filtered = categories.filter((c) => c.major_category === major);
-      setMiddleList(filtered);
+      setMiddleList(categories.filter((c) => c.majorCategory === major));
     } else {
       setMiddleList([]);
     }
@@ -50,7 +54,7 @@ export default function ProductNew() {
     setImage(e.target.files[0]);
   };
 
-  // ✔ 상품 등록
+  // 🔥 상품 등록
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,13 +63,17 @@ export default function ProductNew() {
 
     const formData = new FormData();
 
-    //  product JSON을 Blob으로 넣기 (백엔드 요구사항)
-    const productJson = new Blob([JSON.stringify(form)], {
+    const formDataObj = {
+      ...form,
+      categoryId: Number(form.categoryId),
+    };
+
+    const productJson = new Blob([JSON.stringify(formDataObj)], {
       type: "application/json",
     });
 
     formData.append("product", productJson);
-    formData.append("file", image); // ✔ 파일명 'file' 그대로!
+    formData.append("file", image);
 
     try {
       await addProduct(formData);
@@ -120,9 +128,10 @@ export default function ProductNew() {
                 disabled={!major}
               >
                 <option value="">중분류 선택</option>
+
                 {middleList.map((c) => (
-                  <option key={c.category_id} value={c.category_id}>
-                    {c.middle_category}
+                  <option key={c.categoryId} value={c.categoryId}>
+                    {c.middleCategory}
                   </option>
                 ))}
               </select>

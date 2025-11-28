@@ -38,6 +38,9 @@ import ProductManage from "./pages/admin/ProductManage";
 import UserManage from "./pages/admin/UserManage";
 import QnaManage from "./pages/admin/QnaManage";
 import ProductNew from "./pages/admin/ProductNew";
+import AdminProductDetail from "./pages/admin/AdminProductDetail";
+
+
 
 
 /* 유저 마이페이지 */
@@ -151,6 +154,8 @@ function App() {
               </AdminRoute>
             }
           />
+
+          <Route path="/admin/product/:id" element={<AdminProductDetail />} />
 
 
           {/* ----------------------------- */}
