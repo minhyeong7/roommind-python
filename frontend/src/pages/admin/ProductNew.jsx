@@ -8,7 +8,7 @@ export default function ProductNew() {
   // ✔ form
   const [form, setForm] = useState({
     productName: "",
-    categoryId: "", // 최종 선택된 중분류 category_id
+    categoryId: "",
     originalPrice: "",
     salePrice: "",
     stock: "",
@@ -17,7 +17,7 @@ export default function ProductNew() {
 
   const [image, setImage] = useState(null);
 
-  // ✔ DB 형태의 카테고리 데이터
+  // ✔ 카테고리
   const [categories, setCategories] = useState([
     { category_id: 1, major_category: "가구", middle_category: "침대" },
     { category_id: 2, major_category: "가구", middle_category: "소파" },
@@ -26,21 +26,16 @@ export default function ProductNew() {
     { category_id: 5, major_category: "디지털", middle_category: "냉장고" },
   ]);
 
-  // ✔ 대분류 / 중분류 상태관리
   const [major, setMajor] = useState("");
   const [middleList, setMiddleList] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
 
-  // 🔥 대분류 목록(중복 제거)
   const majorList = [...new Set(categories.map((c) => c.major_category))];
 
-  // 🔥 major 선택되면 해당 major에 맞는 middle 목록만 필터링
   useEffect(() => {
     if (major) {
-      const filtered = categories.filter(
-        (c) => c.major_category === major
-      );
+      const filtered = categories.filter((c) => c.major_category === major);
       setMiddleList(filtered);
     } else {
       setMiddleList([]);
@@ -55,18 +50,22 @@ export default function ProductNew() {
     setImage(e.target.files[0]);
   };
 
+  // ✔ 상품 등록
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image) return alert("대표 이미지를 넣어주세요!");
     if (!form.categoryId) return alert("카테고리를 선택해주세요!");
+    if (!image) return alert("이미지를 선택해주세요!");
 
     const formData = new FormData();
-    formData.append("image", image);
 
-    Object.keys(form).forEach((key) => {
-      formData.append(key, form[key]);
+    //  product JSON을 Blob으로 넣기 (백엔드 요구사항)
+    const productJson = new Blob([JSON.stringify(form)], {
+      type: "application/json",
     });
+
+    formData.append("product", productJson);
+    formData.append("file", image); // ✔ 파일명 'file' 그대로!
 
     try {
       await addProduct(formData);
@@ -85,7 +84,6 @@ export default function ProductNew() {
           <h1>상품 등록</h1>
 
           <form className="product-add-form" onSubmit={handleSubmit}>
-            {/* 상품명 */}
             <label>상품명</label>
             <input
               type="text"
@@ -95,13 +93,12 @@ export default function ProductNew() {
               required
             />
 
-            {/* 🔥 대분류 선택 */}
             <label>대분류</label>
             <select
               value={major}
               onChange={(e) => {
                 setMajor(e.target.value);
-                setForm({ ...form, categoryId: "" }); // 중분류 초기화
+                setForm({ ...form, categoryId: "" });
               }}
             >
               <option value="">대분류 선택</option>
@@ -112,7 +109,6 @@ export default function ProductNew() {
               ))}
             </select>
 
-            {/* 🔥 중분류 선택 */}
             <label>중분류</label>
             <div className="category-row">
               <select
@@ -120,8 +116,8 @@ export default function ProductNew() {
                 onChange={(e) =>
                   setForm({ ...form, categoryId: e.target.value })
                 }
-                disabled={!major}
                 required
+                disabled={!major}
               >
                 <option value="">중분류 선택</option>
                 {middleList.map((c) => (
@@ -140,7 +136,6 @@ export default function ProductNew() {
               </button>
             </div>
 
-            {/* 원가 */}
             <label>원가</label>
             <input
               type="number"
@@ -150,7 +145,6 @@ export default function ProductNew() {
               required
             />
 
-            {/* 판매가 */}
             <label>판매가</label>
             <input
               type="number"
@@ -160,7 +154,6 @@ export default function ProductNew() {
               required
             />
 
-            {/* 재고 */}
             <label>재고</label>
             <input
               type="number"
@@ -170,7 +163,6 @@ export default function ProductNew() {
               required
             />
 
-            {/* 설명 */}
             <label>설명</label>
             <textarea
               name="description"
@@ -179,7 +171,6 @@ export default function ProductNew() {
               required
             />
 
-            {/* 이미지 */}
             <label>대표 이미지</label>
             <input type="file" accept="image/*" onChange={handleFileChange} />
 
@@ -190,7 +181,6 @@ export default function ProductNew() {
         </div>
       </div>
 
-      {/* 카테고리 관리 모달 */}
       {showModal && (
         <CategoryModal
           categories={categories}
