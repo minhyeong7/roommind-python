@@ -115,17 +115,32 @@ export default function QnAEdit() {
           required
         />
 
-        {/* 기존 이미지 보여주기 */}
-        {files.length > 0 && (
-          <div className="qna-edit-old-images">
-            <p>📎 기존 첨부파일</p>
-            {files.map((img) => (
-              <div key={img.uuid} className="qna-edit-old-image">
-                <span>• {img.fileName}</span>
-              </div>
-            ))}
-          </div>
-        )}
+              {/* 기존 이미지 보여주기 */}
+              {files.length > 0 && (
+                  <div className="qna-edit-old-images">
+                      <p>📷 기존 첨부 이미지</p>
+
+                      <div className="qna-edit-old-image-list">
+                          {files.map((file) => {
+                              // 저장 폴더 경로에서 날짜만 추출
+                              const folder = file.saveDir.split("uploads/qna/")[1];
+
+                              // 최종 URL 생성
+                              const imgUrl = `http://localhost:8080/uploads/qna/${folder}/${file.fileName}`;
+
+                              return (
+                                  <img
+                                      key={file.uuid}
+                                      src={imgUrl}
+                                      alt="old"
+                                      className="qna-edit-old-image"
+                                  />
+                              );
+                          })}
+                      </div>
+                  </div>
+              )}
+
 
         {/* 새 이미지 업로드 */}
         <label className="qna-edit-label">새 첨부파일 추가</label>
