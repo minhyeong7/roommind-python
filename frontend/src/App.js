@@ -39,6 +39,7 @@ import UserManage from "./pages/admin/UserManage";
 import QnaManage from "./pages/admin/QnaManage";
 import ProductNew from "./pages/admin/ProductNew";
 import AdminProductDetail from "./pages/admin/AdminProductDetail";
+import ProductEdit from "./pages/admin/ProductEdit";
 
 
 
@@ -160,6 +161,8 @@ function App() {
           />
 
           <Route path="/admin/product/:id" element={<AdminProductDetail />} />
+          <Route path="/admin/products/:id/edit" element={<ProductEdit />} />
+
 
 
           {/* ----------------------------- */}

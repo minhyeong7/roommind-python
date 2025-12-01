@@ -51,7 +51,7 @@ export default function CommunityPage() {
               <button className={activeTab === "weekly" ? "active" : ""}>주간</button>
             </div>
            <button
-            className="write-btn"
+            className="write-btn-top"
             onClick={() => navigate("/community/write")}
           >
             글쓰기
