@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import "./CommunityWrite.css";
 import { useNavigate } from "react-router-dom";
+import { createCommunityBoard } from "../../api/cmtboardApi";   // 🔥 API 연결
 
 export default function CommunityWrite() {
   const navigate = useNavigate();
 
-  // 🔥 로그인 사용자 정보 불러오기
+  // 🔥 로그인 사용자 정보
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
@@ -18,25 +19,45 @@ export default function CommunityWrite() {
     setFiles([...e.target.files]);
   };
 
-  const handleSubmit = (e) => {
+  /* ============================
+      🔥 폼 제출 → API 요청
+  ============================= */
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("폼 제출 기능은 백엔드 연결 후 구현됩니다!");
+
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    // 백엔드가 요구하는 JSON 형식
+    const boardData = {
+      title,
+      content,
+      userId: user.userId, // 로그인되어 있는 유저 ID 사용
+    };
+
+    try {
+      await createCommunityBoard(boardData, files); // 🔥 API 호출
+      alert("게시글이 등록되었습니다!");
+      navigate("/community");
+    } catch (err) {
+      console.error("게시글 등록 실패:", err);
+      alert("게시글 등록 중 오류가 발생했습니다.");
+    }
   };
 
   return (
     <div className="cmt-write-container">
       <div className="cmt-write-box">
-
-        {/* 제목 */}
         <h2 className="cmt-write-title">✏️ 커뮤니티 글쓰기</h2>
 
-        {/*  작성자 이름/이메일 표시 */}
         <div className="cmt-writer-info">
           작성자 : <strong>{user?.username || user?.email || "로그인 필요"}</strong>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* 제목 입력 */}
+          {/* 제목 */}
           <input
             className="cmt-input-title"
             type="text"
@@ -46,7 +67,7 @@ export default function CommunityWrite() {
             required
           />
 
-          {/* 내용 입력 */}
+          {/* 내용 */}
           <textarea
             className="cmt-input-content"
             placeholder="내용을 입력하세요"
@@ -66,7 +87,7 @@ export default function CommunityWrite() {
             />
           </div>
 
-          {/* 버튼 영역 */}
+          {/* 버튼 */}
           <div className="cmt-btn-box">
             <button
               type="button"

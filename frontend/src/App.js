@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route ,HashRouter as Router} from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import AdminRoute from "./routes/AdminRoute";
 
 /* 공통 컴포넌트 */
@@ -59,8 +59,9 @@ import LoginSuccess from "./pages/LoginSuccess";
 import LoginError from "./pages/LoginError";
 
 
-
 function App() {
+  
+
   return (
     <CartProvider>
       <BrowserRouter>

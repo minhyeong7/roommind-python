@@ -8,108 +8,111 @@ const api = axios.create({
   },
 });
 
-// ===========================================
-// 🔥 JWT 내부 payload exp 읽기 (패키지 없이)
-// ===========================================
-const getJwtExp = (token) => {
+/* ===========================================
+   🔥 JWT exp 검증 함수 (클라이언트에서 직접 체크)
+=========================================== */
+const isTokenExpired = (token) => {
   try {
     const payloadBase64 = token.split(".")[1];
-    const json = JSON.parse(atob(payloadBase64)); // header.payload.signature
-    return json.exp * 1000; // exp는 초 단위 → ms 변환
+    const payloadJson = JSON.parse(atob(payloadBase64));
+    const expSec = payloadJson.exp; // exp: 초 단위
+    if (!expSec) {
+      // exp 없으면 만료로 간주하거나 true/false 선택 가능
+      return true;
+    }
+    const expTime = expSec * 1000;
+    return Date.now() > expTime;
   } catch (e) {
     console.error("JWT decode 실패:", e);
-    return null;
+    // 파싱 실패하면 안전하게 만료로 취급
+    return true;
   }
 };
 
-// ===========================================
-// 🔥 자동 로그아웃 타이머
-// ===========================================
-let logoutTimer = null;
-
-const scheduleAutoLogout = (token) => {
-  const expTime = getJwtExp(token);
-  if (!expTime) return;
-
-  const remaining = expTime - Date.now();
-
-  if (remaining <= 0) {
-    logoutUser();
-    return;
-  }
-
-  console.log(
-    `⏳ JWT 만료까지 남은 시간: ${Math.floor(remaining / 1000)}초`
-  );
-
-  if (logoutTimer) clearTimeout(logoutTimer);
-
-  logoutTimer = setTimeout(() => {
-    logoutUser();
-  }, remaining);
-};
-
-// ===========================================
-// 🔥 로그아웃 기능
-// ===========================================
-export const logoutUser = () => {
+/* ===========================================
+   🔥 로그아웃 공통 함수
+=========================================== */
+export const logoutUser = (redirect = true) => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
-  if (logoutTimer) clearTimeout(logoutTimer);
+  console.log("🚪 로그아웃 처리됨");
 
-  console.log("⛔ JWT 만료 → 자동 로그아웃 됨");
-  window.location.href = "/login";
+  if (redirect && window.location.pathname !== "/login") {
+    window.location.href = "/login";
+  }
 };
 
-// ===========================================
-// 🔥 회원가입
-// ===========================================
+
+/* ===========================================
+   🔥 Axios 요청 인터셉터 — 요청 전에 exp 직접 체크
+=========================================== */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // 요청 보내기 전에 만료 여부 검사
+      if (isTokenExpired(token)) {
+        console.log("⛔ 토큰 만료 → 요청 차단 + 자동 로그아웃");
+        logoutUser();
+        return Promise.reject("TOKEN_EXPIRED");
+      }
+
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ===========================================
+   🔥 Axios 응답 인터셉터 — 401/403 오면 자동 로그아웃
+=========================================== */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+
+    if (status === 401 || status === 403) {
+      console.log("🔐 서버 인증 오류 (", status, ") → 자동 로그아웃");
+      logoutUser();
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+/* ===========================================
+   🔥 회원가입
+=========================================== */
 export const registerUser = async (userData) => {
-  const response = await api.post("/users/signup", userData);
-  return response.data;
+  const res = await api.post("/users/signup", userData);
+  return res.data;
 };
 
-// ===========================================
-// 🔥 로그인 API
-// ===========================================
+/* ===========================================
+   🔥 일반 로그인
+   - 백엔드에서 내려준 JWT 저장만 함
+   - 소셜 로그인은 /login-success 페이지 등에서
+     쿼리스트링으로 받은 token을 직접 localStorage에 저장할 수도 있음
+=========================================== */
 export const loginUser = async (loginData) => {
   try {
-    const response = await api.post("/users/login", loginData);
-    const token = response.data?.data?.token;
+    const res = await api.post("/users/login", loginData);
+    const token = res.data?.data?.token;
 
     if (token) {
       localStorage.setItem("token", token);
-
-      // ⭐ exp 기반 자동 로그아웃 설정
-      scheduleAutoLogout(token);
-
-      console.log("💡 JWT 로그인 성공 (exp 기반 체크 시작)");
+      console.log("✅ 로그인 성공, 토큰 저장");
     }
 
-    return response.data;
+    return res.data;
   } catch (err) {
     console.error("❌ 로그인 오류:", err);
     throw err;
   }
 };
-
-// ===========================================
-// 🔥 페이지 새로고침 시에도 exp 기반 로그아웃 유지
-// ===========================================
-(() => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    scheduleAutoLogout(token);
-  }
-})();
-
-// ===========================================
-// 🔥 Axios 요청 인터셉터 — JWT 자동 첨부
-// ===========================================
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
 
 export default api;

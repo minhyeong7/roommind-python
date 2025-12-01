@@ -1,3 +1,4 @@
+// src/pages/admin/UserManage.js
 import React, { useEffect, useState } from "react";
 import AdminLayout from "./AdminLayout";
 import { fetchAllUsers, updateUserRole } from "../../api/adminApi";
@@ -11,18 +12,22 @@ export default function UserManage() {
 
   const [selectedUser, setSelectedUser] = useState(null);
 
-  /** 전체 회원 조회 */
-  const loadUsers = () => {
-    fetchAllUsers(keyword, filterRole, sort)
-      .then((res) => setUsers(res.data))
-      .catch((err) => console.error("회원 조회 실패:", err));
-  };
-
+  /* ================================
+      🔥 전체 회원 조회 (경고 해결 버전)
+  ================================= */
   useEffect(() => {
+    const loadUsers = () => {
+      fetchAllUsers(keyword, filterRole, sort)
+        .then((res) => setUsers(res.data))
+        .catch((err) => console.error("회원 조회 실패:", err));
+    };
+
     loadUsers();
   }, [keyword, filterRole, sort]);
 
-  /** 권한 변경 */
+  /* ================================
+      🔥 권한 변경
+  ================================= */
   const handleRoleChange = async (id, currentRole) => {
     const newRole = currentRole === "admin" ? "user" : "admin";
 
@@ -30,11 +35,13 @@ export default function UserManage() {
 
     try {
       await updateUserRole(id, newRole);
+
       setUsers((prev) =>
         prev.map((user) =>
           user.userId === id ? { ...user, role: newRole } : user
         )
       );
+
       alert("권한 변경 성공!");
     } catch (error) {
       console.error("권한 변경 실패:", error);
@@ -94,6 +101,7 @@ export default function UserManage() {
             <th>관리</th>
           </tr>
         </thead>
+
         <tbody>
           {users.map((u) => (
             <tr
@@ -111,6 +119,7 @@ export default function UserManage() {
                   {u.role === "admin" ? "관리자" : "일반회원"}
                 </span>
               </td>
+
               <td>
                 <button
                   className="role-btn"
@@ -119,7 +128,9 @@ export default function UserManage() {
                     handleRoleChange(u.userId, u.role);
                   }}
                 >
-                  {u.role === "admin" ? "일반회원으로 변경" : "관리자 권한 부여"}
+                  {u.role === "admin"
+                    ? "일반회원으로 변경"
+                    : "관리자 권한 부여"}
                 </button>
               </td>
             </tr>

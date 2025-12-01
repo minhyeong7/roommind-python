@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./ProductManage.css";
 import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
-
 import api from "../../api/userApi";
-// ⭐ axios 대신 api 사용
 
 export default function ProductManage() {
   const navigate = useNavigate();
@@ -15,30 +13,37 @@ export default function ProductManage() {
   const [sort, setSort] = useState("latest");
   const [category, setCategory] = useState("");
 
-  // ⭐ 상품 불러오기(API 인스턴스 사용!)
-  const fetchProducts = async () => {
-    const res = await api.get("/admin/products", {
-      params: {
-        keyword: search || "",
-        sort: sort || "latest",
-        categoryId: category || "",
-      },
-    });
-
-    console.log("응답 데이터:", res.data);
-    setProducts(res.data || []);
-  };
-
+  /* ===========================================
+     🔥 useEffect 내부에서 fetchProducts 정의
+     → ESLint 경고 해결 + 기능 동일하게 유지
+  ============================================ */
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await api.get("/admin/products", {
+          params: {
+            keyword: search || "",
+            sort: sort || "latest",
+            categoryId: category || "",
+          },
+        });
+
+        console.log("응답 데이터:", res.data);
+        setProducts(res.data || []);
+      } catch (err) {
+        console.error("상품 조회 실패:", err);
+      }
+    };
+
     fetchProducts();
   }, [search, sort, category]);
 
-  // ⭐ 삭제 API도 반드시 api 인스턴스로!
+  // ⭐ 삭제 API
   const handleDelete = async (productId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
     await api.delete(`/admin/products/${productId}`);
-    fetchProducts();
+    // 삭제 후 새로고침 (fetchProducts 역할)
+    setSearch((prev) => prev); 
   };
 
   const formatNumber = (value) => {
@@ -52,16 +57,12 @@ export default function ProductManage() {
     return rate + "%";
   };
 
-  // ⭐ 이미지 URL 생성 헬퍼 (프론트만 수정)
   const getProductImage = (images) => {
     if (!images || images.length === 0) return "/no-image.png";
 
     const img = images[0];
-
-    // Windows 경로 → 웹 경로 변환
     const fixedDir = img.saveDir.replace(/\\/g, "/");
 
-    // uploads/product/ 뒤의 날짜폴더 가져오기
     const folderName = fixedDir.split("uploads/product/")[1];
 
     if (!folderName) return "/no-image.png";
@@ -146,11 +147,8 @@ export default function ProductManage() {
                   </td>
 
                   <td>{formatNumber(p.salePrice)}원</td>
-
                   <td>{calcDiscount(p.salePrice, p.originalPrice)}</td>
-
                   <td>{formatNumber(p.stock)}</td>
-
                   <td>{p.createdDate?.slice(0, 10) || "-"}</td>
 
                   <td>

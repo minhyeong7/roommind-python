@@ -29,8 +29,8 @@ function Footer() {
         {/* 우측: 고객센터 / SNS */}
         <div className="footer-contact">
           <h4>고객센터</h4>
-          <p><i class="bi bi-telephone-fill"></i> 1588-1234</p>
-          <p><i class="bi bi-envelope-at-fill"></i> help@roommind.com</p>
+          <p><i className="bi bi-telephone-fill"></i> 1588-1234</p>
+          <p><i className="bi bi-envelope-at-fill"></i> help@roommind.com</p>
           <div className="sns-icons">
           <div className="sns-icons">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">

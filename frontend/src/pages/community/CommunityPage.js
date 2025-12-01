@@ -6,6 +6,7 @@ import CommunityItem from "./CommunityItem";
 import CommunitySidebar from "./CommunitySidebar";
 import { fetchCommunityList } from "../../api/cmtboardApi";  // ✅ API 추가
 
+
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState("all"); 
   const [posts, setPosts] = useState([]);             // 🔥 백엔드 데이터 저장
@@ -102,7 +103,7 @@ export default function CommunityPage() {
             </button>
           </div>
 
-          <button className="write-btn-top">글쓰기</button>
+          <button className="write-btn-top" onClick={() => navigate("/community/write")}>글쓰기</button>
         </div>
 
         {/* 🔥 실제 API 데이터로 리스트 렌더링 */}
