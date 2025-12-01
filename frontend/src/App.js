@@ -40,6 +40,7 @@ import QnaManage from "./pages/admin/QnaManage";
 import ProductNew from "./pages/admin/ProductNew";
 import AdminProductDetail from "./pages/admin/AdminProductDetail";
 import ProductEdit from "./pages/admin/ProductEdit";
+import CategoryManage  from "./pages/admin/CategoryEdit";
 
 
 
@@ -169,6 +170,7 @@ function App() {
 
           <Route path="/admin/product/:id" element={<AdminProductDetail />} />
           <Route path="/admin/products/:id/edit" element={<ProductEdit />} />
+          <Route path="/admin/categories" element={<CategoryManage />} />
 
 
 

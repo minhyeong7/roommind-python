@@ -1,13 +1,14 @@
+// src/admin/CategoryEdit.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import api from "../../api/userApi";
 
 export default function CategoryEdit() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const isNew = id === "new";
+  const isNew = id === "new"; // 새 카테고리인지 확인
 
   const [form, setForm] = useState({
     majorCategory: "",
@@ -15,25 +16,36 @@ export default function CategoryEdit() {
   });
 
   useEffect(() => {
-    if (!isNew) {
+    if (!isNew && id) {
       fetchDetail();
     }
-  }, []);
+  }, [id]);
 
   const fetchDetail = async () => {
-    const res = await api.get(`/admin/categories/${id}`);
-    setForm(res.data);
+    try {
+      const res = await api.get(`/admin/categories/${id}`);
+      setForm(res.data);
+    } catch (err) {
+      console.error("카테고리 상세 조회 실패:", err);
+      alert("카테고리를 불러오지 못했습니다.");
+      navigate("/admin/categories");
+    }
   };
 
   const handleSubmit = async () => {
-    if (isNew) {
-      await api.post("/admin/categories", form);
-    } else {
-      await api.put(`/admin/categories/${id}`, form);
-    }
+    try {
+      if (isNew) {
+        await api.post(`/admin/categories`, form);
+      } else {
+        await api.put(`/admin/categories/${id}`, form);
+      }
 
-    alert("저장되었습니다!");
-    navigate("/admin/categories");
+      alert("저장되었습니다!");
+      navigate("/admin/categories");
+    } catch (err) {
+      console.error("카테고리 저장 실패:", err);
+      alert("저장 중 오류가 발생했습니다.");
+    }
   };
 
   const handleInput = (e) => {
@@ -59,15 +71,10 @@ export default function CategoryEdit() {
           onChange={handleInput}
         />
 
-        <button className="save-btn" onClick={handleSubmit}>
-          저장
-        </button>
-        <button
-          className="cancel-btn"
-          onClick={() => navigate("/admin/categories")}
-        >
-          취소
-        </button>
+        <div className="edit-btn-group">
+          <button className="save-btn" onClick={handleSubmit}>저장</button>
+          <button className="cancel-btn" onClick={() => navigate("/admin/categories")}>취소</button>
+        </div>
       </div>
     </AdminLayout>
   );
