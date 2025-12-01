@@ -1,0 +1,154 @@
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchQnADetail } from "../../api/qnaboardApi";
+import api from "../../api/userApi";
+import "./QnAEdit.css";
+
+export default function QnAEdit() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]); // 기존 파일
+  const [newFiles, setNewFiles] = useState([]); // 새로 추가한 파일
+  const [loading, setLoading] = useState(true);
+
+  const storedUser = localStorage.getItem("user");
+  const loginUser = storedUser ? JSON.parse(storedUser) : null;
+
+  // ==========================================
+  // 🔥 기존 데이터 불러오기
+  // ==========================================
+  const loadDetail = useCallback(async () => {
+    try {
+      const data = await fetchQnADetail(id);
+
+      // 본인 글이 아니면 접근 불가
+      if (loginUser && loginUser.userId !== data.board.userId) {
+        alert("본인 게시물만 수정할 수 있습니다.");
+        navigate(`/qna/${id}`);
+        return;
+      }
+
+      setTitle(data.board.title);
+      setContent(data.board.content);
+      setFiles(data.files || []);
+    } catch (error) {
+      console.error("❌ 상세 조회 실패:", error);
+      alert("게시글을 불러올 수 없습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, [id, loginUser, navigate]);
+
+  useEffect(() => {
+    loadDetail();
+  }, [loadDetail]);
+
+  // ==========================================
+  // 🔥 파일 선택
+  // ==========================================
+  const handleFileChange = (e) => {
+    setNewFiles([...e.target.files]);
+  };
+
+  // ==========================================
+  // 🔥 수정 저장 API 호출
+  // ==========================================
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const boardData = {
+      title,
+      content,
+    };
+
+    const formData = new FormData();
+    formData.append(
+      "board",
+      new Blob([JSON.stringify(boardData)], { type: "application/json" })
+    );
+
+    newFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    try {
+      await api.put(`/qnaboards/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("수정이 완료되었습니다!");
+      navigate(`/qna/${id}`);
+    } catch (error) {
+      console.error("❌ 수정 실패:", error);
+      alert("수정 중 문제가 발생했습니다.");
+    }
+  };
+
+  if (loading) return <div className="qna-edit-loading">⏳ 불러오는 중...</div>;
+
+  return (
+    <div className="qna-edit-container">
+      <h2>Q&A 수정하기</h2>
+
+      <form onSubmit={handleSubmit} className="qna-edit-form">
+        {/* 제목 */}
+        <label className="qna-edit-label">제목</label>
+        <input
+          type="text"
+          className="qna-edit-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+
+        {/* 내용 */}
+        <label className="qna-edit-label">내용</label>
+        <textarea
+          className="qna-edit-textarea"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        />
+
+        {/* 기존 이미지 보여주기 */}
+        {files.length > 0 && (
+          <div className="qna-edit-old-images">
+            <p>📎 기존 첨부파일</p>
+            {files.map((img) => (
+              <div key={img.uuid} className="qna-edit-old-image">
+                <span>• {img.fileName}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 새 이미지 업로드 */}
+        <label className="qna-edit-label">새 첨부파일 추가</label>
+        <input
+          type="file"
+          multiple
+          className="qna-edit-file"
+          onChange={handleFileChange}
+        />
+
+        <div className="qna-edit-buttons">
+          <button
+            type="button"
+            className="qna-edit-cancel"
+            onClick={() => navigate(`/qna/${id}`)}
+          >
+            취소
+          </button>
+          <button type="submit" className="qna-edit-submit">
+            저장
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

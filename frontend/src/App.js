@@ -58,6 +58,7 @@ import OrderBank from "./pages/OrderCompleteBank";
 import LoginSuccess from "./pages/LoginSuccess";
 import LoginError from "./pages/LoginError";
 import QnADetail from "./pages/qna/QnADetail";
+import QnAEdit from "./pages/qna/QnAEdit";
 
 
 function App() {
@@ -96,6 +97,7 @@ function App() {
           <Route path="/qna" element={<QnAList />} />
           <Route path="/qna/write" element={<QnAWrite />} />
           <Route path="/qna/:id" element={<QnADetail />} />
+          <Route path="/qna/edit/:id" element={<QnAEdit />} />
 
 
           {/* 인테리어 */}
