@@ -15,8 +15,8 @@ import Login from "./pages/Login";
 import CartPage from "./pages/CartPage";
 
 /* QnA */
-import QnAList from "./pages/QnAList";
-import QnAWrite from "./pages/QnAWrite";
+import QnAList from "./pages/qna/QnAList";
+import QnAWrite from "./pages/qna/QnAWrite";
 
 /* 커뮤니티페이지 */
 import CommunityPage from "./pages/community/CommunityPage";
@@ -57,6 +57,7 @@ import OrderBank from "./pages/OrderCompleteBank";
 /* 소셜 로그인 처리 페이지들 */
 import LoginSuccess from "./pages/LoginSuccess";
 import LoginError from "./pages/LoginError";
+import QnADetail from "./pages/qna/QnADetail";
 
 
 function App() {
@@ -94,6 +95,8 @@ function App() {
           {/* Q&A */}
           <Route path="/qna" element={<QnAList />} />
           <Route path="/qna/write" element={<QnAWrite />} />
+          <Route path="/qna/:id" element={<QnADetail />} />
+
 
           {/* 인테리어 */}
           <Route path="/interior" element={<InteriorPage />} />

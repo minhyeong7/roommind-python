@@ -65,4 +65,17 @@ export const createQnABoard = async (boardData, images) => {
   }
 };
 
+// 상세 조회
+export const fetchQnADetail = async (id) => {
+  const res = await api.get(`/qnaboards/${id}`);
+  return res.data.data;
+};
+
+// 삭제
+export const deleteQnA = async (id) => {
+  return await api.delete(`/qnaboards/${id}`);
+};
+
+
+
 export default api;

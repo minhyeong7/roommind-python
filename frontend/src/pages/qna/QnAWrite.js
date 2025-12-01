@@ -1,7 +1,7 @@
 // src/pages/QnAWrite.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createQnABoard } from "../api/qnaboardApi";
+import { createQnABoard } from "../../api/qnaboardApi";
 import "./QnAWrite.css";
 
 function QnAWrite() {

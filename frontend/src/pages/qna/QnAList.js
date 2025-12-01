@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchQnAList } from "../api/qnaboardApi";
+import { fetchQnAList } from "../../api/qnaboardApi";
 import "./QnAList.css";
 
 function QnAList() {
