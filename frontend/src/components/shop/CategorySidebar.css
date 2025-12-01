@@ -1,88 +1,58 @@
-/* 사이드바 영역 고정 */
-.category-sidebar {
+.category-container {
   width: 240px;
-  flex-shrink: 0; /* 오른쪽 콘텐츠가 커져도 사이드바 안눌림 */
-  padding: 20px 10px;
-  border-right: 1px solid #eee;
-  background: #fff;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
-/* 제목 */
-.category-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 20px;
+.main-category {
+  margin-bottom: 6px;
 }
 
-/* 카테고리 전체 리스트 */
-.category-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* 각 카테고리 wrapper */
-.category-wrapper {
-  margin-bottom: 10px;
-}
-
-/* 대분류 버튼 */
-.category-item {
+/* ------ 주 카테고리 버튼 ------ */
+.main-btn {
   width: 100%;
   background: none;
   border: none;
-  padding: 12px 5px;
-  font-size: 16px;
-  cursor: pointer;
-
+  padding: 10px 5px;
+  font-size: 17px;
+  font-weight: 500;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  cursor: pointer;
   color: #333;
+}
+
+.main-btn:hover span:first-child {
+  color: #0078ff;
   transition: 0.2s;
 }
 
-.category-item:hover {
-  background: #f9f9f9;
+.main-btn .active-text {
+  color: #0078ff;
+  font-weight: 600;
 }
 
-.category-item.active {
-  font-weight: 700;
-  color: #fa7020;
-}
-
-/* 서브카테고리 리스트 */
-.subcategory-list {
-  list-style: none;
-  padding-left: 12px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-}
-
-.subcategory-item {
-  padding: 6px 5px;
+.arrow {
   font-size: 14px;
+  color: #555;
+}
+
+/* ------ 서브 카테고리 ------ */
+.sub-list {
+  list-style: none; /* 🔥 점 없애기 */
+  margin: 4px 0 6px 0;
+  padding-left: 15px;
+}
+
+.sub-item {
+  font-size: 15px;
+  padding: 4px 0;
   cursor: pointer;
   color: #555;
 }
 
-.subcategory-item:hover {
-  color: #fa7020;
-}
-
-/* 화살표 */
-.arrow {
-  font-size: 12px;
-  color: #888;
-}
-
-/* 밀리는 문제 해결 */
-.shop-container {
-  display: flex;
-  max-width: 1400px;
-  width: 100%;
-  margin: 30px auto;
-  gap: 40px;
-  align-items: flex-start;
+.sub-item:hover {
+  color: #0078ff;
+  font-weight: 500;
+  transition: 0.2s;
 }

@@ -32,36 +32,38 @@ const categories = [
 ];
 
 function CategorySidebar() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openMain, setOpenMain] = useState(null);
 
   return (
-    <aside className="category-sidebar">
-      <h2 className="category-title">카테고리</h2>
+    <div className="category-container">
+      {categories.map((main, mainIndex) => (
+        <div key={main.name} className="main-category">
+          {/* 1단 — 주 카테고리 */}
+          <button
+            className="main-btn"
+            onClick={() =>
+              setOpenMain(openMain === mainIndex ? null : mainIndex)
+            }
+          >
+            <span className={openMain === mainIndex ? "active-text" : ""}>
+              {main.name}
+            </span>
+            <span className="arrow">{openMain === mainIndex ? "▲" : "▼"}</span>
+          </button>
 
-      <ul className="category-list">
-        {categories.map((c, i) => (
-          <li key={c.name} className="category-wrapper">
-            <button
-              className={`category-item ${openIndex === i ? "active" : ""}`}
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            >
-              <span>{c.name}</span>
-              <span className="arrow">{openIndex === i ? "▲" : "▼"}</span>
-            </button>
-
-            {openIndex === i && (
-              <ul className="subcategory-list">
-                {c.sub.map((sub) => (
-                  <li key={sub} className="subcategory-item">
-                    {sub}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-    </aside>
+          {/* 2단 — 서브 카테고리 */}
+          {openMain === mainIndex && (
+            <ul className="sub-list">
+              {main.sub.map((item) => (
+                <li key={item} className="sub-item">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
