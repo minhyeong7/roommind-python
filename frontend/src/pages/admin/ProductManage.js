@@ -1,5 +1,5 @@
 // src/admin/ProductManage.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./ProductManage.css";
 import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
@@ -13,61 +13,68 @@ export default function ProductManage() {
   const [sort, setSort] = useState("latest");
   const [category, setCategory] = useState("");
 
-  /* ===========================================
-     🔥 useEffect 내부에서 fetchProducts 정의
-     → ESLint 경고 해결 + 기능 동일하게 유지
-  ============================================ */
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await api.get("/admin/products", {
-          params: {
-            keyword: search || "",
-            sort: sort || "latest",
-            categoryId: category || "",
-          },
-        });
+  /* ======================================================
+     fetchProducts — 외부로 분리하여 삭제 후 즉시 호출 가능
+  ====================================================== */
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await api.get("/admin/products", {
+        params: {
+          keyword: search || "",
+          sort: sort || "latest",
+          categoryId: category || "",
+        },
+      });
 
-        console.log("응답 데이터:", res.data);
-        setProducts(res.data || []);
-      } catch (err) {
-        console.error("상품 조회 실패:", err);
-      }
-    };
-
-    fetchProducts();
+      setProducts(res.data || []);
+    } catch (err) {
+      console.error("상품 조회 실패:", err);
+    }
   }, [search, sort, category]);
 
-  // ⭐ 삭제 API
+  /* ======================================================
+     검색/정렬/카테고리 변경 시 상품 목록 새로 로드
+  ====================================================== */
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  /* ======================================================
+     삭제 API (삭제 후 즉시 fetchProducts 호출)
+  ====================================================== */
   const handleDelete = async (productId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    await api.delete(`/admin/products/${productId}`);
-    // 삭제 후 새로고침 (fetchProducts 역할)
-    setSearch((prev) => prev); 
+
+    try {
+      await api.delete(`/admin/products/${productId}`);
+      await fetchProducts(); // 🔥 삭제 즉시 목록 갱신
+    } catch (err) {
+      console.error("삭제 실패:", err);
+    }
   };
 
+  /* 숫자 포맷 */
   const formatNumber = (value) => {
-    if (value === null || value === undefined || value === "") return "-";
+    if (!value) return "-";
     return Number(value).toLocaleString();
   };
 
+  /* 할인율 계산 */
   const calcDiscount = (sale, original) => {
     if (!sale || !original) return "-";
-    const rate = Math.round((1 - sale / original) * 100);
-    return rate + "%";
+    return Math.round((1 - sale / original) * 100) + "%";
   };
 
+  /* 이미지 경로 */
   const getProductImage = (images) => {
     if (!images || images.length === 0) return "/no-image.png";
 
     const img = images[0];
     const fixedDir = img.saveDir.replace(/\\/g, "/");
+    const folder = fixedDir.split("uploads/product/")[1];
 
-    const folderName = fixedDir.split("uploads/product/")[1];
-
-    if (!folderName) return "/no-image.png";
-
-    return `/uploads/product/${folderName}/${img.fileName}`;
+    if (!folder) return "/no-image.png";
+    return `/uploads/product/${folder}/${img.fileName}`;
   };
 
   return (
@@ -75,16 +82,29 @@ export default function ProductManage() {
       <AdminSidebar />
 
       <div className="product-manage-wrapper">
+        {/* ---------------- 헤더 영역 ---------------- */}
         <div className="product-manage-header">
           <h1>상품 관리 페이지</h1>
-          <button
-            className="add-product-btn"
-            onClick={() => navigate("/admin/products/new")}
-          >
-            + 상품 등록
-          </button>
+
+          {/* 버튼 그룹 */}
+          <div className="header-btn-group">
+            <button
+              className="category-manage-btn"
+              onClick={() => navigate("/admin/categories")}
+            >
+              카테고리 관리
+            </button>
+
+            <button
+              className="add-product-btn"
+              onClick={() => navigate("/admin/products/new")}
+            >
+              + 상품 등록
+            </button>
+          </div>
         </div>
 
+        {/* ---------------- 필터 영역 ---------------- */}
         <div className="product-filter-box">
           <input
             type="text"
@@ -108,6 +128,7 @@ export default function ProductManage() {
           </select>
         </div>
 
+        {/* ---------------- 테이블 영역 ---------------- */}
         <table className="product-table">
           <thead>
             <tr>

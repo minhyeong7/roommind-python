@@ -12,7 +12,7 @@
   background: #ffffff;
 }
 
-/* 제목 */
+/* 제목 영역 */
 .product-manage-header {
   display: flex;
   justify-content: space-between;
@@ -26,7 +26,30 @@
   color: #222;
 }
 
-/* 상품 등록 버튼 */
+/* 버튼들을 감싸는 박스 */
+.header-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* 카테고리 관리 버튼(흰+오렌지 테마) */
+.category-manage-btn {
+  background: #ffffff;
+  border: 2px solid #fc9510;
+  color: #fc9510;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.category-manage-btn:hover {
+  background: #fff4e6;
+}
+
+/* 상품 등록 버튼 (기존 유지) */
 .add-product-btn {
   background: #fc9510;
   color: white;
@@ -42,7 +65,7 @@
   background: #e08100;
 }
 
-/* 필터 박스 */
+/* 필터 */
 .product-filter-box {
   display: flex;
   align-items: center;

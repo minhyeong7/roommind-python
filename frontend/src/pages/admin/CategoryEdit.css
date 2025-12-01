@@ -1,0 +1,66 @@
+.category-edit-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  margin: 0 auto;
+}
+
+.category-edit-container h1 {
+  font-size: 26px;
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: #fc9510;
+  border-left: 6px solid #fc9510;
+  padding-left: 12px;
+}
+
+.category-edit-container label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+.category-edit-container input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ffecd9;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.category-edit-container input:focus {
+  border-color: #fc9510;
+  box-shadow: 0 0 0 3px rgba(252,149,16,0.2);
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 12px 20px;
+  margin-top: 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.save-btn {
+  background: #fc9510;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #e4860d;
+}
+
+.cancel-btn {
+  background: #eee;
+}
+
+.cancel-btn:hover {
+  background: #ddd;
+}
