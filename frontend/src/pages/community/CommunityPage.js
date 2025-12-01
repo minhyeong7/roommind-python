@@ -13,7 +13,7 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState(true);       // 로딩 상태
   const [error, setError] = useState(null);           // 에러 상태
   const navigate = useNavigate();
-
+ 
   /* ================================
      🔥 커뮤니티 전체 리스트 가져오기
   ================================== */

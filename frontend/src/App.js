@@ -59,6 +59,8 @@ import OrderBank from "./pages/OrderCompleteBank";
 import LoginSuccess from "./pages/LoginSuccess";
 import LoginError from "./pages/LoginError";
 import QnADetail from "./pages/qna/QnADetail";
+import QnAEdit from "./pages/qna/QnAEdit";
+import CommunityEditPage from "./pages/community/CommunityDetailPage/CommunityEditPage";
 
 
 function App() {
@@ -87,9 +89,13 @@ function App() {
           {/* 장바구니 */}
           <Route path="/cart" element={<CartPage />} />
 
+
+          {/* 커뮤니티 */}
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/:id" element={<CommunityDetailPage />} />
           <Route path="/community/write" element={<CommunityWrite />} />
+          <Route path="/community/:id/edit" element={<CommunityEditPage />} />
+
 
           <Route path="/popular" element={<PopularPage />} />
 
@@ -97,6 +103,7 @@ function App() {
           <Route path="/qna" element={<QnAList />} />
           <Route path="/qna/write" element={<QnAWrite />} />
           <Route path="/qna/:id" element={<QnADetail />} />
+          <Route path="/qna/edit/:id" element={<QnAEdit />} />
 
 
           {/* 인테리어 */}

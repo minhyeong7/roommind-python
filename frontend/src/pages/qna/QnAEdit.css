@@ -1,0 +1,47 @@
+.qna-edit-container {
+  width: 70%;
+  margin: 40px auto;
+}
+
+.qna-edit-label {
+  font-weight: bold;
+  margin-top: 20px;
+  display: block;
+}
+
+.qna-edit-input,
+.qna-edit-textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.qna-edit-textarea {
+  min-height: 180px;
+}
+
+.qna-edit-old-images {
+  margin-top: 15px;
+}
+
+.qna-edit-file {
+  margin-top: 8px;
+}
+
+.qna-edit-buttons {
+  margin-top: 25px;
+}
+
+.qna-edit-cancel,
+.qna-edit-submit {
+  padding: 10px 20px;
+  margin-right: 8px;
+}
+
+.qna-edit-submit {
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+}

@@ -1,0 +1,63 @@
+.edit-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.edit-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-input,
+.edit-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.edit-textarea {
+  height: 200px;
+  resize: none;
+}
+
+.old-images {
+  margin-top: 10px;
+}
+
+.old-img-list {
+  display: flex;
+  gap: 10px;
+}
+
+.old-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.edit-btn-area {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-save-btn {
+  background: #4caf50;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.edit-cancel-btn {
+  background: #aaa;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+}
