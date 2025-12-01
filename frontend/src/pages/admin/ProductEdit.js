@@ -29,11 +29,10 @@ export default function ProductEdit() {
   const [newImages, setNewImages] = useState([]);
 
   /* =====================================================
-     1) 전체 카테고리 불러오기 → GET /admin/categories
-     (baseURL = "/api" 자동 포함됨)
+     1) 카테고리 목록 → GET /admin/categories
   ===================================================== */
   const fetchCategories = async () => {
-    const res = await api.get("/admin/categories");   // ← 여기!
+    const res = await api.get("/admin/categories");
     const list = res.data;
 
     setCategories(list);
@@ -43,10 +42,10 @@ export default function ProductEdit() {
   };
 
   /* =====================================================
-     2) 단일 상품 정보 → GET /admin/products/{id}
+     2) 상품 정보 → GET /admin/products/{id}
   ===================================================== */
   const fetchProduct = async () => {
-    const res = await api.get(`/admin/products/${id}`);  // ← 여기!
+    const res = await api.get(`/admin/products/${id}`);
     const data = res.data;
 
     setProduct(data);
@@ -66,10 +65,13 @@ export default function ProductEdit() {
   };
 
   /* =====================================================
-     3) 대분류 선택 시 중분류 자동 필터링
+     3) majorCategory 선택 → middle 필터링
   ===================================================== */
   useEffect(() => {
-    if (!form.majorCategory) return;
+    if (!form.majorCategory) {
+      setMiddleList([]);
+      return;
+    }
 
     const filtered = categories
       .filter((c) => c.majorCategory === form.majorCategory)
@@ -79,7 +81,7 @@ export default function ProductEdit() {
   }, [form.majorCategory, categories]);
 
   /* =====================================================
-     4) major + middle → categoryId 매칭
+     4) major + middle => categoryId 자동 설정
   ===================================================== */
   useEffect(() => {
     const match = categories.find(
@@ -105,7 +107,7 @@ export default function ProductEdit() {
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
   /* =====================================================
-     이미지 URL
+     이미지 URL 생성
   ===================================================== */
   const getImageUrl = (img) => {
     if (!img) return "/no-image.png";
@@ -126,13 +128,12 @@ export default function ProductEdit() {
   };
 
   /* =====================================================
-     저장하기 → PUT /admin/products/{id}
-                  POST /admin/products/{id}/images
+     저장하기 (경로 그대로 유지!!)
   ===================================================== */
   const handleSubmit = async () => {
     if (!window.confirm("상품 정보를 수정하시겠습니까?")) return;
 
-    await api.put(`/admin/products/${id}`, form);   // ← 여기!!
+    await api.put(`/admin/products/${id}`, form);
 
     if (newImages.length > 0) {
       const fd = new FormData();
@@ -150,7 +151,7 @@ export default function ProductEdit() {
   return (
     <AdminLayout>
       <div className="product-edit-container">
-        <h1>상품 수정</h1>
+        <h1 className="edit-title">상품 수정</h1>
 
         <div className="edit-section">
           {/* 기존 이미지 */}
@@ -174,7 +175,7 @@ export default function ProductEdit() {
           </div>
         </div>
 
-        {/* 폼 영역 */}
+        {/* 폼 */}
         <div className="edit-form">
           <label>상품명</label>
           <input name="productName" value={form.productName} onChange={handleInput} />
@@ -209,13 +210,6 @@ export default function ProductEdit() {
             ))}
           </select>
 
-          <input
-            type="text"
-            placeholder="직접 입력"
-            value={form.majorCategory}
-            onChange={(e) => setForm({ ...form, majorCategory: e.target.value })}
-          />
-
           {/* 중분류 */}
           <label>중분류 카테고리</label>
           <select
@@ -231,19 +225,16 @@ export default function ProductEdit() {
             ))}
           </select>
 
-          <input
-            type="text"
-            placeholder="직접 입력"
-            value={form.middleCategory}
-            onChange={(e) => setForm({ ...form, middleCategory: e.target.value })}
-          />
-
           <label>상품 설명</label>
           <textarea name="description" value={form.description} onChange={handleInput} />
 
           <div className="edit-buttons">
-            <button className="save-btn" onClick={handleSubmit}>저장하기</button>
-            <button className="cancel-btn" onClick={() => navigate("/admin/products")}>취소</button>
+            <button className="save-btn" onClick={handleSubmit}>
+              저장하기
+            </button>
+            <button className="cancel-btn" onClick={() => navigate("/admin/products")}>
+              취소
+            </button>
           </div>
         </div>
       </div>
