@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { logoutUser } from "../api/userApi";
+import { logoutUser, getTokenRemainingTime } from "../api/userApi";
 
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState(null);
+  const [remainingTime, setRemainingTime] = useState(null); // 🔥 토큰 남은 시간
   const navigate = useNavigate();
 
   /** ✅ 로그인 상태 불러오기 */
@@ -24,7 +25,35 @@ function Navbar() {
     };
   }, []);
 
-  /** ✅ 로그아웃 */
+  /** 🔥 로그인 시 토큰 만료 타이머 시작 */
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const interval = setInterval(() => {
+      const sec = getTokenRemainingTime(token);
+      setRemainingTime(sec);
+
+      if (sec <= 0) {
+        console.log("⛔ 토큰 만료됨 → 자동 로그아웃");
+        logoutUser();
+        navigate("/login");
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [navigate]);
+
+  /** 🕒 남은 시간 포맷 */
+  const formatTime = (sec) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    if (m > 0) return `${m}분 ${s}초`;
+    return `${s}초`;
+  };
+
+  /** ❌ 로그아웃 */
   const handleLogout = () => {
     logoutUser();
     localStorage.removeItem("user");
@@ -33,7 +62,7 @@ function Navbar() {
     navigate("/");
   };
 
-  /** 🔍 검색 기능 */
+  /** 🔍 검색 */
   const handleInputChange = (e) => setSearchTerm(e.target.value);
   const handleSearch = () => {
     if (searchTerm.trim() !== "") {
@@ -44,12 +73,11 @@ function Navbar() {
     if (e.key === "Enter") handleSearch();
   };
 
-  /** 🔹 네비게이션 이동 함수 */
+  /** 🔹 이동 */
   const handleSignupClick = () => navigate("/signup");
   const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
   const handleMypageClick = () => navigate("/mypage");
-  const handleAdminClick = () => navigate("/admin");
 
   return (
     <header className="navbar">
@@ -89,48 +117,33 @@ function Navbar() {
           <i className="bi bi-cart-fill"></i>
         </button>
 
-        {/* 로그인 상태 표시 */}
+        {/* 로그인 상태 영역 */}
         <div className={`navbar-auth ${user ? "logged-in" : ""}`}>
           {user ? (
-            user.role === "admin" ? (
-              <>
-                <span className="welcome-text">
-                  환영합니다,&nbsp; <strong>관리자</strong>님!
-                </span>
-                <button className="mypage-btn" onClick={handleAdminClick}>
-                  관리자 페이지
-                </button>
-                <button className="logout-btn" onClick={handleLogout}>
-                  로그아웃
-                </button>
-              </>
-            ) : (
-              <>
-                {/* 일반 사용자 + 소셜 로그인 사용자 공통 */}
-                <span className="welcome-text">
-                  환영합니다,&nbsp;
-                  <strong>{user.userName || user.name || "회원"}</strong>님!
-                </span>
+            <>
+              {/* 환영 문구 */}
+              <span className="welcome-text">
+                환영합니다,&nbsp;
+                <strong>{user.userName || user.name || "회원"}</strong>님!
+              </span>
 
-                {/* ⭐ 소셜 로그인 배지 ⭐ */}
-                {user.socialType === "KAKAO" && (
-                  <span className="social-badge kakao">카카오 로그인</span>
-                )}
-                {user.socialType === "NAVER" && (
-                  <span className="social-badge naver">네이버 로그인</span>
-                )}
-                {user.socialType === "GOOGLE" && (
-                  <span className="social-badge google">구글 로그인</span>
-                )}
+              {/* 🔥 토큰 남은 시간 표시 */}
+              {remainingTime !== null && (
+                <span className="token-timer">
+                 {formatTime(remainingTime)} 
+                </span>
+              )}
 
-                <button className="mypage-btn" onClick={handleMypageClick}>
-                  마이페이지
-                </button>
-                <button className="logout-btn" onClick={handleLogout}>
-                  로그아웃
-                </button>
-              </>
-            )
+              {/* 마이페이지 */}
+              <button className="mypage-btn" onClick={handleMypageClick}>
+                마이페이지
+              </button>
+
+              {/* 로그아웃 */}
+              <button className="logout-btn" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </>
           ) : (
             <>
               <button className="login" onClick={handleLoginClick}>로그인</button>
