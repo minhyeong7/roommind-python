@@ -6,7 +6,7 @@ import { logoutUser, getTokenRemainingTime } from "../api/userApi";
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState(null);
-  const [remainingTime, setRemainingTime] = useState(null); // 🔥 토큰 남은 시간
+  const [remainingTime, setRemainingTime] = useState(null);
   const navigate = useNavigate();
 
   /** ✅ 로그인 상태 불러오기 */
@@ -20,12 +20,10 @@ function Navbar() {
     };
 
     window.addEventListener("loginSuccess", handleLoginSuccess);
-    return () => {
-      window.removeEventListener("loginSuccess", handleLoginSuccess);
-    };
+    return () => window.removeEventListener("loginSuccess", handleLoginSuccess);
   }, []);
 
-  /** 🔥 로그인 시 토큰 만료 타이머 시작 */
+  /** 🔥 토큰 만료 타이머 */
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -35,7 +33,7 @@ function Navbar() {
       setRemainingTime(sec);
 
       if (sec <= 0) {
-        console.log("⛔ 토큰 만료됨 → 자동 로그아웃");
+        console.log("⛔ 토큰 만료 → 자동 로그아웃");
         logoutUser();
         navigate("/login");
         clearInterval(interval);
@@ -45,12 +43,11 @@ function Navbar() {
     return () => clearInterval(interval);
   }, [navigate]);
 
-  /** 🕒 남은 시간 포맷 */
+  /** 🕒 타이머 포맷 */
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
-    if (m > 0) return `${m}분 ${s}초`;
-    return `${s}초`;
+    return m > 0 ? `${m}분 ${s}초` : `${s}초`;
   };
 
   /** ❌ 로그아웃 */
@@ -63,30 +60,27 @@ function Navbar() {
   };
 
   /** 🔍 검색 */
-  const handleInputChange = (e) => setSearchTerm(e.target.value);
   const handleSearch = () => {
     if (searchTerm.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
   };
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
-  };
+
+  const handleKeyDown = (e) => e.key === "Enter" && handleSearch();
 
   /** 🔹 이동 */
   const handleSignupClick = () => navigate("/signup");
   const handleLoginClick = () => navigate("/login");
   const handleCartClick = () => navigate("/cart");
   const handleMypageClick = () => navigate("/mypage");
+  const handleAdminClick = () => navigate("/admin");
 
   return (
     <header className="navbar">
-      {/* 왼쪽 로고 */}
       <div className="navbar-left">
         <Link to="/" className="logo">RoomMind</Link>
       </div>
 
-      {/* 중앙 메뉴 */}
       <ul className="navbar-menu">
         <li><Link to="/">홈</Link></li>
         <li><Link to="/popular">인기</Link></li>
@@ -96,15 +90,13 @@ function Navbar() {
         <li><Link to="/qna">Q & A</Link></li>
       </ul>
 
-      {/* 오른쪽 영역 */}
       <div className="navbar-right">
-        {/* 검색창 */}
         <div className="navbar-search">
           <input
             type="text"
             placeholder="통합검색"
             value={searchTerm}
-            onChange={handleInputChange}
+            onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <button onClick={handleSearch} className="search-btn">
@@ -112,7 +104,6 @@ function Navbar() {
           </button>
         </div>
 
-        {/* 장바구니 */}
         <button className="basket-btn" onClick={handleCartClick}>
           <i className="bi bi-cart-fill"></i>
         </button>
@@ -120,30 +111,46 @@ function Navbar() {
         {/* 로그인 상태 영역 */}
         <div className={`navbar-auth ${user ? "logged-in" : ""}`}>
           {user ? (
-            <>
-              {/* 환영 문구 */}
-              <span className="welcome-text">
-                환영합니다,&nbsp;
-                <strong>{user.userName || user.name || "회원"}</strong>님!
-              </span>
-
-              {/* 🔥 토큰 남은 시간 표시 */}
-              {remainingTime !== null && (
-                <span className="token-timer">
-                 {formatTime(remainingTime)} 
+            user.role === "admin" ? (
+              <>
+                {/* 관리자 UI */}
+                <span className="welcome-text">
+                  환영합니다,&nbsp;<strong>관리자</strong>님!
                 </span>
-              )}
 
-              {/* 마이페이지 */}
-              <button className="mypage-btn" onClick={handleMypageClick}>
-                마이페이지
-              </button>
+                {remainingTime !== null && (
+                  <span className="token-timer">{formatTime(remainingTime)}</span>
+                )}
 
-              {/* 로그아웃 */}
-              <button className="logout-btn" onClick={handleLogout}>
-                로그아웃
-              </button>
-            </>
+                <button className="mypage-btn" onClick={handleAdminClick}>
+                  관리자 페이지
+                </button>
+
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                {/* 일반 사용자 UI */}
+                <span className="welcome-text">
+                  환영합니다,&nbsp;
+                  <strong>{user.userName || user.name || "회원"}</strong>님!
+                </span>
+
+                {remainingTime !== null && (
+                  <span className="token-timer">{formatTime(remainingTime)}</span>
+                )}
+
+                <button className="mypage-btn" onClick={handleMypageClick}>
+                  마이페이지
+                </button>
+
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </>
+            )
           ) : (
             <>
               <button className="login" onClick={handleLoginClick}>로그인</button>
