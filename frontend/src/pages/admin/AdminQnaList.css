@@ -1,0 +1,130 @@
+/* ============================= */
+/*  기본 레이아웃 */
+/* ============================= */
+.admin-qna-container {
+  padding: 30px;
+  width: 95%;
+}
+
+/* 제목 */
+.admin-qna-inner h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+/* ============================= */
+/*  검색/정렬/필터 박스 */
+/* ============================= */
+
+.admin-qna-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 검색창 */
+.admin-qna-filter-box input {
+  width: 250px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  height: 25px;
+}
+
+/* 드롭다운 */
+.admin-qna-filter-box select {
+  width: 220px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  height: 38px;
+  cursor: pointer;
+}
+
+/* ============================= */
+/*  테이블 */
+/* ============================= */
+.admin-qna-table-wrapper {
+  width: 100%;
+}
+
+.admin-qna-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 헤더 */
+.admin-qna-table thead {
+  background: #f7f7f7;
+}
+
+.admin-qna-table th {
+  padding: 14px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* 바디 */
+.admin-qna-table td {
+  padding: 12px 10px;
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.admin-qna-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* 제목 링크 */
+.admin-qna-title-link {
+  cursor: pointer;
+  color: #111;
+  font-weight: 500;
+}
+
+.admin-qna-title-link:hover {
+  color: #ff7f00;
+  text-decoration: underline;
+}
+
+/* 상태 라벨 */
+.admin-qna-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.admin-qna-status.pending {
+  background: #ffe7e7;
+  color: #d40000;
+}
+
+.admin-qna-status.done {
+  background: #e7f5ff;
+  color: #0061c2;
+}
+
+/* 빈 데이터 */
+.admin-qna-empty {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 15px;
+  color: #777;
+}

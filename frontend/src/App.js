@@ -36,11 +36,12 @@ import ShopPage from "./components/shop/ShopPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductManage from "./pages/admin/ProductManage";
 import UserManage from "./pages/admin/UserManage";
-import QnaManage from "./pages/admin/QnaManage";
 import ProductNew from "./pages/admin/ProductNew";
 import AdminProductDetail from "./pages/admin/AdminProductDetail";
 import ProductEdit from "./pages/admin/ProductEdit";
 import CategoryManage  from "./pages/admin/CategoryEdit";
+import AdminQnaList from "./pages/admin/AdminQnaList";
+import AdminQnaDetail from "./pages/admin/AdminQnaDetail";
 
 
 
@@ -159,18 +160,33 @@ function App() {
               </AdminRoute>
             }
           />
-           <Route
-            path="/admin/qna"
-            element={
-              <AdminRoute>
-                <QnaManage />
-              </AdminRoute>
-            }
-          />
+          {/* 관리자 QnA 리스트 */}
+            <Route
+              path="/admin/qna"
+              element={
+                <AdminRoute>
+                  <AdminQnaList />
+                </AdminRoute>
+              }
+            />
+
+            {/* 관리자 QnA 상세 페이지 */}
+            <Route
+              path="/admin/qna/:id"
+              element={
+                <AdminRoute>
+                  <AdminQnaDetail />
+                </AdminRoute>
+              }
+            />
+
 
           <Route path="/admin/product/:id" element={<AdminProductDetail />} />
           <Route path="/admin/products/:id/edit" element={<ProductEdit />} />
           <Route path="/admin/categories" element={<CategoryManage />} />
+
+
+
 
 
 

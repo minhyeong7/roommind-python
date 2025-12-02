@@ -1,0 +1,108 @@
+.admin-qna-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+/* 공통 카드 스타일 */
+.detail-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 정보(작성자, 등록일 등) */
+.info-row {
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-align: left !important;
+}
+
+/* 각 섹션 (제목/문의내용/답변) */
+.section {
+  margin: 20px 0;
+  text-align: left !important;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left !important;
+}
+
+.section-text {
+  padding: 10px 14px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  text-align: left !important;
+}
+
+.content-area {
+  min-height: 80px;
+}
+
+/* 관리자 답변 textarea */
+.answer-input {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  padding: 12px;
+  border: 2px solid #ffa142;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  text-align: left !important;
+}
+
+.answer-input:focus {
+  border-color: #ff7f00;
+}
+
+/* 버튼 영역 */
+.btn-area {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 15px 0;
+  background: #ff7f00;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #e56e00;
+}
+
+.back-btn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: #4b4b4b;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #333;
+}
