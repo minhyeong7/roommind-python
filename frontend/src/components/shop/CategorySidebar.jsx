@@ -1,44 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./CategorySidebar.css";
-
-const categories = [
-  {
-    name: "가구",
-    sub: [
-      "침대",
-      "매트리스·토퍼",
-      "테이블·식탁·책상",
-      "소파",
-      "서랍·수납장",
-      "거실장·TV장",
-      "선반",
-      "진열장·책장",
-      "의자",
-      "행거·옷장",
-      "거울",
-      "화장대·콘솔",
-      "유아동가구",
-      "야외가구",
-      "공간박스·정리함",
-    ],
-  },
-  { name: "크리스마스", sub: ["트리", "장식", "조명", "쿠션커버", "소품"] },
-  { name: "패브릭", sub: ["이불", "커튼", "러그", "베개", "쿠션", "패브릭소품"] },
-  { name: "조명", sub: ["스탠드", "테이블조명", "천장조명", "벽조명"] },
-  { name: "주방", sub: ["식기", "조리도구", "커트러리", "컵·텀블러"] },
-  { name: "수납·정리", sub: ["행거", "바구니", "리빙박스", "정리용품"] },
-  { name: "생활용품", sub: ["욕실용품", "청소용품", "세탁용품"] },
-  { name: "홈데코", sub: ["캔들·디퓨저", "시계", "액자·포스터", "가드닝"] },
-];
+import { fetchCategories } from "../../api/categoryApi"; // 네 API 경로에 맞게 수정
 
 function CategorySidebar() {
   const [openMain, setOpenMain] = useState(null);
+  const [categories, setCategories] = useState([]);  // ⭐ 실제 서버 데이터 저장
+
+  // 1) 서버에서 카테고리 가져오기
+  useEffect(() => {
+    fetchCategories().then((res) => {
+      const data = res.data;
+
+      // majorCategory 기준 그룹핑
+      const grouped = groupCategories(data);
+
+      setCategories(grouped);
+    });
+  }, []);
+
+  // 2) majorCategory 기준 그룹핑 함수
+  const groupCategories = (categoryList) => {
+    const map = {};
+
+    categoryList.forEach((c) => {
+      if (!map[c.majorCategory]) {
+        map[c.majorCategory] = [];
+      }
+      map[c.majorCategory].push(c.middleCategory);
+    });
+
+    // [{ name: "가구", sub: ["소파","침대"...] }, ... ] 형태로 변환
+    return Object.keys(map).map((major) => ({
+      name: major,
+      sub: map[major],
+    }));
+  };
 
   return (
     <div className="category-container">
       {categories.map((main, mainIndex) => (
         <div key={main.name} className="main-category">
-          {/* 1단 — 주 카테고리 */}
+          {/* 대분류 */}
           <button
             className="main-btn"
             onClick={() =>
@@ -51,7 +53,7 @@ function CategorySidebar() {
             <span className="arrow">{openMain === mainIndex ? "▲" : "▼"}</span>
           </button>
 
-          {/* 2단 — 서브 카테고리 */}
+          {/* 중분류 */}
           {openMain === mainIndex && (
             <ul className="sub-list">
               {main.sub.map((item) => (
