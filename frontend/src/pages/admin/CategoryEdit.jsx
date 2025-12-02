@@ -14,16 +14,16 @@ export default function CategoryEdit() {
     middleCategory: ""
   });
 
-  // -----------------------
+  // ===========================
   // 목록 불러오기
-  // -----------------------
+  // ===========================
   useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchCategories = async () => {
     try {
-      const res = await api.get("/admin/categories"); // <-- baseURL = /api 적용됨
+      const res = await api.get("/admin/categories");
       setCategories(res.data);
       console.log("카테고리 목록:", res.data);
     } catch (err) {
@@ -31,9 +31,9 @@ export default function CategoryEdit() {
     }
   };
 
-  // -----------------------
+  // ===========================
   // 단일 조회
-  // -----------------------
+  // ===========================
   const handleSelect = async (categoryId) => {
     try {
       const res = await api.get(`/admin/categories/${categoryId}`);
@@ -41,26 +41,26 @@ export default function CategoryEdit() {
       setSelected(categoryId);
       setMode("edit");
     } catch (err) {
-      console.error("단일 조회 실패:", err);
+      console.error("카테고리 조회 실패:", err);
     }
   };
 
-  // -----------------------
+  // ===========================
   // 대분류 추가
-  // -----------------------
+  // ===========================
   const newMajor = () => {
     setForm({
       categoryId: null,
       majorCategory: "",
-      middleCategory: ""
+      middleCategory: null
     });
     setSelected(null);
     setMode("new-major");
   };
 
-  // -----------------------
+  // ===========================
   // 중분류 추가
-  // -----------------------
+  // ===========================
   const newMiddle = (major) => {
     setForm({
       categoryId: null,
@@ -71,16 +71,52 @@ export default function CategoryEdit() {
     setMode("new-middle");
   };
 
-  // -----------------------
-  // 입력 처리
-  // -----------------------
+  // ===========================
+  // 삭제 기능
+  // ===========================
+
+  /** 중분류 삭제 */
+  const deleteMiddle = async (categoryId) => {
+    if (!window.confirm("중분류를 삭제하시겠습니까?")) return;
+
+    try {
+      await api.delete(`/admin/categories/${categoryId}`);
+      alert("삭제되었습니다.");
+      fetchCategories();
+    } catch (err) {
+      console.error("중분류 삭제 실패:", err);
+      alert("삭제 실패!");
+    }
+  };
+
+  /** 대분류 삭제 (하위 중분류 모두 삭제) */
+  const deleteMajor = async (major) => {
+    if (!window.confirm(`"${major}" 대분류와 모든 중분류를 삭제하시겠습니까?`)) return;
+
+    const targetList = categories.filter(c => c.majorCategory === major);
+
+    try {
+      for (const item of targetList) {
+        await api.delete(`/admin/categories/${item.categoryId}`);
+      }
+      alert("대분류 및 하위 항목이 모두 삭제되었습니다.");
+      fetchCategories();
+    } catch (err) {
+      console.error("대분류 삭제 실패:", err);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  // ===========================
+  // 입력 변경
+  // ===========================
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // -----------------------
+  // ===========================
   // 저장
-  // -----------------------
+  // ===========================
   const handleSubmit = async () => {
     try {
       if (mode === "edit") {
@@ -93,13 +129,13 @@ export default function CategoryEdit() {
       setMode("none");
     } catch (err) {
       console.error("저장 실패:", err);
-      alert("저장 중 오류가 발생했습니다.");
+      alert("오류가 발생했습니다.");
     }
   };
 
-  // -----------------------
-  // 대분류 / 중분류 구분
-  // -----------------------
+  // ===========================
+  // 대분류 / 중분류 분리
+  // ===========================
   const majorList = [...new Set(categories.map((c) => c.majorCategory))];
 
   const middleList = (major) =>
@@ -109,7 +145,7 @@ export default function CategoryEdit() {
     <AdminLayout>
       <div className="category-edit-container">
 
-        {/* 왼쪽 --- 카테고리 목록 */}
+        {/* 왼쪽 리스트 */}
         <div className="category-list-box">
           <h2>카테고리 목록</h2>
 
@@ -120,6 +156,7 @@ export default function CategoryEdit() {
           {majorList.map((major, index) => (
             <div key={index} className="major-block">
               <div className="major-top">
+
                 <span
                   className="major-title"
                   onClick={() => {
@@ -132,22 +169,39 @@ export default function CategoryEdit() {
                   {major}
                 </span>
 
-                <button
-                  className="middle-add-btn"
-                  onClick={() => newMiddle(major)}
-                >
-                  + 중분류
-                </button>
+                <div className="major-btn-set">
+                  <button
+                    className="middle-add-btn"
+                    onClick={() => newMiddle(major)}
+                  >
+                    + 중분류
+                  </button>
+
+                  <button
+                    className="del-btn"
+                    onClick={() => deleteMajor(major)}
+                  >
+                    삭제
+                  </button>
+                </div>
               </div>
 
               <div className="middle-list">
                 {middleList(major).map((mid) => (
-                  <div
-                    key={mid.categoryId}
-                    className="middle-item"
-                    onClick={() => handleSelect(mid.categoryId)}
-                  >
-                    {mid.middleCategory}
+                  <div key={mid.categoryId} className="middle-item-row">
+                    <span
+                      className="middle-item"
+                      onClick={() => handleSelect(mid.categoryId)}
+                    >
+                      {mid.middleCategory}
+                    </span>
+
+                    <button
+                      className="del-btn small"
+                      onClick={() => deleteMiddle(mid.categoryId)}
+                    >
+                      삭제
+                    </button>
                   </div>
                 ))}
               </div>
@@ -155,7 +209,7 @@ export default function CategoryEdit() {
           ))}
         </div>
 
-        {/* 오른쪽 --- 입력/수정 폼 */}
+        {/* 오른쪽 폼 */}
         <div className="category-edit-box">
           <h2>
             {mode === "new-major"
@@ -171,6 +225,7 @@ export default function CategoryEdit() {
             <>
               <label>대분류</label>
               <input
+                className="small-input"
                 name="majorCategory"
                 value={form.majorCategory || ""}
                 onChange={handleInput}
@@ -179,6 +234,7 @@ export default function CategoryEdit() {
 
               <label>중분류</label>
               <input
+                className="small-input"
                 name="middleCategory"
                 value={form.middleCategory || ""}
                 onChange={handleInput}

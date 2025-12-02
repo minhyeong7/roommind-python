@@ -156,3 +156,39 @@
 .delete-btn:hover {
   background: #e04a4a;
 }
+/* ========================= */
+/* 선택삭제 버튼 */
+/* ========================= */
+.delete-selected-btn {
+  padding: 8px 14px;
+  background: #ff6b6b;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.15s;
+  margin-left: 10px;
+}
+
+.delete-selected-btn:hover {
+  background: #ff5252;
+}
+
+/* ========================= */
+/* 전체선택 / 개별 체크박스 */
+/* ========================= */
+.product-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #fc9510; /* 체크 색상 오렌지 */
+}
+
+/* 테이블 헤더 체크박스 정렬 */
+.product-table th:first-child,
+.product-table td:first-child {
+  text-align: center;
+  width: 45px;
+}

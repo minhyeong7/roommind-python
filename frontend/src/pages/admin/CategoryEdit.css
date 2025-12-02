@@ -23,11 +23,11 @@
   border: 1px solid #ddd;
 }
 
-
+.category-edit-box h2,
 .category-list-box h2 {
   font-size: 22px;
-  margin-bottom: 15px;
   font-weight: 600;
+  margin-bottom: 15px;
 }
 
 .main-add-btn {
@@ -42,6 +42,7 @@
   cursor: pointer;
 }
 
+/* 대분류 블록 */
 .major-block {
   margin-bottom: 18px;
   padding: 15px;
@@ -62,6 +63,29 @@
   cursor: pointer;
 }
 
+/* 중분류 리스트 */
+.middle-list {
+  margin-top: 10px;
+  padding-left: 15px;
+  border-left: 3px solid #ffe1c7;
+}
+
+.middle-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.middle-item {
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+/* 버튼들 */
 .middle-add-btn {
   padding: 5px 10px;
   background: #ffa05b;
@@ -72,44 +96,46 @@
   font-size: 13px;
 }
 
-.middle-list {
-  margin-top: 10px;
-  padding-left: 15px;
-  border-left: 3px solid #ffe1c7;
-}
-
-.middle-item {
-  padding: 7px 10px;
-  margin-bottom: 5px;
+/* 🔥 삭제 버튼 */
+.del-btn {
+  padding: 6px 10px;
+  background: #ffe5e5;
+  border: none;
   border-radius: 6px;
-  background: #fdfdfd;
-  border: 1px solid #ddd;
+  color: #d03a3a;
   cursor: pointer;
+  font-weight: bold;
+  margin-left: 6px;
 }
 
-.category-edit-box h2 {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 20px;
+.del-btn.small {
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
+.del-btn:hover {
+  background: #ffcccc;
+}
+
+/* 오른쪽 입력 영역 */
 .category-edit-box label {
   display: block;
   margin: 10px 0 5px;
   font-weight: 600;
 }
 
-.category-edit-box input {
-  width: 100%;
+/* 🔥 인풋 크기 줄임 */
+.small-input {
+  width: 60%;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-bottom: 12px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .save-btn {
-  width: 100%;
+  width: 65%;
   padding: 12px;
   background: #ff8c3f;
   border: none;
@@ -117,4 +143,6 @@
   color: white;
   font-size: 16px;
   font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
 }
