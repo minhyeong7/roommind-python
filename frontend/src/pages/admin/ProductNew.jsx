@@ -1,14 +1,17 @@
+// src/admin/ProductNew.js
 import React, { useState, useEffect } from "react";
 import AdminLayout from "./AdminLayout";
 import { addProduct } from "../../api/adminApi";
-import CategoryModal from "./CategoryModal";
 import api from "../../api/userApi";
+import { useNavigate } from "react-router-dom";
 import "./ProductNew.css";
 
 export default function ProductNew() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     productName: "",
-    categoryId: null,   // ✔ null로 초기화 (빈문자열 X)
+    categoryId: null, 
     originalPrice: "",
     salePrice: "",
     stock: "",
@@ -19,9 +22,8 @@ export default function ProductNew() {
   const [categories, setCategories] = useState([]);
   const [major, setMajor] = useState("");
   const [middleList, setMiddleList] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 
-  // 🔥 카테고리 불러오기
+  /** 카테고리 불러오기 */
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -35,43 +37,38 @@ export default function ProductNew() {
     loadCategories();
   }, []);
 
-  // 🔥 대분류 리스트
+  /**  대분류 리스트 */
   const majorList = [...new Set(categories.map((c) => c.majorCategory))];
 
-  // 🔥 중분류 필터링
+  /** 중분류 리스트 자동 필터링 */
   useEffect(() => {
     if (major) {
       setMiddleList(categories.filter((c) => c.majorCategory === major));
-      // ✔ 대분류 바뀌면 선택했던 중분류만 초기화
       setForm((prev) => ({ ...prev, categoryId: null }));
     } else {
       setMiddleList([]);
     }
   }, [major, categories]);
 
-  // 입력 변경
+  /** 입력 변경 */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 이미지 선택
+  /** 파일 선택 */
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  // 🔥 상품 등록
+  /** 상품 등록 */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("제출 전 form:", form);
-    console.log("categoryId 타입:", typeof form.categoryId);
 
     if (!form.categoryId) return alert("카테고리를 선택해주세요!");
     if (!image) return alert("이미지를 선택해주세요!");
 
     const formData = new FormData();
 
-    // 이미 categoryId는 number 상태임 → 그대로 전송
     const productJson = new Blob([JSON.stringify(form)], {
       type: "application/json",
     });
@@ -82,7 +79,7 @@ export default function ProductNew() {
     try {
       await addProduct(formData);
       alert("상품이 등록되었습니다!");
-      window.location.href = "/admin/products";
+      navigate("/admin/products");
     } catch (error) {
       console.error("상품 등록 실패:", error);
       alert("등록 실패!");
@@ -96,6 +93,7 @@ export default function ProductNew() {
           <h1>상품 등록</h1>
 
           <form className="product-add-form" onSubmit={handleSubmit}>
+            
             <label>상품명</label>
             <input
               type="text"
@@ -108,15 +106,12 @@ export default function ProductNew() {
             <label>대분류</label>
             <select
               value={major}
-              onChange={(e) => {
-                setMajor(e.target.value); // ✔ categoryId 초기화는 여기서 안함!
-              }}
+              onChange={(e) => setMajor(e.target.value)}
+              required
             >
               <option value="">대분류 선택</option>
               {majorList.map((m, idx) => (
-                <option key={idx} value={m}>
-                  {m}
-                </option>
+                <option key={idx} value={m}>{m}</option>
               ))}
             </select>
 
@@ -125,13 +120,10 @@ export default function ProductNew() {
               <select
                 value={form.categoryId || ""}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
-                    categoryId: Number(e.target.value), // ✔ 숫자로 변환!!
-                  })
+                  setForm({ ...form, categoryId: Number(e.target.value) })
                 }
-                required
                 disabled={!major}
+                required
               >
                 <option value="">중분류 선택</option>
 
@@ -142,10 +134,11 @@ export default function ProductNew() {
                 ))}
               </select>
 
+              {/* 관리 버튼 → 카테고리 관리 페이지로 이동 */}
               <button
                 type="button"
                 className="category-add-btn"
-                onClick={() => setShowModal(true)}
+                onClick={() => navigate("/admin/categories")}
               >
                 관리
               </button>
@@ -195,18 +188,6 @@ export default function ProductNew() {
           </form>
         </div>
       </div>
-
-      {showModal && (
-        <CategoryModal
-          categories={categories}
-          setCategories={setCategories}
-          onClose={() => setShowModal(false)}
-          currentCategoryId={form.categoryId}
-          clearSelectedCategory={() =>
-            setForm({ ...form, categoryId: null })
-          }
-        />
-      )}
     </AdminLayout>
   );
 }
