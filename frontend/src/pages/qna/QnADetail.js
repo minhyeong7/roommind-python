@@ -13,7 +13,6 @@ export default function QnADetail() {
   const storedUser = localStorage.getItem("user");
   const loginUser = storedUser ? JSON.parse(storedUser) : null;
 
-  // 🔥 loadDetail을 useCallback으로 감싸기
   const loadDetail = useCallback(async () => {
     try {
       const data = await fetchQnADetail(id);
@@ -23,9 +22,8 @@ export default function QnADetail() {
       console.error("❌ 상세 조회 오류:", error);
       alert("게시글을 불러오는 중 문제가 발생했습니다.");
     }
-  }, [id]); // id 변경 시만 함수 재생성
+  }, [id]);
 
-  // 🔥 useEffect에 loadDetail 등록 → 경고 사라짐
   useEffect(() => {
     loadDetail();
   }, [loadDetail]);
@@ -51,54 +49,76 @@ export default function QnADetail() {
     }
   };
 
-  if (!post) return <div className="qna-detail-loading">⏳ 불러오는 중...</div>;
+  if (!post) return <div className="qna-detail-loading">불러오는 중...</div>;
 
   const formattedDate = post.createdDate
     ? post.createdDate.replace("T", " ").slice(0, 16)
     : "";
 
+  const formattedAnswerDate = post.answeredDate
+    ? post.answeredDate.replace("T", " ").slice(0, 16)
+    : "";
+
   return (
     <div className="qna-detail-container">
-      <h2 className="qna-detail-title">{post.title}</h2>
+      <div className="qna-detail-card">
 
-      <div className="qna-detail-info">
-        <span className="qna-detail-author">{post.userName}</span>
-        <span className="qna-detail-date">{formattedDate}</span>
-      </div>
+        {/* 제목 */}
+        <h2 className="qna-detail-title">{post.title}</h2>
 
-      <div className="qna-detail-content">{post.content}</div>
-
-      {files.length > 0 && (
-        <div className="qna-detail-images">
-          {files.map((file) => (
-            <img
-              key={file.uuid}
-              src={getImageUrl(file)}
-              alt="첨부 이미지"
-              className="qna-detail-img"
-            />
-          ))}
+        {/* 작성자 정보 */}
+        <div className="qna-detail-info">
+          <span>{post.userName}</span>
+          <span className="dot">•</span>
+          <span>{formattedDate}</span>
         </div>
-      )}
 
-      <div className="qna-detail-buttons">
-        <button className="back-btn" onClick={() => navigate("/qna")}>
-          목록
-        </button>
+        {/* 내용 */}
+        <div className="qna-detail-content">{post.content}</div>
 
-        {isOwner && (
-          <>
-            <button
-              className="edit-btn"
-              onClick={() => navigate(`/qna/edit/${id}`)}
-            >
-              수정
-            </button>
-            <button className="delete-btn" onClick={handleDelete}>
-              삭제
-            </button>
-          </>
+        {/* 이미지 */}
+        {files.length > 0 && (
+          <div className="qna-detail-images">
+            {files.map((file) => (
+              <img
+                key={file.uuid}
+                src={getImageUrl(file)}
+                alt="첨부 이미지"
+                className="qna-detail-img"
+              />
+            ))}
+          </div>
         )}
+
+        {/* 관리자 답변 */}
+        {post.answer && (
+          <div className="qna-admin-answer-box">
+            <div className="admin-answer-title">관리자 답변</div>
+            <div className="admin-answer-content">{post.answer}</div>
+            <div className="admin-answer-date">답변일: {formattedAnswerDate}</div>
+          </div>
+        )}
+
+        {/* 버튼 */}
+        <div className="qna-detail-buttons">
+          <button className="back-btn" onClick={() => navigate("/qna")}>
+            목록
+          </button>
+
+          {isOwner && (
+            <>
+              <button
+                className="edit-btn"
+                onClick={() => navigate(`/qna/edit/${id}`)}
+              >
+                수정
+              </button>
+              <button className="delete-btn" onClick={handleDelete}>
+                삭제
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
