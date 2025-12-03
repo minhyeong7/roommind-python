@@ -1,0 +1,45 @@
+/* 테이블 */
+.mypage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.mypage-table th {
+  background: #f7f7f7;
+  padding: 12px;
+  border-bottom: 2px solid #ddd;
+  font-size: 15px;
+}
+
+.mypage-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+/* 뱃지 스타일 */
+.badge-pending {
+  background: #ff9800;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.badge-complete {
+  background: #4caf50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* 비어 있을 때 */
+.empty-text {
+  margin-top: 20px;
+  color: #888;
+  font-size: 15px;
+}

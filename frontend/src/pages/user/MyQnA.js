@@ -10,44 +10,57 @@ const MyQnA = () => {
     if (!token) return;
 
     axios
-      .get("http://localhost:8080/api/qna")
+      .get("http://localhost:8080/api/qnaboards")
       .then(res => {
         const list = res.data.data;
 
-        // JWT에서 이메일 추출
         const email = JSON.parse(atob(token.split(".")[1])).sub;
 
-        // 내가 쓴 QnA만 필터링
-        const filtered = list.filter(item => item.userEmail === email);
+        const mine = list.filter(item => item.email === email);
 
-        setMyQnaList(filtered);
+        setMyQnaList(mine);
       })
       .catch(err => console.log(err));
   }, [token]);
 
   return (
-    <div className="mypage-container">
-      <div className="mypage-content">
-        <h2 className="mypage-title">내가 쓴 Q&A</h2>
+    <div>
+      <h2 className="mypage-title">내가 쓴 Q&A</h2>
 
-        {/* 작성한 QnA 없을 때 */}
-        {myQnaList.length === 0 && (
-          <p className="empty-text">작성한 Q&A가 없습니다.</p>
-        )}
+      {myQnaList.length === 0 ? (
+        <p className="empty-text">작성한 Q&A가 없습니다.</p>
+      ) : (
+        <table className="mypage-table">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>작성일</th>
+              <th>답변 상태</th>
+            </tr>
+          </thead>
 
-        {/* QnA 목록 */}
-        {myQnaList.map(qna => (
-          <div key={qna.qnaId} className="myqna-item">
-            <h3>{qna.title}</h3>
-            <p className="preview">{qna.content}</p>
+          <tbody>
+            {myQnaList.map((qna, index) => (
+              <tr key={qna.qnaBoardId}>
+                <td>{index + 1}</td>
 
-            {/* 답변 여부 표시 */}
-            <p className="qna-status">
-              {qna.answer ? "✔ 답변 완료" : "⏳ 답변 대기중"}
-            </p>
-          </div>
-        ))}
-      </div>
+                <td className="title-cell">{qna.title}</td>
+
+                <td>{new Date(qna.createdDate).toLocaleDateString()}</td>
+
+                <td>
+                  {qna.answer ? (
+                    <span className="badge-complete">답변완료</span>
+                  ) : (
+                    <span className="badge-pending">답변대기</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
