@@ -12,6 +12,9 @@ const ProfileEdit = () => {
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
 
+  // ================================
+  // 로그인한 사용자 정보 불러오기
+  // ================================
   useEffect(() => {
     if (!token) return;
 
@@ -34,7 +37,9 @@ const ProfileEdit = () => {
 
   if (!user) return <div className="mypage-content">불러오는 중...</div>;
 
-  // 🔥 회원 정보 수정
+  // ================================
+  // 회원 정보 수정
+  // ================================
   const handleUpdateProfile = () => {
     axios
       .put(
@@ -48,11 +53,29 @@ const ProfileEdit = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       )
-      .then(() => alert("회원정보가 수정되었습니다"))
+      .then(() => {
+        alert("회원정보가 수정되었습니다!");
+
+        // ⭐ localStorage 내 user 업데이트
+        const updatedUser = {
+          ...user,
+          userName: userName,
+          phone: phone,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        // ⭐ Navbar가 변경사항 감지하도록 이벤트 발행
+        window.dispatchEvent(new Event("loginSuccess"));
+
+        // 화면 즉시 반영
+        setUser(updatedUser);
+      })
       .catch((err) => console.error(err));
   };
 
-  // 🔥 비밀번호 변경
+  // ================================
+  // 비밀번호 변경
+  // ================================
   const handleChangePassword = () => {
     if (!currentPw || !newPw) {
       alert("현재 비밀번호와 새 비밀번호를 입력해주세요!");
