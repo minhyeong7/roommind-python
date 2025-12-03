@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./MyPage.css";
+import "./MyQnA.css";
 
 const MyQnA = () => {
   const [myQnaList, setMyQnaList] = useState([]);
