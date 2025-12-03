@@ -109,7 +109,7 @@ function Home() {
       <BannerSlider />
 
       {/* 첫 번째 섹션 */}
-      <h2 className="section-title">이 가구 어때요 ?</h2>
+      <h2 className="home-section-title">이 가구 어때요 ?</h2>
       <div className="card-grid">
         {products.map((item, i) => (
           <Card key={i} {...item} product={item} />
@@ -117,7 +117,7 @@ function Home() {
       </div>
 
       {/* 두 번째 섹션 */}
-      <h2 className="section-title">요즘 핫한 인기상품!</h2>
+      <h2 className="home-section-title">요즘 핫한 인기상품!</h2>
       <div className="card-grid">
         {hotProducts.map((item, i) => (
           <Card key={i} {...item} product={item} />
@@ -125,7 +125,7 @@ function Home() {
       </div>
 
       {/* 세 번째 섹션 */}
-      <h2 className="section-title">세일 중인 상품</h2>
+      <h2 className="home-section-title">세일 중인 상품</h2>
       <div className="card-grid">
         {saleProducts.map((item, i) => (
           <Card key={i} {...item} product={item} />
