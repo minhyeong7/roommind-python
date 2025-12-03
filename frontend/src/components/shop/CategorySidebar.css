@@ -56,3 +56,9 @@
   font-weight: 500;
   transition: 0.2s;
 }
+
+
+.active-sub {
+  color: #0078ff;
+  font-weight: 600;
+}
