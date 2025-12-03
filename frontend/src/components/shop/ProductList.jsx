@@ -16,12 +16,15 @@ function ProductList({ category }) {
   }, [category]);
 
   return (
-    <div className="product-list">
-      {products.map((p) => {
+  <div className="product-list">
+    {products.length === 0 ? (
+      <div className="no-products">등록된 상품이 없습니다.</div>
+    ) : (
+      products.map((p) => {
         const img = p.images && p.images.length > 0 ? p.images[0] : null;
         const imageUrl = img
           ? `http://localhost:8080/${img.saveDir}/${img.fileName}`
-          : "/no-image.png"; // 기본 이미지
+          : "/no-image.png";
 
         return (
           <div key={p.productId} className="product-card">
@@ -42,9 +45,11 @@ function ProductList({ category }) {
             </div>
           </div>
         );
-      })}
-    </div>
-  );
+      })
+    )}
+  </div>
+);
+
 }
 
 export default ProductList;

@@ -5,7 +5,7 @@ import { fetchCategories } from "../../api/categoryApi";
 function CategorySidebar({ onSelectCategory }) {
   const [openMain, setOpenMain] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [selectedSub, setSelectedSub] = useState(null); // ⭐ 선택된 중분류 상태
+  const [selectedSub, setSelectedSub] = useState(null); //  선택된 중분류 상태
 
   useEffect(() => {
     fetchCategories().then((res) => {
@@ -56,7 +56,7 @@ function CategorySidebar({ onSelectCategory }) {
                   key={item}
                   className={`sub-item ${selectedSub === item ? "active-sub" : ""}`}
                   onClick={() => {
-                    setSelectedSub(item); // ⭐ 선택 표시
+                    setSelectedSub(item); //  선택 표시
                     onSelectCategory({
                       major: main.name,
                       middle: item,
