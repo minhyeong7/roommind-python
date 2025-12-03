@@ -1,10 +1,17 @@
-import React from "react";
+import MyPageSidebar from "./MyPageSidebar";
+import "./MyPage.css";
 
-export default function MyPage() {
+const MyPage = () => {
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>마이페이지</h1>
-      <p>여기에 내용이 들어갑니다.</p>
+    <div className="mypage-container">
+      <MyPageSidebar />
+
+      <div className="mypage-content">
+        <h2 className="mypage-title">마이페이지</h2>
+        <p>여기에 기본 마이페이지 안내 또는 위젯 넣기!</p>
+      </div>
     </div>
   );
-}
+};
+
+export default MyPage;

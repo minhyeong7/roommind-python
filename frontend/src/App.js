@@ -50,6 +50,12 @@ import AdminQnaDetail from "./pages/admin/AdminQnaDetail";
 import MyPage from "./pages/user/MyPage";
 import OrderList from "./pages/user/OrderList";
 import ReviewList from "./pages/user/ReviewList";
+import OrderDetail from "./pages/user/OrderDetail";   
+import MyCommunity from "./pages/user/MyCommunity";   
+import MyQnA from "./pages/user/MyQnA";               
+import ProfileEdit from "./pages/user/ProfileEdit";   
+import AddressList from "./pages/user/AddressList";   
+
 
 /* 주문서페이지 */
 import OrderPage from "./pages/OrderPage";
@@ -119,6 +125,31 @@ function App() {
           <Route path="/order" element={<OrderPage />} />
           <Route path="/order/success" element={<OrderSuccess />} />
           <Route path="/order/bank" element={<OrderBank />} />
+
+
+          {/* 마이페이지 홈 */}
+          <Route path="/mypage" element={<MyPage />} />
+
+          {/* 주문 내역 */}
+          <Route path="/mypage/orders" element={<OrderList />} />
+
+          {/* 주문 상세 */}
+          <Route path="/mypage/orders/:orderId" element={<OrderDetail />} />
+
+          {/* 리뷰 내역 */}
+          <Route path="/mypage/reviews" element={<ReviewList />} />
+
+          {/* 내가 쓴 커뮤니티 글 */}
+          <Route path="/mypage/community" element={<MyCommunity />} />
+
+          {/* 내가 쓴 QnA 글 */}
+          <Route path="/mypage/qna" element={<MyQnA />} />
+
+          {/* 회원정보 수정 */}
+          <Route path="/mypage/profile" element={<ProfileEdit />} />
+
+          {/* 배송지 관리 */}
+          <Route path="/mypage/address" element={<AddressList />} />
                     
 
 
