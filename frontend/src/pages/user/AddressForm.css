@@ -1,0 +1,65 @@
+.address-modal {
+  width: 100%;
+}
+
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 95%;
+}
+
+.address-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.address-input {
+  flex: 1;
+}
+
+.search-btn {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 30px;
+}
+
+/* 체크박스 줄 */
+.default-row {
+  display: flex;
+  align-items: start;
+  margin-right: 350px;
+  gap: 6px;
+}
+
+.form-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: #ff9c00;
+  padding: 8px 16px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.default-row-check{
+  display: inline;
+  white-space: nowrap;
+}
