@@ -17,6 +17,8 @@ const loadProducts = async () => {
   try {
     const list = await fetchAllProducts();
 
+    console.log("🔥 홈 전체 상품:", list);
+
 
     setProducts(list.slice(0, 5));
     setHotProducts(list.slice(5, 10));
