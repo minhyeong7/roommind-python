@@ -246,6 +246,7 @@ export default function ProductManage() {
               <th>사진</th>
               <th>상품명</th>
               <th>가격</th>
+              <th>세일가격</th>
               <th>할인률</th>
               <th>재고</th>
               <th>등록일</th>
@@ -283,6 +284,7 @@ export default function ProductManage() {
                   </td>
 
                   <td>{formatNumber(p.salePrice)}원</td>
+                  
 
                   <td>{calcDiscount(p.salePrice, p.originalPrice)}</td>
 

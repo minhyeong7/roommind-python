@@ -69,6 +69,8 @@ export const fetchCommunityDetail = async (communityId) => {
   }
 };
 
+
+
 /* ============================
    🔹 커뮤니티 게시글 삭제
 =============================== */
@@ -112,5 +114,55 @@ export const updateCommunityBoard = async (communityId, boardData, images) => {
     throw error;
   }
 };
+/* 댓글 목록 조회 */
+export const fetchComments = async (communityId) => {
+  try {
+    const res = await api.get(`/comments/board/${communityId}`);
+    return res.data;
+  } catch (error) {
+    console.error("❌ 댓글 목록 조회 실패:", error);
+    throw error;
+  }
+};
+
+/* 댓글 등록 */
+export const createComment = async (communityId, commentData) => {
+  try {
+    const res = await api.post(`/comments/board/${communityId}`, commentData);
+    return res.data;
+  } catch (error) {
+    console.error("❌ 댓글 등록 실패:", error);
+    throw error;
+  }
+};
+
+/* 댓글 수정 */
+export const updateComment = async (commentId, dto) => {
+  try {
+    const res = await api.put(`/comments/${commentId}`, dto);
+    return res;  // ★ res.data 말고 res 자체 반환
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+    throw error;
+  }
+};
+
+
+
+
+/* 댓글 삭제 */
+export const deleteComment = async (commentId) => {
+  try {
+    const res = await api.delete(`/comments/${commentId}`);
+    return res.data;
+  } catch (error) {
+    console.error("❌ 댓글 삭제 실패:", error);
+    throw error;
+  }
+};
+
+
+
+
 
 export default api;
