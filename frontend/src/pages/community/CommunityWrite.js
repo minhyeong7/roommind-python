@@ -53,7 +53,9 @@ export default function CommunityWrite() {
         <h2 className="cmt-write-title">✏️ 커뮤니티 글쓰기</h2>
 
         <div className="cmt-writer-info">
-          작성자 : <strong>{user?.username || user?.email || "로그인 필요"}</strong>
+          작성자 : <strong>
+            {user?.userName || user?.username || user?.email || "로그인 필요"}
+          </strong>
         </div>
 
         <form onSubmit={handleSubmit}>

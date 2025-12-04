@@ -5,39 +5,35 @@ import Swal from "sweetalert2";
 function LoginSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const executed = useRef(false); // 🔥 StrictMode에서 두 번 실행 방지
+  const executed = useRef(false);
 
   useEffect(() => {
     if (executed.current) return;
     executed.current = true;
 
     console.log("===== 소셜 로그인 성공 처리 =====");
-    console.log("전체 URL:", window.location.href);
-    console.log("searchParams:", Object.fromEntries(searchParams));
 
     const token = searchParams.get("token");
-
-    // 🔥 혹시 모를 케이스 대비해서 대소문자/오타 둘 다 체크
-    const userName =
-      searchParams.get("userName") || searchParams.get("username");
-
-    const socialType =
-      searchParams.get("socialType") || searchParams.get("socialtype");
-
+    const userName = searchParams.get("userName") || searchParams.get("username");
+    const socialType = searchParams.get("socialType") || searchParams.get("socialtype");
     const role = searchParams.get("role") || "user";
+
+    // ⭐⭐⭐ 핵심 추가 ⭐⭐⭐
+    const userId = searchParams.get("userId");
 
     console.log("token:", token);
     console.log("userName:", userName);
     console.log("socialType:", socialType);
     console.log("role:", role);
+    console.log("userId:", userId);
     console.log("================================");
 
     if (token) {
-      // ✅ 토큰 저장
       localStorage.setItem("token", token);
 
-      // ✅ 소셜 로그인 사용자 정보 통일된 형태로 저장
+      // 🌟 userId를 포함해야 모든 기능이 정상 작동됨
       const userData = {
+        userId: Number(userId),
         userName: userName || "소셜유저",
         socialType: socialType || "social",
         role: role,
@@ -46,7 +42,6 @@ function LoginSuccess() {
       localStorage.setItem("user", JSON.stringify(userData));
       console.log("✅ user 저장:", userData);
 
-      // ✅ Navbar 등에서 로그인 상태 감지
       window.dispatchEvent(new Event("loginSuccess"));
 
       Swal.fire({
@@ -57,11 +52,8 @@ function LoginSuccess() {
         timer: 1500,
       });
 
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
+      setTimeout(() => navigate("/"), 1500);
     } else {
-      console.log("❌ token 없음 - 로그인 실패 처리");
       Swal.fire({
         icon: "error",
         title: "로그인 실패",

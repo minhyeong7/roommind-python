@@ -1,113 +1,245 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  getReviewsByProduct,
+  createReview,
+  updateReview,
+  deleteReview
+} from "../api/reviewApi";
 import "./ProductReviews.css";
 
-const dummyReviews = [
-  {
-    id: 1,
-    user: "뚜비럼바",
-    rating: 5,
-    date: "2025.11.20",
-    option: "캘린더형 / S",
-    content:
-      "제가 교대근무 하는데 남편이 맨날 까먹어서 현관문에 붙여놨어요ㅋㅋ 활용도 최고예요!!",
-    image: "https://via.placeholder.com/120x120.png?text=Review",
-    helpful: 14,
-  },
-  {
-    id: 2,
-    user: "서리태콩국수",
-    rating: 4,
-    date: "2025.09.12",
-    option: "화이트 / M",
-    content: "깔끔하고 예뻐요! 배송도 빨라서 만족!",
-    image: "https://via.placeholder.com/120x120.png?text=Review",
-    helpful: 9,
-  },
-];
+function ProductReviews({ productId }) {
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const currentUserId = currentUser?.userId;
 
-function ProductReviews() {
-  const [sortType, setSortType] = useState("best");
+  const [reviews, setReviews] = useState([]);
+  const [sortType, setSortType] = useState("latest");
   const [filterStar, setFilterStar] = useState("");
-  const [filterOption, setFilterOption] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const sorted = [...dummyReviews]
+  /** 작성 박스 상태 */
+  const [showCreateBox, setShowCreateBox] = useState(false);
+  const [newRating, setNewRating] = useState(5);
+  const [newContent, setNewContent] = useState("");
+
+  /** 수정 박스 상태 */
+  const [editReviewId, setEditReviewId] = useState(null);
+  const [editRating, setEditRating] = useState(5);
+  const [editContent, setEditContent] = useState("");
+
+  useEffect(() => {
+    if (!productId) return;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        const data = await getReviewsByProduct(productId);
+        setReviews(data);
+      } catch {
+        setError("리뷰 불러오기 실패");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [productId]);
+
+  const reload = async () => {
+    const data = await getReviewsByProduct(productId);
+    setReviews(data);
+  };
+
+  /** 리뷰 작성 */
+  const handleCreateReview = async () => {
+    try {
+      await createReview({
+        productId,
+        rating: newRating,
+        content: newContent
+      });
+
+      alert("리뷰가 등록되었습니다.");
+      setShowCreateBox(false);
+      setNewContent("");
+      setNewRating(5);
+
+      reload();
+    } catch (err) {
+      alert(err.response?.data?.message || "리뷰 등록 실패");
+    }
+  };
+
+  /** 리뷰 수정 박스 열기 */
+  const openEditBox = (review) => {
+    setEditReviewId(review.reviewId);
+    setEditRating(review.rating);
+    setEditContent(review.content);
+  };
+
+  /** 리뷰 수정 */
+  const handleEditReview = async () => {
+    try {
+      await updateReview(editReviewId, {
+        rating: editRating,
+        content: editContent
+      });
+
+      alert("리뷰가 수정되었습니다.");
+      setEditReviewId(null);
+      reload();
+    } catch (err) {
+      alert(err.response?.data?.message || "리뷰 수정 실패");
+    }
+  };
+
+  /** 리뷰 삭제 */
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      await deleteReview(reviewId);
+      reload();
+    } catch (err) {
+      alert(err.response?.data?.message || "리뷰 삭제 실패");
+    }
+  };
+
+  const sorted = [...reviews]
     .filter((r) => (filterStar ? r.rating === Number(filterStar) : true))
-    .filter((r) => (filterOption ? r.option.includes(filterOption) : true))
     .sort((a, b) =>
-      sortType === "best"
-        ? b.helpful - a.helpful
-        : new Date(b.date) - new Date(a.date)
+      sortType === "latest"
+        ? new Date(b.createdDate) - new Date(a.createdDate)
+        : b.rating - a.rating
     );
 
+  if (loading) return <div>⏳ 불러오는 중...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
-    <div className="review-wrapper">
+    <div className="review-wrap">
 
-      {/* 정렬 + 필터 */}
-      <div className="review-header">
-        <div className="review-sort-left">
-          <button
-            className={sortType === "best" ? "active" : ""}
-            onClick={() => setSortType("best")}
-          >
-            베스트순
-          </button>
-          <button
-            className={sortType === "latest" ? "active" : ""}
-            onClick={() => setSortType("latest")}
-          >
-            최신순
-          </button>
+      {/* 리뷰 작성 버튼 */}
+      {currentUserId && (
+        <button
+          className="review-create-btn"
+          onClick={() => setShowCreateBox(!showCreateBox)}
+        >
+          {showCreateBox ? "작성 취소" : "리뷰 작성하기"}
+        </button>
+      )}
+
+      {/* =========================== */}
+      {/* 리뷰 작성 박스 */}
+      {/* =========================== */}
+      {showCreateBox && (
+        <div className="review-box write-box">
+          <h4>리뷰 작성</h4>
+
+          <div>
+            별점:
+            <select
+              value={newRating}
+              onChange={(e) => setNewRating(Number(e.target.value))}
+            >
+              <option value={5}>★ 5점</option>
+              <option value={4}>★ 4점</option>
+              <option value={3}>★ 3점</option>
+              <option value={2}>★ 2점</option>
+              <option value={1}>★ 1점</option>
+            </select>
+          </div>
+
+          <textarea
+            placeholder="내용을 입력하세요"
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+          />
+
+          <button onClick={handleCreateReview}>등록</button>
         </div>
+      )}
 
-        <div className="review-filter-right">
-          <select
-            value={filterStar}
-            onChange={(e) => setFilterStar(e.target.value)}
-          >
-            <option value="">별점 전체</option>
-            <option value="5">★ 5점</option>
-            <option value="4">★ 4점</option>
-            <option value="3">★ 3점</option>
-            <option value="2">★ 2점</option>
-            <option value="1">★ 1점</option>
-          </select>
+      {/* 정렬 / 필터 */}
+      <div className="review-sort-area">
+        <button
+          className={sortType === "latest" ? "active" : ""}
+          onClick={() => setSortType("latest")}
+        >
+          최신순
+        </button>
+        <button
+          className={sortType === "best" ? "active" : ""}
+          onClick={() => setSortType("best")}
+        >
+          별점순
+        </button>
 
-          <select
-            value={filterOption}
-            onChange={(e) => setFilterOption(e.target.value)}
-          >
-            <option value="">옵션 전체</option>
-            <option value="S">S 사이즈</option>
-            <option value="M">M 사이즈</option>
-            <option value="화이트">화이트</option>
-          </select>
-        </div>
+        <select
+          value={filterStar}
+          onChange={(e) => setFilterStar(e.target.value)}
+        >
+          <option value="">별점 전체</option>
+          <option value="5">★ 5점</option>
+          <option value="4">★ 4점</option>
+          <option value="3">★ 3점</option>
+          <option value="2">★ 2점</option>
+          <option value="1">★ 1점</option>
+        </select>
       </div>
 
+      {/* =========================== */}
       {/* 리뷰 목록 */}
-      <div className="review-list">
-        {sorted.map((review) => (
-          <div className="review-card" key={review.id}>
-            <img src={review.image} className="review-img" alt="review" />
+      {/* =========================== */}
+      {sorted.map((review) => (
+        <div className="review-box" key={review.reviewId}>
+          <div className="review-header">
+            <strong>User {review.userId}</strong>
+            {" "}<span>{"★".repeat(review.rating)}</span>
+            {" "}<span>{new Date(review.createdDate).toLocaleDateString()}</span>
+          </div>
 
-            <div className="review-content">
-              <div className="review-header-line">
-                <span className="review-user">{review.user}</span>
-                <span className="review-rating">{"★".repeat(review.rating)}</span>
-                <span className="review-date">{review.date}</span>
-              </div>
+          <div className="review-text">{review.content}</div>
 
-              <div className="review-option">{review.option}</div>
-
-              <div className="review-text">{review.content}</div>
-
-              <button className="help-btn">
-                👍 도움이 돼요 {review.helpful}
+          {/* 본인 리뷰일 때만 표시 */}
+          {currentUserId === review.userId && (
+            <div className="review-btn-group">
+              <button onClick={() => openEditBox(review)}>수정</button>
+              <button className="delete" onClick={() => handleDeleteReview(review.reviewId)}>
+                삭제
               </button>
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+
+          {/* 수정 박스 */}
+          {editReviewId === review.reviewId && (
+            <div className="edit-box">
+              <h4>리뷰 수정</h4>
+
+              <div>
+                별점:
+                <select
+                  value={editRating}
+                  onChange={(e) => setEditRating(Number(e.target.value))}
+                >
+                  <option value={5}>★ 5점</option>
+                  <option value={4}>★ 4점</option>
+                  <option value={3}>★ 3점</option>
+                  <option value={2}>★ 2점</option>
+                  <option value={1}>★ 1점</option>
+                </select>
+              </div>
+
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+              />
+
+              <button onClick={handleEditReview}>수정 완료</button>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

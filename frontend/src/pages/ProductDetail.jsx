@@ -93,13 +93,14 @@ function ProductDetail() {
           추천상품
         </div>
       </div>
-
       <div className={`product-section ${activeTab === "review" ? "review-mode" : ""}`}>
+        
         {activeTab === "info" && <ProductDetailContent product={product} />}
-        {activeTab === "review" && <ProductReviews />}
+        {activeTab === "review" && <ProductReviews productId={productId} />}   
         {activeTab === "qa" && <ProductQA />}
         {activeTab === "recommend" && <ProductRecommend />}
       </div>
+
     </div>
   );
 }
