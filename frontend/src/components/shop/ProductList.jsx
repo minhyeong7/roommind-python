@@ -1,5 +1,6 @@
+// src/components/product/ProductList.jsx
 import React, { useEffect, useState } from "react";
-import { fetchFilteredProducts } from "../../api/productApi"; // ⭐ productApi 사용
+import { fetchFilteredProducts } from "../../api/productApi";
 import "./ProductList.css";
 
 function ProductList({ category }) {
@@ -10,7 +11,6 @@ function ProductList({ category }) {
     if (category?.major) params.major = category.major;
     if (category?.middle) params.middle = category.middle;
 
-    // ⭐ axios 직접 호출 X → productApi 호출 O
     fetchFilteredProducts(params)
       .then((res) => setProducts(res))
       .catch((err) => console.error("상품 불러오기 실패:", err));
@@ -25,24 +25,49 @@ function ProductList({ category }) {
           const img = p.images && p.images.length > 0 ? p.images[0] : null;
           const imageUrl = img
             ? `http://localhost:8080/${img.saveDir}/${img.fileName}`
-            : "/no-image.png";
+            : "/images/no-image.png";
+
+          const discountAmount = p.originalPrice - p.salePrice;
+          const discountRate =
+            p.originalPrice > 0
+              ? Math.round((1 - p.salePrice / p.originalPrice) * 100)
+              : 0;
 
           return (
-            <div key={p.productId} className="product-card">
-              <div className="card-image">
+            <div key={p.productId} className="card">
+              <div className="card-img-box">
                 <img src={imageUrl} alt={p.productName} />
-                <div className="badge">특가</div>
+
+                {/* 필요하면 특가 배지 유지 */}
+                <div className="card-badge">특가</div>
               </div>
 
               <div className="card-info">
-                <p className="brand">{p.brand}</p>
-                <p className="name">{p.productName}</p>
+                <div className="card-brand">{p.brand}</div>
+                <div className="card-title">{p.productName}</div>
 
-                <div className="price-wrap">
-                  <span className="price">
+                <div className="card-price-line">
+                  {p.originalPrice > p.salePrice && (
+                    <span className="card-discount">{discountRate}%</span>
+                  )}
+                  <span className="card-price">
                     {p.salePrice.toLocaleString()}원
                   </span>
                 </div>
+
+                {p.originalPrice > p.salePrice && (
+                  <div className="card-original">
+                    {p.originalPrice.toLocaleString()}원
+                  </div>
+                )}
+
+                {p.originalPrice > p.salePrice && (
+                  <div className="card-discount-amount">
+                    {discountAmount.toLocaleString()}원 할인
+                  </div>
+                )}
+
+                <div className="card-review">⭐ 0 리뷰 0</div>
               </div>
             </div>
           );
