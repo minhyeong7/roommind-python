@@ -84,7 +84,7 @@ export default function ProductManage() {
     );
 
     setMiddleList(mids);
-    setSelectedMiddle(""); // 초기화
+    setSelectedMiddle("");
   }, [selectedMajor, categories]);
 
   /* ==========================================
@@ -146,7 +146,7 @@ export default function ProductManage() {
   };
 
   /* ==========================================
-     숫자 포맷
+     숫자 포맷터
   ========================================== */
   const formatNumber = (v) => (v ? Number(v).toLocaleString() : "-");
 
@@ -173,11 +173,17 @@ export default function ProductManage() {
           <h1>상품 관리</h1>
 
           <div className="header-btn-group">
-            <button className="category-manage-btn" onClick={() => navigate("/admin/categories")}>
+            <button
+              className="category-manage-btn"
+              onClick={() => navigate("/admin/categories")}
+            >
               카테고리 관리
             </button>
 
-            <button className="add-product-btn" onClick={() => navigate("/admin/products/new")}>
+            <button
+              className="add-product-btn"
+              onClick={() => navigate("/admin/products/new")}
+            >
               + 상품 등록
             </button>
           </div>
@@ -226,7 +232,6 @@ export default function ProductManage() {
             ))}
           </select>
 
-          {/* 선택삭제 */}
           <button className="delete-selected-btn" onClick={handleDeleteSelected}>
             선택 삭제
           </button>
@@ -245,7 +250,8 @@ export default function ProductManage() {
               </th>
               <th>사진</th>
               <th>상품명</th>
-              <th>가격</th>
+              <th>원래가격</th>
+              <th>세일가격</th>
               <th>할인률</th>
               <th>재고</th>
               <th>등록일</th>
@@ -256,7 +262,7 @@ export default function ProductManage() {
           <tbody>
             {products.length === 0 ? (
               <tr>
-                <td colSpan="8" className="empty-row">
+                <td colSpan="9" className="empty-row">
                   등록된 상품이 없습니다.
                 </td>
               </tr>
@@ -271,10 +277,12 @@ export default function ProductManage() {
                     />
                   </td>
 
+                  {/* 사진 */}
                   <td>
                     <img src={getProductImage(p.images)} alt="" className="product-img" />
                   </td>
 
+                  {/* 상품명 */}
                   <td
                     className="product-name-link"
                     onClick={() => navigate(`/admin/product/${p.productId}`)}
@@ -282,14 +290,22 @@ export default function ProductManage() {
                     {p.productName}
                   </td>
 
+                  {/* 원래 가격 */}
+                  <td>{formatNumber(p.originalPrice)}원</td>
+
+                  {/* 세일 가격 */}
                   <td>{formatNumber(p.salePrice)}원</td>
 
+                  {/* 할인률 */}
                   <td>{calcDiscount(p.salePrice, p.originalPrice)}</td>
 
+                  {/* 재고 */}
                   <td>{formatNumber(p.stock)}</td>
 
+                  {/* 등록일 */}
                   <td>{p.createdDate?.slice(0, 10)}</td>
 
+                  {/* 삭제 버튼 */}
                   <td>
                     <button className="delete-btn" onClick={() => handleDelete(p.productId)}>
                       삭제

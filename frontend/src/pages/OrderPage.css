@@ -99,6 +99,20 @@
   color: #fff;
   border-color: #ff8b00;
 }
+.address-box .input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.address-box{
+  min-width: 700px;
+}
+
+.address-box .input-row input {
+  width: 100%;
+}
+
 
 /* ------------------ 오른쪽 결제 박스 ------------------ */
 .order-right {
@@ -175,4 +189,24 @@
 
 .address-actions button:hover {
   background: #e67a00;
+}
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box-header button {
+  background: #ff7f00;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.box-header button:hover {
+  background: #e46f00;
 }

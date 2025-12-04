@@ -43,6 +43,8 @@ import CategoryManage  from "./pages/admin/CategoryEdit";
 import AdminQnaList from "./pages/admin/AdminQnaList";
 import AdminQnaDetail from "./pages/admin/AdminQnaDetail";
 import AdminProfile from "./pages/admin/AdminProfile";
+import OrderManage from "./pages/admin/OrderManage";
+import AdminOrderDetail from "./pages/admin/OrderDetail";
 
 
 
@@ -204,6 +206,9 @@ function App() {
   <Route path="/admin/products/:id/edit" element={<ProductEdit />} />
   <Route path="/admin/categories" element={<CategoryManage />} />
   <Route path="/admin/profile" element={<AdminProfile />} />
+
+  <Route path="/admin/orders" element={<OrderManage />} />
+  <Route path="/admin/orders/:orderId" element={<AdminOrderDetail />} />
   
 </Routes>
 

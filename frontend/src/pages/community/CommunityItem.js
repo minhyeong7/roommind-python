@@ -4,16 +4,16 @@ import "./CommunityItem.css";
 
 export default function CommunityItem({ post }) {
 
-  // 🔧 이미지 URL 만들기 함수
+  // 이미지 존재 여부
+  const hasImage = post.images && post.images.length > 0;
+
+  // 🔧 이미지 URL 생성
   const getImageUrl = () => {
-    if (!post.images || post.images.length === 0) return "/images/no-image.png";
+    if (!hasImage) return null;
 
     const image = post.images[0];
-
-    // 역슬래시 → 슬래시
     let path = image.saveDir.replace(/\\/g, "/");
 
-    // uploads 기준 상대경로 추출
     const idx = path.indexOf("uploads");
     const relative = path.substring(idx);
 
@@ -24,17 +24,18 @@ export default function CommunityItem({ post }) {
     <Link to={`/community/${post.communityBoardId}`} className="community-item-link">
       <div className="community-item">
 
-        {/* 🔥 실제 이미지 표시 */}
-        <img 
-          src={getImageUrl()} 
-          alt={post.title} 
-          className="item-image" 
-        />
+        {/* 이미지가 있는 경우에만 렌더링 */}
+        {hasImage && (
+          <img 
+            src={getImageUrl()} 
+            alt={post.title} 
+            className="item-image"
+          />
+        )}
 
-        <div className="item-info">
+        <div className="item-info" style={{ marginLeft: hasImage ? "15px" : "0" }}>
           <h3>{post.title}</h3>
 
-          {/* subtitle 없음 → content의 앞부분 잘라서 표현 */}
           <p className="subtitle">
             {post.content.length > 30 
               ? post.content.substring(0, 30) + "..." 
@@ -43,11 +44,7 @@ export default function CommunityItem({ post }) {
 
           <div className="meta">
             <span>{post.userName}</span>
-
-            {/* 날짜 포맷 */}
             <span>{post.createdDate.substring(0, 10)}</span>
-
-            {/* 백엔드에 조회수/좋아요 없음 → 임시로 0 */}
             <span>조회 {post.views || 0}</span>
             <span>❤️ {post.likes || 0}</span>
           </div>

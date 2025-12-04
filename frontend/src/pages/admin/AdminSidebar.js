@@ -20,6 +20,9 @@ export default function AdminSidebar() {
         <li>
           <Link to="/admin/users">👥 회원 관리</Link>
         </li>
+           <li>
+          <Link to="/admin/orders">🔆 결제 관리</Link>
+        </li>
         <li>
         <Link to="/admin/profile">⚙️ 내 정보 수정</Link>
       </li>

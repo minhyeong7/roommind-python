@@ -140,4 +140,12 @@ export const loginUser = async (loginData) => {
   }
 };
 
+/* ===========================================
+    로그인한 유저 정보 조회
+=========================================== */
+export const fetchUserInfo = async () => {
+  const res = await api.get("/users/me");
+  return res.data;
+};
+
 export default api;
