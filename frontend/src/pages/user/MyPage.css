@@ -8,3 +8,9 @@
   font-size: 15px;
   color: #777;
 }
+.mypage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+  text-align: center; /* ⬅️ 가운데 정렬 */
+}

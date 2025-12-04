@@ -12,16 +12,17 @@ const MyQnA = () => {
 
     axios
       .get("http://localhost:8080/api/qnaboards")
-      .then(res => {
+      .then((res) => {
         const list = res.data.data;
 
         const email = JSON.parse(atob(token.split(".")[1])).sub;
 
-        const mine = list.filter(item => item.email === email);
+        // 내가 쓴 QnA만 필터링
+        const mine = list.filter((item) => item.email === email);
 
         setMyQnaList(mine);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [token]);
 
   return (
@@ -43,10 +44,16 @@ const MyQnA = () => {
 
           <tbody>
             {myQnaList.map((qna, index) => (
-              <tr key={qna.qnaBoardId}>
+              <tr
+                key={qna.qnaBoardId}
+                className="table-row"
+                onClick={() =>
+                  (window.location.href = `/qna/${qna.qnaBoardId}`)
+                }
+              >
                 <td>{index + 1}</td>
 
-                <td className="title-cell">{qna.title}</td>
+                <td className="clickable-title">{qna.title}</td>
 
                 <td>{new Date(qna.createdDate).toLocaleDateString()}</td>
 

@@ -17,11 +17,14 @@ const loadProducts = async () => {
   try {
     const list = await fetchAllProducts();
 
-
+    // 이 가구 어때요?
     setProducts(list.slice(0, 5));
+    // 요즘 핫한 인기상품!
     setHotProducts(list.slice(5, 10));
-    setSaleProducts(list.filter(p => p.salePrice < p.originalPrice));
-
+    // 세일중인 상품
+    setSaleProducts(
+      list.filter(p => p.salePrice < p.originalPrice).slice(10,15)
+    );
   } catch (err) {
     console.error("상품 불러오기 실패:", err);
   }
