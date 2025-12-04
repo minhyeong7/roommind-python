@@ -1,37 +1,119 @@
-import React, { useState, useContext } from "react";
+// src/pages/OrderPage.js
+
+import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import AddressModal from "../components/AddressModal";
+import api from "../api/userApi";
 import "./OrderPage.css";
 
 function OrderPage() {
   const { cartItems, totalPrice } = useContext(CartContext);
 
-  // 기본 배송지 정보
+  /* ======================================================
+      상세주소 자동 분리 함수 ⭐ 추가됨
+  ====================================================== */
+  const splitAddress = (full) => {
+    if (!full) return ["", ""];
+
+    // 상세주소가 끝에 붙은 경우 ex) "판교로 166 202호"
+    const regex = /(.*)\s(\d+호|\d+층|\d+동|\d+호수?)$/;
+
+    const match = full.match(regex);
+    if (match) {
+      return [match[1], match[2]]; // [기본주소, 상세주소]
+    }
+
+    // 규칙에 안 맞으면 상세주소 없음
+    return [full, ""];
+  };
+
+  // 배송지 정보
   const [address, setAddress] = useState({
-    name: "김노아",
-    phone: "010-0000-0000",
-    email: "noa@example.com",
-    zipcode: "12345",
-    address1: "인천광역시 남동구 석산로 216번길",
-    address2: "6 (구월동, 금영빌라) 금영빌라 202호",
+    name: "",
+    phone: "",
+    email: "",
+    zipcode: "",
+    address1: "",
+    address2: "",
   });
 
   // 주문자 정보
   const [buyer, setBuyer] = useState({
-    name: "김노아",
-    phone: "010-0000-0000",
-    email: "noa@example.com",
+    name: "",
+    phone: "",
+    email: "",
   });
 
   const [sameAsAddress, setSameAsAddress] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-
-  // 선택된 결제수단
   const [payMethod, setPayMethod] = useState("CARD");
 
-  // 주소 선택 시
+  /* ======================================================
+      🔥 회원 정보 불러오기 + 주소 자동 파싱
+  ====================================================== */
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const email = JSON.parse(atob(token.split(".")[1])).sub;
+
+    api
+      .get(`/users/email/${email}`)
+      .then((res) => {
+        const user = res.data.data;
+
+        let zipcode = "";
+        let addr1 = "";
+        let addr2 = "";
+
+        /* -----------------------------------------
+           CASE 1: "12345||주소||상세" (정상 저장된 경우)
+        ------------------------------------------ */
+        if (user.address?.includes("||")) {
+          const parts = user.address.split("||");
+          zipcode = parts[0] || "";
+          addr1 = parts[1] || "";
+          addr2 = parts[2] || "";
+        }
+        /* -----------------------------------------
+           CASE 2: "경기 성남시 ~~ 202호" 같은 한 줄 주소
+           → 자동으로 기본주소 + 상세주소 분리 ⭐ 변경됨
+        ------------------------------------------ */
+        else if (user.address) {
+          const [base, detail] = splitAddress(user.address);
+          zipcode = "";
+          addr1 = base;
+          addr2 = detail;
+        }
+
+        const addrObj = {
+          name: user.userName,
+          phone: user.phone,
+          email: user.email,
+          zipcode,
+          address1: addr1,
+          address2: addr2,
+        };
+
+        setAddress(addrObj);
+
+        if (sameAsAddress) {
+          setBuyer({
+            name: user.userName,
+            phone: user.phone,
+            email: user.email,
+          });
+        }
+      })
+      .catch((err) => console.error("회원 정보 조회 실패:", err));
+  }, []);
+
+  /* ======================================================
+      배송지 선택 모달에서 선택했을 때
+  ====================================================== */
   const handleSelectAddress = (addr) => {
     setAddress(addr);
+
     if (sameAsAddress) {
       setBuyer({
         name: addr.name,
@@ -39,12 +121,13 @@ function OrderPage() {
         email: addr.email,
       });
     }
+
     setOpenModal(false);
   };
 
-  // =============================
-  // PortOne 결제 요청
-  // =============================
+  /* ======================================================
+      🔥 포트원 결제 요청
+  ====================================================== */
   const requestPortOne = async (method) => {
     if (!window.PortOne) {
       alert("결제 모듈 로딩 실패! 새로고침 후 다시 시도해주세요.");
@@ -59,7 +142,7 @@ function OrderPage() {
     };
 
     try {
-      const response = await window.PortOne.requestPayment({
+      await window.PortOne.requestPayment({
         storeId: "store_test_72bbef3b-8348-47f9-9a6a-65cc5e9022d3",
         channelKey: channelKeyMap[method],
         payMethod: method,
@@ -77,23 +160,19 @@ function OrderPage() {
           email: buyer.email,
         },
 
-        // ⭐ 결제 완료 페이지로 이동
         redirectUrl: `${window.location.origin}/order/success`,
       });
-
-      console.log("결제 응답:", response);
     } catch (err) {
       console.error(err);
       alert("결제 실패 또는 취소되었습니다.");
     }
   };
 
-  // =============================
-  // 결제하기 버튼 클릭
-  // =============================
+  /* ======================================================
+      결제하기
+  ====================================================== */
   const handlePayment = () => {
     if (payMethod === "BANK") {
-      // ⭐ 무통장입금은 바로 완료 페이지 이동
       window.location.href = "/order/bank";
       return;
     }
@@ -104,14 +183,11 @@ function OrderPage() {
   return (
     <div className="order-page">
       <div className="order-left">
-        
         {/* 배송지 정보 */}
         <section className="order-box address-box">
           <div className="box-header">
             <h3>배송지 정보</h3>
-            <div className="address-actions">
-              <button onClick={() => setOpenModal(true)}>배송지 변경</button>
-            </div>
+            <button onClick={() => setOpenModal(true)}>배송지 변경</button>
           </div>
 
           <div className="input-row">
@@ -161,7 +237,9 @@ function OrderPage() {
             <label>이름</label>
             <input
               value={buyer.name}
-              onChange={(e) => setBuyer((prev) => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, name: e.target.value }))
+              }
             />
           </div>
 
@@ -169,7 +247,9 @@ function OrderPage() {
             <label>전화번호</label>
             <input
               value={buyer.phone}
-              onChange={(e) => setBuyer((prev) => ({ ...prev, phone: e.target.value }))}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, phone: e.target.value }))
+              }
             />
           </div>
 
@@ -177,7 +257,9 @@ function OrderPage() {
             <label>이메일</label>
             <input
               value={buyer.email}
-              onChange={(e) => setBuyer((prev) => ({ ...prev, email: e.target.value }))}
+              onChange={(e) =>
+                setBuyer((prev) => ({ ...prev, email: e.target.value }))
+              }
             />
           </div>
         </section>
@@ -223,11 +305,23 @@ function OrderPage() {
           <h3>결제수단</h3>
 
           <div className="payment-methods">
-            <button className={`pm ${payMethod === "CARD" ? "active" : ""}`} onClick={() => setPayMethod("CARD")}>카드 결제</button>
-            <button className={`pm ${payMethod === "TOSSPAY" ? "active" : ""}`} onClick={() => setPayMethod("TOSSPAY")}>토스페이</button>
-            <button className={`pm ${payMethod === "NAVERPAY" ? "active" : ""}`} onClick={() => setPayMethod("NAVERPAY")}>네이버페이</button>
-            <button className={`pm ${payMethod === "KAKAOPAY" ? "active" : ""}`} onClick={() => setPayMethod("KAKAOPAY")}>카카오페이</button>
-            <button className={`pm ${payMethod === "BANK" ? "active" : ""}`} onClick={() => setPayMethod("BANK")}>무통장입금</button>
+            {["CARD", "TOSSPAY", "NAVERPAY", "KAKAOPAY", "BANK"].map((m) => (
+              <button
+                key={m}
+                className={`pm ${payMethod === m ? "active" : ""}`}
+                onClick={() => setPayMethod(m)}
+              >
+                {m === "CARD"
+                  ? "카드 결제"
+                  : m === "TOSSPAY"
+                  ? "토스페이"
+                  : m === "NAVERPAY"
+                  ? "네이버페이"
+                  : m === "KAKAOPAY"
+                  ? "카카오페이"
+                  : "무통장입금"}
+              </button>
+            ))}
           </div>
         </section>
       </div>
