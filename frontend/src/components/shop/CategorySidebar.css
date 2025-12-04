@@ -23,12 +23,12 @@
 }
 
 .main-btn:hover span:first-child {
-  color: #0078ff;
+  color: #f8a02d;
   transition: 0.2s;
 }
 
 .main-btn .active-text {
-  color: #0078ff;
+  color: #f8a02d;
   font-weight: 600;
 }
 
@@ -52,14 +52,14 @@
 }
 
 .sub-item:hover {
-  color: #0078ff;
+  color: #f8a02d;
   font-weight: 500;
   transition: 0.2s;
 }
 
 
 .active-sub {
-  color: #0078ff;
+  color: #f8a02d;
   font-weight: 600;
 }
 

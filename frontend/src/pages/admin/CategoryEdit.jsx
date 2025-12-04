@@ -14,9 +14,81 @@ export default function CategoryEdit() {
     middleCategory: ""
   });
 
-  // ===========================
-  // 목록 불러오기
-  // ===========================
+  /* =======================================================
+      ⭐ 드래그 상태 관리
+  ======================================================= */
+  const [draggingId, setDraggingId] = useState(null);
+
+  const handleDragStart = (id) => {
+    setDraggingId(id);
+  };
+
+  /* =======================================================
+      ⭐ 드래그 이동 (UI 순서 변경만)
+  ======================================================= */
+  const handleDragEnter = (targetId) => {
+    if (draggingId === targetId) return;
+
+    setCategories((prev) => {
+      const newList = [...prev];
+
+      const from = newList.findIndex((c) => c.categoryId === draggingId);
+      const to = newList.findIndex((c) => c.categoryId === targetId);
+
+      if (from === -1 || to === -1) return prev;
+
+      if (newList[from].majorCategory !== newList[to].majorCategory) return prev;
+
+      const temp = newList[from];
+      newList[from] = newList[to];
+      newList[to] = temp;
+
+      return newList;
+    });
+  };
+
+  /* =======================================================
+      ⭐ 드래그 종료 → 해당 majorCategory만 서버로 저장
+======================================================= */
+const handleDragEnd = async () => {
+  if (!draggingId) return;
+
+  const dragged = categories.find((c) => c.categoryId === draggingId);
+  if (!dragged) return;
+
+  const major = dragged.majorCategory;
+
+  // 🔥 해당 majorCategory 내부의 아이템만 순서 추출
+  const subList = categories
+    .filter((c) => c.majorCategory === major && c.middleCategory)
+    .sort((a, b) => {
+      // categories 배열의 현재 순서를 기준으로 정렬
+      return (
+        categories.findIndex((x) => x.categoryId === a.categoryId) -
+        categories.findIndex((x) => x.categoryId === b.categoryId)
+      );
+    });
+
+  // 🔥 서버에 보낼 payload (orderNo 사용)
+  const reorderPayload = subList.map((c, idx) => ({
+    categoryId: c.categoryId,
+    orderNo: idx + 1,
+  }));
+
+  try {
+    await api.post("/admin/categories/reorder", reorderPayload);
+    console.log("정렬 저장 완료:", reorderPayload);
+  } catch (err) {
+    console.error("정렬 저장 실패:", err);
+  }
+
+  setDraggingId(null);
+};
+
+
+  /* =======================================================
+      목록 로딩
+  ======================================================= */
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -25,15 +97,14 @@ export default function CategoryEdit() {
     try {
       const res = await api.get("/admin/categories");
       setCategories(res.data);
-      console.log("카테고리 목록:", res.data);
     } catch (err) {
       console.error("카테고리 목록 불러오기 실패:", err);
     }
   };
 
-  // ===========================
-  // 단일 조회
-  // ===========================
+  /* =======================================================
+      단일 조회
+  ======================================================= */
   const handleSelect = async (categoryId) => {
     try {
       const res = await api.get(`/admin/categories/${categoryId}`);
@@ -45,37 +116,24 @@ export default function CategoryEdit() {
     }
   };
 
-  // ===========================
-  // 대분류 추가
-  // ===========================
+  /* =======================================================
+      추가 기능
+  ======================================================= */
   const newMajor = () => {
-    setForm({
-      categoryId: null,
-      majorCategory: "",
-      middleCategory: null
-    });
+    setForm({ categoryId: null, majorCategory: "", middleCategory: null });
     setSelected(null);
     setMode("new-major");
   };
 
-  // ===========================
-  // 중분류 추가
-  // ===========================
   const newMiddle = (major) => {
-    setForm({
-      categoryId: null,
-      majorCategory: major,
-      middleCategory: ""
-    });
+    setForm({ categoryId: null, majorCategory: major, middleCategory: "" });
     setSelected(null);
     setMode("new-middle");
   };
 
-  // ===========================
-  // 삭제 기능
-  // ===========================
-
-  /** 중분류 삭제 */
+  /* =======================================================
+      삭제 기능
+  ======================================================= */
   const deleteMiddle = async (categoryId) => {
     if (!window.confirm("중분류를 삭제하시겠습니까?")) return;
 
@@ -85,38 +143,33 @@ export default function CategoryEdit() {
       fetchCategories();
     } catch (err) {
       console.error("중분류 삭제 실패:", err);
-      alert("삭제 실패!");
     }
   };
 
-  /** 대분류 삭제 (하위 중분류 모두 삭제) */
   const deleteMajor = async (major) => {
-    if (!window.confirm(`"${major}" 대분류와 모든 중분류를 삭제하시겠습니까?`)) return;
+    if (!window.confirm(`"${major}" 대분류와 모든 중분류를 삭제하시겠습니까?`))
+      return;
 
-    const targetList = categories.filter(c => c.majorCategory === major);
+    const targets = categories.filter((c) => c.majorCategory === major);
 
     try {
-      for (const item of targetList) {
-        await api.delete(`/admin/categories/${item.categoryId}`);
+      for (const c of targets) {
+        await api.delete(`/admin/categories/${c.categoryId}`);
       }
-      alert("대분류 및 하위 항목이 모두 삭제되었습니다.");
+      alert("대분류 삭제 완료");
       fetchCategories();
     } catch (err) {
       console.error("대분류 삭제 실패:", err);
-      alert("삭제 중 오류가 발생했습니다.");
     }
   };
 
-  // ===========================
-  // 입력 변경
-  // ===========================
+  /* =======================================================
+      저장
+  ======================================================= */
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ===========================
-  // 저장
-  // ===========================
   const handleSubmit = async () => {
     try {
       if (mode === "edit") {
@@ -129,23 +182,25 @@ export default function CategoryEdit() {
       setMode("none");
     } catch (err) {
       console.error("저장 실패:", err);
-      alert("오류가 발생했습니다.");
     }
   };
 
-  // ===========================
-  // 대분류 / 중분류 분리
-  // ===========================
+  /* =======================================================
+      목록 분리
+  ======================================================= */
   const majorList = [...new Set(categories.map((c) => c.majorCategory))];
 
   const middleList = (major) =>
-    categories.filter((c) => c.majorCategory === major && c.middleCategory);
+    categories.filter(
+      (c) => c.majorCategory === major && c.middleCategory !== null
+    );
 
+  /* =======================================================
+      화면 렌더링
+  ======================================================= */
   return (
     <AdminLayout>
       <div className="category-edit-container">
-
-        {/* 왼쪽 리스트 */}
         <div className="category-list-box">
           <h2>카테고리 목록</h2>
 
@@ -153,15 +208,15 @@ export default function CategoryEdit() {
             + 대분류 추가
           </button>
 
-          {majorList.map((major, index) => (
-            <div key={index} className="major-block">
+          {majorList.map((major, i) => (
+            <div key={i} className="major-block">
               <div className="major-top">
-
                 <span
                   className="major-title"
                   onClick={() => {
                     const majorItem = categories.find(
-                      (c) => c.majorCategory === major && !c.middleCategory
+                      (c) =>
+                        c.majorCategory === major && c.middleCategory === null
                     );
                     if (majorItem) handleSelect(majorItem.categoryId);
                   }}
@@ -177,10 +232,7 @@ export default function CategoryEdit() {
                     + 중분류
                   </button>
 
-                  <button
-                    className="del-btn"
-                    onClick={() => deleteMajor(major)}
-                  >
+                  <button className="del-btn" onClick={() => deleteMajor(major)}>
                     삭제
                   </button>
                 </div>
@@ -188,7 +240,18 @@ export default function CategoryEdit() {
 
               <div className="middle-list">
                 {middleList(major).map((mid) => (
-                  <div key={mid.categoryId} className="middle-item-row">
+                  <div
+                    key={mid.categoryId}
+                    className="middle-item-row"
+                    draggable
+                    onDragStart={() => handleDragStart(mid.categoryId)}
+                    onDragEnter={() => handleDragEnter(mid.categoryId)}
+                    onDragEnd={handleDragEnd}
+                    style={{
+                      opacity: draggingId === mid.categoryId ? 0.3 : 1,
+                      transition: "0.2s",
+                    }}
+                  >
                     <span
                       className="middle-item"
                       onClick={() => handleSelect(mid.categoryId)}
@@ -209,7 +272,6 @@ export default function CategoryEdit() {
           ))}
         </div>
 
-        {/* 오른쪽 폼 */}
         <div className="category-edit-box">
           <h2>
             {mode === "new-major"
@@ -246,7 +308,6 @@ export default function CategoryEdit() {
             </>
           )}
         </div>
-
       </div>
     </AdminLayout>
   );
