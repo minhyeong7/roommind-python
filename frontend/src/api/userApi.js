@@ -1,3 +1,4 @@
+// src/api/userApi.js
 import axios from "axios";
 
 const api = axios.create({
@@ -8,7 +9,7 @@ const api = axios.create({
 });
 
 /* ===========================================
-   🔥 JWT exp(만료시간) 검증 함수
+    JWT exp(만료시간) 검증 함수
    - exp 초/밀리초 자동 판별
 =========================================== */
 export const isTokenExpired = (token) => {
@@ -33,7 +34,7 @@ export const isTokenExpired = (token) => {
 };
 
 /* ===========================================
-   🔥 JWT 남은 시간(초) 계산 함수
+    JWT 남은 시간(초) 계산 함수
 =========================================== */
 export const getTokenRemainingTime = (token) => {
   try {
@@ -59,7 +60,7 @@ export const getTokenRemainingTime = (token) => {
 };
 
 /* ===========================================
-   🔥 로그아웃 공통 함수
+    로그아웃 공통 함수
 =========================================== */
 export const logoutUser = (redirect = true) => {
   localStorage.removeItem("token");
@@ -73,7 +74,7 @@ export const logoutUser = (redirect = true) => {
 };
 
 /* ===========================================
-   🔥 Axios 요청 인터셉터 — 요청 전에 exp 직접 체크
+    Axios 요청 인터셉터 — 요청 전에 exp 직접 체크
 =========================================== */
 api.interceptors.request.use(
   (config) => {
@@ -95,7 +96,7 @@ api.interceptors.request.use(
 );
 
 /* ===========================================
-   🔥 Axios 응답 인터셉터 — 401/403 자동 로그아웃
+    Axios 응답 인터셉터 — 401/403 자동 로그아웃
 =========================================== */
 api.interceptors.response.use(
   (response) => response,
@@ -112,7 +113,7 @@ api.interceptors.response.use(
 );
 
 /* ===========================================
-   🔥 회원가입
+    회원가입
 =========================================== */
 export const registerUser = async (userData) => {
   const res = await api.post("/users/signup", userData);
@@ -120,7 +121,7 @@ export const registerUser = async (userData) => {
 };
 
 /* ===========================================
-   🔥 일반 로그인
+    일반 로그인
 =========================================== */
 export const loginUser = async (loginData) => {
   try {

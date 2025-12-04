@@ -49,10 +49,13 @@ function Card({ product }) {
       ? Math.round((1 - salePrice / originalPrice) * 100)
       : 0;
 
+  console.log("🔥 Card product:", product);
+
+
   return (
     <Link
       to={`/product/${productId}`}
-      state={{ product }}
+      
       className="card"
     >
       <div className="card-img-box">
