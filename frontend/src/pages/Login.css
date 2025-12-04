@@ -162,3 +162,29 @@ body {
 .social-btn.google:hover {
   background-color: #f5f5f5;
 }
+.pw-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.pw-input-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #777;
+}
+
+.caps-warning {
+  color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}

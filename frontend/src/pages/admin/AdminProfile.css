@@ -1,0 +1,145 @@
+/* ==================================
+   전체 박스 사이즈 안정화 (가장 중요)
+================================== */
+* {
+  box-sizing: border-box;
+}
+
+/* ==================================
+   전체 레이아웃 정돈
+================================== */
+.admin-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+}
+
+.admin-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid #eee;
+}
+
+/* ==================================
+   프로필 영역
+================================== */
+.profile-container {
+  flex: 1;
+  padding: 40px 60px;
+  max-width: 700px;
+}
+
+/* 제목 */
+.profile-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* 입력 라벨 */
+.profile-container label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* 기본 input */
+.profile-input,
+.password-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  margin-bottom: 15px;
+  background: #fff;
+}
+
+/* ==================================
+   비밀번호 입력 + 눈 아이콘
+================================== */
+.pw-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.pw-input-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* 눈 아이콘 공간 */
+  box-sizing: border-box; /* ⭐ input 너비 계산 오류 방지 */
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 12px;
+  top: 40%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  color: #777;
+  z-index: 20; /* ⭐ 반드시 필요 */
+}
+
+.pw-toggle:hover {
+  color: #000;
+}
+
+/* ==================================
+   카드 박스 (비밀번호 섹션)
+================================== */
+.password-box {
+  margin-top: 40px;
+  padding: 25px;
+  border-radius: 12px;
+  background: #fafafa;
+  border: 1px solid #eee;
+}
+
+/* ==================================
+   버튼
+================================== */
+.profile-save-btn {
+  margin-top: 20px;
+  width: 100%;
+  background: #fc9510;
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.profile-save-btn:hover {
+  background: #e6830b;
+}
+/* 비밀번호 강도 표시 */
+.pw-strength {
+  margin-top: -10px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pw-strength.weak {
+  color: #ff4d4d;
+}
+
+.pw-strength.medium {
+  color: #ffa500;
+}
+
+.pw-strength.strong {
+  color: #28a745;
+}
+
+/* CapsLock 경고 */
+.caps-warning {
+  font-size: 14px;
+  color: #d9534f;
+  margin-bottom: 15px;
+}
