@@ -1,5 +1,6 @@
 // src/components/product/ProductList.jsx
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // ⭐ 추가
 import { fetchFilteredProducts } from "../../api/productApi";
 import "./ProductList.css";
 
@@ -34,11 +35,14 @@ function ProductList({ category }) {
               : 0;
 
           return (
-            <div key={p.productId} className="card">
+            <Link 
+              key={p.productId} 
+              to={`/product/${p.productId}`} // ⭐ 상세 페이지로 이동
+              className="card"
+              style={{ textDecoration: 'none', color: 'inherit' }} // ⭐ Link 스타일 제거
+            >
               <div className="card-img-box">
                 <img src={imageUrl} alt={p.productName} />
-
-                {/* 필요하면 특가 배지 유지 */}
                 <div className="card-badge">특가</div>
               </div>
 
@@ -69,7 +73,7 @@ function ProductList({ category }) {
 
                 <div className="card-review">⭐ 0 리뷰 0</div>
               </div>
-            </div>
+            </Link>
           );
         })
       )}

@@ -90,6 +90,7 @@ function App() {
     {/* 상품 상세 */}
     <Route path="/product/:productId" element={<ProductDetail />} />
 
+
     {/* 회원가입 & 로그인 */}
     <Route path="/signup" element={<Signup />} />
     <Route path="/login" element={<Login />} />
