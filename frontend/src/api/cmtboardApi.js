@@ -1,12 +1,5 @@
-// src/api/cmtBoardApi.js
-import axios from "axios";
+import api from "./header.js";
 
-const api = axios.create({
-  baseURL: "http://localhost:8080/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
 /* ============================
    🔹 JWT 자동 첨부 인터셉터

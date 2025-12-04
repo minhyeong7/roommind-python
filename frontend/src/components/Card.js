@@ -2,17 +2,23 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./Card.css";
 
-function Card({ image, title, price, originalPrice, link }) {
-  const productId = title;
+function Card({ product }) {
+  const {
+    productId,
+    productName,
+    salePrice,
+    originalPrice,
+    images,
+  } = product;
+
+  // ⭐ 실제 이미지 URL 생성 (백엔드 도메인 포함)
+  const imageUrl =
+    images && images.length > 0
+      ? `http://localhost:8080/${images[0].saveDir}/${images[0].fileName}`
+      : "/images/no-image.png";
+
+  // ❤️ 위시리스트 로컬스토리지
   const [liked, setLiked] = useState(false);
-
-  const format = (num) => Number(num).toLocaleString();
-  const toNumber = (num) => Number(num.toString().replace(/,/g, ""));
-
-  const priceNum = toNumber(price);
-  const originalNum = toNumber(originalPrice);
-
-  const discount = Math.round((1 - priceNum / originalNum) * 100);
 
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
@@ -37,38 +43,39 @@ function Card({ image, title, price, originalPrice, link }) {
     localStorage.setItem("wishlist", JSON.stringify(updated));
   };
 
-  // 🔥 여기서 Link + state로 product 데이터 넘김
+  // ⭐ 할인율 계산
+  const discount =
+    originalPrice > 0
+      ? Math.round((1 - salePrice / originalPrice) * 100)
+      : 0;
+
   return (
     <Link
-      to={link}
-      state={{
-        product: {
-          title,
-          price: priceNum,
-          originalPrice: originalNum,
-          image,
-          discount,
-          options: ["기본옵션"], // 옵션 없는 상품 대비
-        },
-      }}
+      to={`/product/${productId}`}
+      state={{ product }}
       className="card"
     >
       <div className="card-img-box">
-        <img src={image} alt={title} />
+        <img src={imageUrl} alt={productName} />
+
         <div className="card-scrap" onClick={toggleLike}>
           {liked ? "❤️" : "🤍"}
         </div>
       </div>
 
       <div className="card-info">
-        <div className="card-title">{title}</div>
+        <div className="card-title">{productName}</div>
 
         <div className="card-price-line">
           <span className="card-discount">{discount}%</span>
-          <span className="card-price">{format(priceNum)}원</span>
+          <span className="card-price">
+            {salePrice.toLocaleString()}원
+          </span>
         </div>
 
-        <div className="card-original">{format(originalNum)}원</div>
+        <div className="card-original">
+          {originalPrice.toLocaleString()}원
+        </div>
 
         <div className="card-review">⭐ 0 리뷰 0</div>
       </div>

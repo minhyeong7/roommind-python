@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchFilteredProducts } from "../../api/productApi"; // ⭐ productApi 사용
 import "./ProductList.css";
 
 function ProductList({ category }) {
@@ -10,46 +10,46 @@ function ProductList({ category }) {
     if (category?.major) params.major = category.major;
     if (category?.middle) params.middle = category.middle;
 
-    axios.get("/api/products/filter", { params })
-      .then((res) => setProducts(res.data))
+    // ⭐ axios 직접 호출 X → productApi 호출 O
+    fetchFilteredProducts(params)
+      .then((res) => setProducts(res))
       .catch((err) => console.error("상품 불러오기 실패:", err));
   }, [category]);
 
   return (
-  <div className="product-list">
-    {products.length === 0 ? (
-      <div className="no-products">등록된 상품이 없습니다.</div>
-    ) : (
-      products.map((p) => {
-        const img = p.images && p.images.length > 0 ? p.images[0] : null;
-        const imageUrl = img
-          ? `http://localhost:8080/${img.saveDir}/${img.fileName}`
-          : "/no-image.png";
+    <div className="product-list">
+      {products.length === 0 ? (
+        <div className="no-products">등록된 상품이 없습니다.</div>
+      ) : (
+        products.map((p) => {
+          const img = p.images && p.images.length > 0 ? p.images[0] : null;
+          const imageUrl = img
+            ? `http://localhost:8080/${img.saveDir}/${img.fileName}`
+            : "/no-image.png";
 
-        return (
-          <div key={p.productId} className="product-card">
-            <div className="card-image">
-              <img src={imageUrl} alt={p.productName} />
-              <div className="badge">특가</div>
-            </div>
+          return (
+            <div key={p.productId} className="product-card">
+              <div className="card-image">
+                <img src={imageUrl} alt={p.productName} />
+                <div className="badge">특가</div>
+              </div>
 
-            <div className="card-info">
-              <p className="brand">{p.brand}</p>
-              <p className="name">{p.productName}</p>
+              <div className="card-info">
+                <p className="brand">{p.brand}</p>
+                <p className="name">{p.productName}</p>
 
-              <div className="price-wrap">
-                <span className="price">
-                  {p.salePrice.toLocaleString()}원
-                </span>
+                <div className="price-wrap">
+                  <span className="price">
+                    {p.salePrice.toLocaleString()}원
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })
-    )}
-  </div>
-);
-
+          );
+        })
+      )}
+    </div>
+  );
 }
 
 export default ProductList;

@@ -1,5 +1,4 @@
-// src/api/adminApi.js
-import api from "./userApi";
+import api from "./header.js";
 
 // ===============================
 //  관리자 회원 API

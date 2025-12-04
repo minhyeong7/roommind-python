@@ -1,4 +1,4 @@
-import api from "./userApi";
+import api from "./header.js";
 
 // 카테고리 전체 조회
 export const fetchCategories = () =>
