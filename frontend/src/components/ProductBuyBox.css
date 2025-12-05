@@ -1,14 +1,10 @@
 /* ------------------------------ */
-/* 기본 전체 스타일 유지          */
+/* 박스 자체 여백 / 배경 제거     */
 /* ------------------------------ */
 .buy-box {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 22px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
 }
 
 /* 브랜드 */

@@ -3,8 +3,8 @@ import { CartContext } from "../context/CartContext";
 import "./ProductBuyBox.css";
 
 function ProductBuyBox({ product }) {
-  
-  // 옵션 없는 경우 기본옵션 자동 생성
+
+  // 옵션 없는 경우 기본 옵션 자동 생성
   const optionList =
     product.options && product.options.length > 0
       ? product.options
@@ -60,17 +60,17 @@ function ProductBuyBox({ product }) {
 
       {/* 쿠폰 박스 */}
       <div className="coupon-box">
-        <strong>🎟 쿠폰 할인 상품이 있어요!</strong><br></br>
+        <strong>🎟 쿠폰 할인 상품이 있어요!</strong><br />
         아래 상품에서 사용할 수 있는 쿠폰을 확인해보세요.
       </div>
 
-      {/* 무료배송 + 오늘출발 */}
+      {/* 무료배송 / 오늘출발 */}
       <div className="delivery-status">
         <span className="free">🚚 무료배송</span>
         <span className="today">📦 오늘출발</span>
       </div>
 
-      {/* 배송 정보 박스 */}
+      {/* 배송 정보 */}
       <div className="info-box">
         <div className="info-title">배송</div>
         <div className="info-content">
@@ -93,7 +93,7 @@ function ProductBuyBox({ product }) {
         ))}
       </select>
 
-      {/* 옵션 선택 후 표시 */}
+      {/* 선택된 옵션 표시 */}
       {selectedOption && (
         <div className="selected-item-box">
           <div className="selected-info">
@@ -121,9 +121,7 @@ function ProductBuyBox({ product }) {
       {/* 총 금액 */}
       <div className="total-price-box">
         <span>총 상품금액</span>
-        <span className="total-price">
-          {totalPrice.toLocaleString()}원
-        </span>
+        <span className="total-price">{totalPrice.toLocaleString()}원</span>
       </div>
 
       {/* 버튼 */}
