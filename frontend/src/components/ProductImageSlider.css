@@ -1,0 +1,23 @@
+/* 상단 구조 전체 */
+.detail-top-wrapper {
+  display: flex;
+  width: 1200px;
+  margin: 40px auto;
+  gap: 40px;
+}
+
+/* 이미지 영역 */
+.detail-left {
+  flex: 1;
+  max-width: 600px;
+}
+
+.detail-main-img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* 구매 박스 영역 */
+.detail-right {
+  width: 380px;
+}

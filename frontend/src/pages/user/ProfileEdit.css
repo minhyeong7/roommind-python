@@ -1,0 +1,89 @@
+/* =========================================
+   전체 폼 공통 레이아웃
+========================================= */
+.form-box {
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+/* 라벨 */
+.form-box label {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+  display: block;
+}
+
+/* 기본 input */
+.form-box input {
+  width: 100%;
+  padding: 12px 14px;
+  height: 45px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   비밀번호 입력 필드 (눈 아이콘 포함)
+========================================= */
+.pw-wrap {
+  position: relative;     /* 아이콘 기준점 */
+  width: 100%;
+}
+
+/* ===== pw-wrap input (여기가 핵심) ===== */
+.form-box .pw-wrap input {
+  padding-right: 55px !important;  /* 아이콘 공간 강제 확보 */
+  height: 45px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ===== pw-eye 아이콘 고정 ===== */
+.pw-wrap .pw-eye {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.pw-eye:hover {
+  color: #000;
+}
+
+
+/* =========================================
+   CapsLock 경고
+========================================= */
+.caps-warning {
+  color: red;
+  font-size: 13px;
+  margin: -4px 0 10px;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   비밀번호 강도 표시
+========================================= */
+.pw-strength {
+  margin: 6px 0 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pw-strength.weak {
+  color: #d9534f;
+}
+.pw-strength.medium {
+  color: #f0ad4e;
+}
+.pw-strength.strong {
+  color: #5cb85c;
+}

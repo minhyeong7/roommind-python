@@ -1,0 +1,12 @@
+.shop-container {
+  display: flex;
+  max-width: 1400px;   /* ← width 말고 max-width */
+  width: 100%;         /* 전체 화면 채움 */
+  margin: 30px auto;   
+  gap: 40px;
+}
+
+.shop-content {
+  flex: 1;  
+  padding-right: 40px; /* 선택적: 카드가 너무 붙으면 여백 추가 */
+}

@@ -1,0 +1,38 @@
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  /* 이걸로 왼쪽으로 당겨짐 */
+  margin-top: 10px;
+  margin-right: 400px;
+
+  white-space: nowrap; /* 줄바꿈방지 */
+}
+.btn-search {
+  padding: 6px 12px;
+  background: #fc9510;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background: #e6850d;
+}
+.btn-cancel {
+  padding: 8px 20px;
+  background: #ccc;
+  border: none;
+  border-radius: 6px;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-cancel:hover {
+  background: #b5b5b5;
+}

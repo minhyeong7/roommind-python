@@ -4,16 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "bootstrap-icons/font/bootstrap-icons.css";
-
+import { CartProvider } from './context/CartContext'; // ✅ 추가
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    {/* ✅ 전역으로 CartProvider 적용 */}
+    <CartProvider>
+      <App />
+    </CartProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// 성능 측정 (기본)
 reportWebVitals();

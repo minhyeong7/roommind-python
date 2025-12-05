@@ -1,0 +1,71 @@
+/* ⭐ 슬라이더 전체 영역 */
+.best-section {
+  position: relative;
+  width: 1300px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* ⭐ 슬라이더 (가로 스크롤) */
+.best-slider {
+  display: flex;
+  flex-wrap: nowrap;   /* 🔥 절대 줄바꿈 안됨 */
+  gap: 20px;
+  overflow-x: hidden;  /* 버튼으로만 이동 */
+  scroll-behavior: smooth;
+}
+
+/* ⭐ 카드: width 고정 */
+.best-card {
+  width: 280px;         /* 🔥 360px → 300px이 가장 안정적 */
+  flex: 0 0 auto;       /* 🔥 강제로 고정 너비 유지 */
+  cursor: pointer;
+}
+
+/* ⭐ 슬라이더 이동 버튼 (오늘의집 스타일) */
+.best-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;         /* 화살표 크기 */
+  color: #333;
+  cursor: pointer;
+
+  z-index: 20;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 좌/우 버튼 위치 */
+.best-btn.left {
+  left: -20px;
+}
+.best-btn.right {
+  right: -20px;
+}
+
+/* 호버 효과 */
+.best-btn:hover {
+  background: #f7f7f7;
+  border-color: #ccc;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* 모바일에서 버튼 숨기기 */
+@media (max-width: 768px) {
+  .best-btn {
+    display: none;
+  }
+}

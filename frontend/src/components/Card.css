@@ -1,72 +1,82 @@
-.card-link {
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  cursor: pointer;
   text-decoration: none;
   color: inherit;
 }
 
-.card {
-  width: 280px;
-  border-radius: 10px;
+.card-img-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-}
-
-.image-wrapper {
   position: relative;
 }
 
-.card-image {
+.card-img-box img {
   width: 100%;
-  height: 220px;
+  height: 100%;
   object-fit: cover;
+  transition: 0.25s ease;
 }
 
-/* 🔥 할인율 배지 */
-.discount-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #e53935;
-  color: white;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+.card-img-box:hover img {
+  transform: scale(1.05);
 }
+
+.card-scrap {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;   /* ← top 대신 bottom! */
+  font-size: 22px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
 
 .card-info {
-  padding: 15px;
-  text-align: center;
+  margin-top: 10px;
 }
 
 .card-title {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
+  height: 40px;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.card-price-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.card-discount {
+  color: #ff6a00;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .card-price {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.discount-price {
-  font-size: 1.2rem;
+  font-size: 17px;
   font-weight: 700;
-  color: #e53935;
 }
 
-.original-price {
-  font-size: 0.9rem;
-  color: #888;
+.card-original {
+  font-size: 13px;
+  color: #999;
   text-decoration: line-through;
+  margin-top: 3px;
+}
+
+.card-review {
+  font-size: 13px;
+  color: #555;
+  margin-top: 5px;
 }

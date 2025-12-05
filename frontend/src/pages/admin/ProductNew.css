@@ -1,0 +1,80 @@
+/* 전체 폼 영역 */
+.product-add-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+/* 입력 스타일 */
+.product-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.product-add-form input,
+.product-add-form select,
+.product-add-form textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+/* 설명 textarea */
+.product-add-form textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* 카테고리 줄 */
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 카테고리 추가 버튼 */
+.category-add-btn {
+  background: #fc9510;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.category-add-btn:hover {
+  background: #e08100;
+}
+
+/* 카테고리 추가 입력창 */
+.category-add-box {
+  display: flex;
+  gap: 10px;
+  margin-top: -5px;
+}
+.category-add-box input {
+  flex: 1;
+}
+.category-add-box button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+}
+
+/* 등록 버튼 */
+.submit-btn {
+  background-color: #fc9510;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 17px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+.submit-btn:hover {
+  background-color: #e08100;
+}

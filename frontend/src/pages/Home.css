@@ -8,21 +8,22 @@
 .home {
   font-family: 'NanumSquareRound';
   width: 100%;              /* 🔥 전체 콘텐츠 폭을 80%로 제한 */
-  margin: 0;          /* 🔥 화면 가운데 정렬 */
+  margin: 0 auto;          /* 🔥 화면 가운데 정렬 */
   padding: 0;         /* 상하 여백만 */
 }
 
-.section-title {
+.home-section-title {
   font-size: 22px;
   margin: 50px 0 40px;
-
+  justify-content: center;
   font-weight: bold;
   text-align: center;
 }
 
 .card-grid {
   display: flex;
+  gap: 30px;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center; /* 🔥 카드들을 중앙 정렬 */
+  justify-content: center;
+  margin-bottom: 40px;
 }

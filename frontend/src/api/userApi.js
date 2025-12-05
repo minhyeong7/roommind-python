@@ -1,86 +1,151 @@
 // src/api/userApi.js
 import axios from "axios";
 
-// ✅ Axios 기본 설정
 const api = axios.create({
-  baseURL: "http://localhost:8080", // 백엔드(Spring Boot) 주소
+  baseURL: "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// ✅ 회원가입 API
-export const registerUser = async (userData) => {
+/* ===========================================
+    JWT exp(만료시간) 검증 함수
+   - exp 초/밀리초 자동 판별
+=========================================== */
+export const isTokenExpired = (token) => {
   try {
-    const response = await api.post("/api/members/signup", userData);
-    return response.data; // 백엔드 응답 반환
-  } catch (error) {
-    console.error("❌ 회원가입 오류:", error);
-    throw error;
+    const payloadBase64 = token.split(".")[1];
+    const payloadJson = JSON.parse(atob(payloadBase64));
+    let exp = payloadJson.exp;
+
+    if (!exp) return true;
+
+    // 🔥 exp가 초인지 밀리초인지 자동 판별
+    if (exp < 1000000000000) {
+      // 10자리면 초 단위
+      exp = exp * 1000;
+    }
+
+    return Date.now() > exp;
+  } catch (e) {
+    console.error("JWT decode 실패:", e);
+    return true;
   }
 };
 
-// ✅ 로그인 API (JWT)
+/* ===========================================
+    JWT 남은 시간(초) 계산 함수
+=========================================== */
+export const getTokenRemainingTime = (token) => {
+  try {
+    const payloadBase64 = token.split(".")[1];
+    const payloadJson = JSON.parse(atob(payloadBase64));
+    let exp = payloadJson.exp;
+
+    if (!exp) return 0;
+
+    // 초/밀리초 자동 판별
+    if (exp < 1000000000000) {
+      exp = exp * 1000;
+    }
+
+    const diff = exp - Date.now();
+    if (diff <= 0) return 0;
+
+    return Math.floor(diff / 1000); // 초 단위 반환
+  } catch (e) {
+    console.error("JWT parse error:", e);
+    return 0;
+  }
+};
+
+/* ===========================================
+    로그아웃 공통 함수
+=========================================== */
+export const logoutUser = (redirect = true) => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  console.log("🚪 로그아웃 처리됨");
+
+  if (redirect && window.location.pathname !== "/login") {
+    window.location.href = "/login";
+  }
+};
+
+/* ===========================================
+    Axios 요청 인터셉터 — 요청 전에 exp 직접 체크
+=========================================== */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      if (isTokenExpired(token)) {
+        console.log("⛔ 토큰 만료 → 요청 차단 + 자동 로그아웃");
+        logoutUser();
+        return Promise.reject("TOKEN_EXPIRED");
+      }
+
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ===========================================
+    Axios 응답 인터셉터 — 401/403 자동 로그아웃
+=========================================== */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+
+    if (status === 401 || status === 403) {
+      console.log("🔐 서버 인증 오류 (", status, ") → 자동 로그아웃");
+      logoutUser();
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+/* ===========================================
+    회원가입
+=========================================== */
+export const registerUser = async (userData) => {
+  const res = await api.post("/users/signup", userData);
+  return res.data;
+};
+
+/* ===========================================
+    일반 로그인
+=========================================== */
 export const loginUser = async (loginData) => {
   try {
-    const response = await api.post("/api/members/login", loginData);
-
-    // ✅ 백엔드 응답 구조 예시:
-    // { status:200, message:"success", data:{ token:"JWT_TOKEN" } }
-    const token = response.data?.data?.token;
+    const res = await api.post("/users/login", loginData);
+    const token = res.data?.data?.token;
 
     if (token) {
       localStorage.setItem("token", token);
-      console.log("✅ 로그인 성공 — 토큰 저장 완료:", token);
-    } else {
-      console.warn("⚠️ 로그인 응답에 토큰이 없습니다:", response.data);
+      console.log("✅ 로그인 성공, 토큰 저장");
     }
 
-    return response.data; // 전체 반환
-  } catch (error) {
-    console.error("❌ 로그인 오류:", error);
-    throw error;
+    return res.data;
+  } catch (err) {
+    console.error("❌ 로그인 오류:", err);
+    throw err;
   }
 };
 
-// ✅ 로그인 후 사용자 정보 가져오기 (JWT 필요)
+/* ===========================================
+    로그인한 유저 정보 조회
+=========================================== */
 export const fetchUserInfo = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("토큰이 없습니다. 로그인 후 다시 시도해주세요.");
-
-    const response = await api.get("/api/members/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    console.log("📥 fetchUserInfo 응답:", response.data);
-
-    // ✅ 백엔드 응답 구조가 {data:{...}} 형태인 경우
-    if (response.data.data) {
-      return response.data.data;
-    }
-
-    // 단일 구조면 그냥 반환
-    return response.data;
-  } catch (error) {
-    console.error("❌ 사용자 정보 요청 오류:", error);
-    throw error;
-  }
+  const res = await api.get("/users/me");
+  return res.data;
 };
-
-// ✅ 로그아웃 (토큰 삭제)
-export const logoutUser = () => {
-  localStorage.removeItem("token");
-  console.log("🧹 JWT 토큰 삭제 완료 — 로그아웃 처리됨");
-};
-
-// ✅ Axios 인터셉터 — 모든 요청에 JWT 자동 첨부
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export default api;

@@ -1,47 +1,217 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
+import AdminRoute from "./routes/AdminRoute";
+
+/* 공통 컴포넌트 */
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; 
-import TopButton from "./components/TopButton"; 
+import Footer from "./components/Footer";
+import TopButton from "./components/TopButton";
+
+/* 일반 페이지 */
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CartPage from "./pages/CartPage";
-import QnAList from "./pages/QnAList";     // Q&A 목록
-import QnAWrite from "./pages/QnAWrite";   // Q&A 글쓰기
-import { CartProvider } from "./context/CartContext"; // 장바구니 Context
+
+/* QnA */
+import QnAList from "./pages/qna/QnAList";
+import QnAWrite from "./pages/qna/QnAWrite";
+
+/* 커뮤니티페이지 */
+import CommunityPage from "./pages/community/CommunityPage";
+import CommunityWrite from "./pages/community/CommunityWrite";
+import PopularPage from "./pages/popular/PopularPage";
+import CommunityDetailPage from "./pages/community/CommunityDetailPage/CommunityDetailPage";
+
+
+/* 맥락 */
+import { CartProvider } from "./context/CartContext";
+
+/* 기타 페이지 */
 import InteriorPage from "./pages/InteriorPage";
+import ShopPage from "./components/shop/ShopPage";
+
+/* 관리자 페이지 */
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductManage from "./pages/admin/ProductManage";
+import UserManage from "./pages/admin/UserManage";
+import ProductNew from "./pages/admin/ProductNew";
+import AdminProductDetail from "./pages/admin/AdminProductDetail";
+import ProductEdit from "./pages/admin/ProductEdit";
+import CategoryManage  from "./pages/admin/CategoryEdit";
+import AdminQnaList from "./pages/admin/AdminQnaList";
+import AdminQnaDetail from "./pages/admin/AdminQnaDetail";
+import AdminProfile from "./pages/admin/AdminProfile";
+import OrderManage from "./pages/admin/OrderManage";
+import AdminOrderDetail from "./pages/admin/OrderDetail";
+
+
+
+
+
+/* 유저 마이페이지 */
+import MyPageLayout from "./pages/user/MyPageLayout";
+
+import MyPage from "./pages/user/MyPage";
+import OrderList from "./pages/user/OrderList";
+import ReviewList from "./pages/user/ReviewList";
+import OrderDetail from "./pages/user/OrderDetail";   
+import MyCommunity from "./pages/user/MyCommunity";   
+import MyQnA from "./pages/user/MyQnA";               
+import ProfileEdit from "./pages/user/ProfileEdit";   
+import AddressList from "./pages/user/AddressList";   
+
+
+/* 주문서페이지 */
+import OrderPage from "./pages/OrderPage";
+
+import OrderSuccess from "./pages/OrderSuccess";
+import OrderBank from "./pages/OrderCompleteBank";
+
+/* 소셜 로그인 처리 페이지들 */
+import LoginSuccess from "./pages/LoginSuccess";
+import LoginError from "./pages/LoginError";
+import QnADetail from "./pages/qna/QnADetail";
+import QnAEdit from "./pages/qna/QnAEdit";
+import CommunityEditPage from "./pages/community/CommunityDetailPage/CommunityEditPage";
+
 
 function App() {
+  
+
   return (
     <CartProvider>
       <BrowserRouter>
         <Navbar />
 
-        <Routes>
-          {/* 홈 */}
-          <Route path="/" element={<Home />} />
+     <Routes>
+    {/* 홈 */}
+    <Route path="/" element={<Home />} />
 
-          {/* 상품 상세페이지 */}
-          <Route path="/product/:id" element={<ProductDetail />} />
+    {/* 상품 상세 */}
+    <Route path="/product/:productId" element={<ProductDetail />} />
 
-          {/* 회원가입 페이지 */}
-          <Route path="/signup" element={<Signup />} />
 
-          {/* 로그인 페이지 */}
-          <Route path="/login" element={<Login />} />
+    {/* 회원가입 & 로그인 */}
+    <Route path="/signup" element={<Signup />} />
+    <Route path="/login" element={<Login />} />
 
-          {/* 장바구니 페이지 */}
-          <Route path="/cart" element={<CartPage />} />
+    {/* 소셜 로그인 성공/실패 */}
+    <Route path="/login-success" element={<LoginSuccess />} />
+    <Route path="/login-error" element={<LoginError />} />
 
-          {/* ✅ Q&A 게시판 라우팅 추가 */}
-          <Route path="/qna" element={<QnAList />} />
-          <Route path="/qna/write" element={<QnAWrite />} />
+    {/* 장바구니 */}
+    <Route path="/cart" element={<CartPage />} />
 
-          <Route path="/interior" element={<InteriorPage />} />
+    {/* 커뮤니티 */}
+    <Route path="/community" element={<CommunityPage />} />
+    <Route path="/community/:id" element={<CommunityDetailPage />} />
+    <Route path="/community/write" element={<CommunityWrite />} />
+    <Route path="/community/:id/edit" element={<CommunityEditPage />} />
 
-        </Routes>
+    {/* 인기 */}
+    <Route path="/popular" element={<PopularPage />} />
+
+    {/* Q&A */}
+    <Route path="/qna" element={<QnAList />} />
+    <Route path="/qna/write" element={<QnAWrite />} />
+    <Route path="/qna/:id" element={<QnADetail />} />
+    <Route path="/qna/edit/:id" element={<QnAEdit />} />
+
+    {/* 인테리어 */}
+    <Route path="/interior" element={<InteriorPage />} />
+
+    {/* 쇼핑 */}
+    <Route path="/shop" element={<ShopPage />} />
+
+    {/* 주문 */}
+    <Route path="/order" element={<OrderPage />} />
+    <Route path="/order/success" element={<OrderSuccess />} />
+    <Route path="/order/bank" element={<OrderBank />} />
+
+    {/* ============================ */}
+    {/* 👤 마이페이지 (공통 레이아웃) */}
+    {/* ============================ */}
+    <Route path="/mypage" element={<MyPageLayout />}>
+      <Route index element={<MyPage />} />
+      <Route path="orders" element={<OrderList />} />
+      <Route path="orders/:orderId" element={<OrderDetail />} />
+      <Route path="reviews" element={<ReviewList />} />
+      <Route path="community" element={<MyCommunity />} />
+      <Route path="qna" element={<MyQnA />} />
+      <Route path="profile" element={<ProfileEdit />} />
+      <Route path="address" element={<AddressList />} />
+    </Route>
+
+    {/* ============================ */}
+    {/* 👑 관리자 페이지 */}
+    {/* ============================ */}
+    <Route
+      path="/admin"
+      element={
+        <AdminRoute>
+          <AdminDashboard />
+        </AdminRoute>
+      }
+    />
+
+    <Route
+      path="/admin/products"
+      element={
+        <AdminRoute>
+          <ProductManage />
+        </AdminRoute>
+      }
+    />
+
+    <Route
+      path="/admin/products/new"
+      element={
+        <AdminRoute>
+          <ProductNew />
+        </AdminRoute>
+      }
+    />
+
+    <Route
+      path="/admin/users"
+      element={
+        <AdminRoute>
+          <UserManage />
+        </AdminRoute>
+      }
+    />
+
+    {/* 관리자 QnA */}
+    <Route
+      path="/admin/qna"
+      element={
+        <AdminRoute>
+          <AdminQnaList />
+        </AdminRoute>
+      }
+    />
+
+    <Route
+      path="/admin/qna/:id"
+      element={
+        <AdminRoute>
+          <AdminQnaDetail />
+        </AdminRoute>
+      }
+    />
+
+  <Route path="/admin/product/:id" element={<AdminProductDetail />} />
+  <Route path="/admin/products/:id/edit" element={<ProductEdit />} />
+  <Route path="/admin/categories" element={<CategoryManage />} />
+  <Route path="/admin/profile" element={<AdminProfile />} />
+
+  <Route path="/admin/orders" element={<OrderManage />} />
+  <Route path="/admin/orders/:orderId" element={<AdminOrderDetail />} />
+  
+</Routes>
+
 
         <Footer />
         <TopButton />

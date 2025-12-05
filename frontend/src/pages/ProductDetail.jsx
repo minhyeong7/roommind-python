@@ -1,52 +1,106 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import ProductImageSlider from "../components/ProductImageSlider";
+import ProductBuyBox from "../components/ProductBuyBox";
+import ProductDetailContent from "../components/ProductDetailContent";
+import ProductReviews from "../components/ProductReviews";
+import ProductQA from "../components/ProductQA";
+import ProductRecommend from "../components/ProductRecommend";
+
+import { fetchProductById } from "../api/productApi";
 import "./ProductDetail.css";
 
 function ProductDetail() {
-  const { id } = useParams();
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("info");
 
-  // 임시 예시 데이터 (나중에 DB나 API 연동 가능)
-  const productData = {
-    "white-table": {
-      title: "화이트 원목 테이블",
-      image: "/images/whiteTable.jpg",
-      price: "129,000",
-      originalPrice: "169,000",
-      description: "심플하고 내추럴한 감성의 원목 테이블입니다. 거실이나 다이닝룸에 잘 어울립니다.",
-    },
-    "fabric-sofa": {
-      title: "패브릭 소파",
-      image: "/images/fabricSofa.jpg",
-      price: "329,000",
-      originalPrice: "389,000",
-      description: "포근한 촉감의 패브릭 소재와 넉넉한 크기로 편안한 휴식을 제공합니다.",
-    },
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        console.log("🔍 불러올 productId:", productId);
+        const data = await fetchProductById(productId);
+        console.log("✅ 받아온 데이터:", data);
+        
+        // ⭐ 데이터 구조 변환
+        const transformedData = {
+          ...data,
+          id: data.productId,
+          title: data.productName,
+          price: data.salePrice,
+          discount: data.originalPrice > 0 
+            ? Math.round((1 - data.salePrice / data.originalPrice) * 100)
+            : 0,
+          // 이미지는 따로 처리
+        };
+        
+        setProduct(transformedData);
+      } catch (error) {
+        console.error("❌ 상품 불러오기 실패:", error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [productId]);
+
+  if (loading) {
+    return <div style={{ padding: "40px" }}>상품 정보를 불러오는 중...</div>;
+  }
+
+  if (!product) {
+    return <div style={{ padding: "40px" }}>상품을 찾을 수 없습니다.</div>;
+  }
+
+  // ⭐ 이미지 URL 생성
+  const imageList = product.images && product.images.length > 0
+    ? product.images.map(img => `http://localhost:8080/${img.saveDir}/${img.fileName}`)
+    : ["/images/no-image.png"];
+
+  // ⭐ ProductBuyBox용 이미지 추가
+  const productWithImage = {
+    ...product,
+    image: imageList[0] // 첫 번째 이미지
   };
 
-  const product = productData[id];
-
-  if (!product) return <div className="detail"><p>상품을 찾을 수 없습니다.</p></div>;
-
-  const priceNum = parseInt(product.price.replace(/,/g, ""), 10);
-  const originalNum = parseInt(product.originalPrice.replace(/,/g, ""), 10);
-  const discountRate = Math.round(((originalNum - priceNum) / originalNum) * 100);
-
   return (
-    <div className="detail">
-      <div className="detail-container">
-        <img src={product.image} alt={product.title} className="detail-image" />
-        <div className="detail-info">
-          <h2>{product.title}</h2>
-          <div className="detail-prices">
-            <span className="detail-discount">{product.price}원</span>
-            <span className="detail-original">{product.originalPrice}원</span>
-            <span className="detail-rate">(-{discountRate}%)</span>
-          </div>
-          <p className="detail-desc">{product.description}</p>
-          <button className="buy-btn">장바구니 담기</button>
-          <Link to="/" className="back-link">← 돌아가기</Link>
+    <div className="product-detail-page">
+      <div className="product-detail-wrapper">
+        <div className="product-detail-left">
+          <ProductImageSlider images={imageList} />
+        </div>
+
+        <div className="product-detail-right">
+          <ProductBuyBox product={productWithImage} />
         </div>
       </div>
+
+      <div className="product-detail-tabs">
+        <div className={activeTab === "info" ? "active" : ""} onClick={() => setActiveTab("info")}>
+          상품정보
+        </div>
+        <div className={activeTab === "review" ? "active" : ""} onClick={() => setActiveTab("review")}>
+          리뷰
+        </div>
+        <div className={activeTab === "qa" ? "active" : ""} onClick={() => setActiveTab("qa")}>
+          문의
+        </div>
+        <div className={activeTab === "recommend" ? "active" : ""} onClick={() => setActiveTab("recommend")}>
+          추천상품
+        </div>
+      </div>
+      <div className={`product-section ${activeTab === "review" ? "review-mode" : ""}`}>
+        
+        {activeTab === "info" && <ProductDetailContent product={product} />}
+        {activeTab === "review" && <ProductReviews productId={productId} />}   
+        {activeTab === "qa" && <ProductQA />}
+        {activeTab === "recommend" && <ProductRecommend />}
+      </div>
+
     </div>
   );
 }

@@ -17,10 +17,15 @@ function BannerSlider() {
         navigation={true}
         loop
       >
-        <SwiperSlide><img src="/images/banner02.avif" alt="배너1" /></SwiperSlide>
-        <SwiperSlide><img src="/images/banner03.avif" alt="배너2" /></SwiperSlide>
-        <SwiperSlide><img src="/images/banner04.avif" alt="배너3" /></SwiperSlide>
-        <SwiperSlide><img src="/images/banner05.avif" alt="배너4" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner08.avif" alt="배너1" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner09.avif" alt="배너2" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner10.avif" alt="배너3" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner07.avif" alt="배너4" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner06.avif" alt="배너5" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner05.avif" alt="배너5" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner04.avif" alt="배너5" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner03.avif" alt="배너5" /></SwiperSlide>
+        <SwiperSlide><img src="/images/banner02.avif" alt="배너5" /></SwiperSlide>
         <SwiperSlide><img src="/images/banner01.avif" alt="배너5" /></SwiperSlide>
       </Swiper>
     </div>

@@ -1,0 +1,143 @@
+/* 전체 화면 어둡게 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* 모달 전체 박스 */
+.modal-box {
+  width: 500px;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* 헤더 (오렌지바) */
+.modal-header {
+  position: relative;
+  background: #ff7f32;
+  padding: 14px 18px;
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-btn {
+  position: absolute;
+  left: 190px;
+  top: 20%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  color: #fff;   
+}
+
+/* hover 완전 제거 */
+.close-btn:hover {
+  background: none;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* 스크롤되는 영역 */
+.address-list {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 주소 카드 */
+.address-item {
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.addr-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.small-text {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 삭제 / 선택 버튼 */
+.addr-buttons {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.addr-buttons button {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.addr-buttons button:first-child {
+  background: #e0e0e0;
+}
+
+.addr-buttons button:last-child {
+  background: #ff9f1c;
+  color: #fff;
+  margin-top: 12px;
+}
+
+/* 아래 고정 버튼 */
+.add-address-btn {
+  width: 100%;
+  padding: 18px;
+  background: #ff9f1c;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* 스크롤바 스타일 (Chrome, Edge, Safari) */
+.address-list::-webkit-scrollbar {
+  width: 8px;        /* 스크롤바 너비 */
+}
+
+.address-list::-webkit-scrollbar-track {
+  background: #ffe9d0;   /* 트랙(뒤 배경) */
+  border-radius: 10px;
+}
+
+.address-list::-webkit-scrollbar-thumb {
+  background: #ff9f1c;   /* 실제 스크롤바 색상 */
+  border-radius: 10px;
+}
+
+.address-list::-webkit-scrollbar-thumb:hover {
+  background: #ff7f00;   /* hover 시 조금 더 진하게 */
+}

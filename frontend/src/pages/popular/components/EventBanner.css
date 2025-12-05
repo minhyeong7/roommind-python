@@ -1,0 +1,110 @@
+.event-section {
+  width: 100%;
+  padding: 40px 0;
+}
+
+/* 상단 더보기 영역 */
+.event-header {
+  width: 1200px;
+  margin: 0 auto 15px;
+
+  display: flex;
+  justify-content: flex-end; /* 👉 더보기 버튼만 오른쪽 배치 */
+  align-items: center;
+}
+
+.event-more {
+  font-size: 15px;
+  color: #fa9f29;
+  text-decoration: none;
+}
+
+.event-more:hover {
+  text-decoration: underline;
+}
+
+
+/* ---------- 슬라이더 ---------- */
+
+.event-slider-wrapper {
+  width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.event-slider {
+  display: flex;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* 카드 */
+.event-card {
+  min-width: 270px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.event-img-wrapper {
+  width: 100%;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.event-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.event-img:hover {
+  transform: scale(1.05);
+}
+
+.event-sub {
+  font-size: 13px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.event-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.3;
+}
+
+/* ---------- 버튼 ---------- */
+
+.event-btn {
+  position: absolute;
+  top: 35%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #ddd;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  z-index: 10;
+}
+
+.event-btn:hover {
+  background: #fafafa;
+}
+
+.event-btn.left {
+  left: -20px;
+}
+
+.event-btn.right {
+  right: -20px;
+}

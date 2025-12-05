@@ -1,0 +1,67 @@
+.category-container {
+  width: 240px;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.main-category {
+  margin-bottom: 6px;
+}
+
+/* ------ 주 카테고리 버튼 ------ */
+.main-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 5px;
+  font-size: 17px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #333;
+}
+
+.main-btn:hover span:first-child {
+  color: #f8a02d;
+  transition: 0.2s;
+}
+
+.main-btn .active-text {
+  color: #f8a02d;
+  font-weight: 600;
+}
+
+.arrow {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ------ 서브 카테고리 ------ */
+.sub-list {
+  list-style: none; /* 🔥 점 없애기 */
+  margin: 4px 0 6px 0;
+  padding-left: 15px;
+}
+
+.sub-item {
+  font-size: 15px;
+  padding: 4px 0;
+  cursor: pointer;
+  color: #555;
+}
+
+.sub-item:hover {
+  color: #f8a02d;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+
+.active-sub {
+  color: #f8a02d;
+  font-weight: 600;
+}
+
+
+

@@ -1,0 +1,43 @@
+.myqna-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.myqna-table th,
+.myqna-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.myqna-table th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: #f6f6f6;
+}
+
+.clickable-title {
+  color: #333;
+  font-weight: 500;
+}
+/* 테이블 행 호버 */
+.mypage-table tr.table-row:hover {
+  background: #f3f3f3;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+/* 제목 호버 시 강조 */
+.clickable-title:hover {
+  text-decoration: underline;
+  color: #fc9510;
+}

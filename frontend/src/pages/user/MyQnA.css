@@ -1,0 +1,56 @@
+/* 테이블 공통 스타일 */
+.mypage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.mypage-table th,
+.mypage-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.mypage-table th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+/* 행 클릭/호버 효과 */
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: #f6f6f6;
+  transition: 0.2s ease;
+}
+
+/* 제목 호버 강조 */
+.clickable-title {
+  color: #333;
+  font-weight: 500;
+}
+
+.clickable-title:hover {
+  text-decoration: underline;
+  color: #fc9510;
+}
+
+/* 답변 상태 배지 */
+.badge-complete {
+  background: #28a745;
+  padding: 4px 10px;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.badge-pending {
+  background: #ff9800;
+  padding: 4px 10px;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+}

@@ -6,7 +6,7 @@ import "./Signup.css";
 function Signup() {
   const navigate = useNavigate(); // ✅ 페이지 이동용
   const [form, setForm] = useState({
-    username: "",
+    userName: "",
     phone: "",
     address: "",
     detailAddress: "",
@@ -89,7 +89,7 @@ function Signup() {
 
       <form onSubmit={handleSubmit} className="signup-form">
         <label>이름</label>
-        <input type="text" name="username" value={form.username} onChange={handleChange} required />
+        <input type="text" name="userName" value={form.userName} onChange={handleChange} required />
 
         <label>전화번호</label>
         <input type="tel" name="phone" value={form.phone} onChange={handleChange} maxLength="13" required />

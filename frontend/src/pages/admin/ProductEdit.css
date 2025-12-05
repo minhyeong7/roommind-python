@@ -1,0 +1,150 @@
+/* ============================================
+   공통 레이아웃
+============================================ */
+.product-edit-container {
+  width: 900px;
+  margin: 40px auto 80px;
+  background: #fff;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  font-family: "Pretendard", sans-serif;
+}
+
+.edit-title {
+  font-size: 28px;
+  color: #fc9510;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ============================================
+   이미지 섹션
+============================================ */
+.edit-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.edit-image-box,
+.edit-upload-box {
+  flex: 1;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.edit-image-box h3,
+.edit-upload-box h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.edit-image-preview {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  object-fit: cover;
+}
+
+/* ============================================
+   폼 입력 스타일
+============================================ */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.edit-form label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  outline: none;
+  transition: border 0.2s ease;
+  background: #ffffff;
+}
+
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  border-color: #fc9510;
+  box-shadow: 0 0 0 3px rgba(252, 149, 16, 0.2);
+}
+
+.edit-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* ============================================
+   버튼 스타일
+============================================ */
+.edit-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.save-btn {
+  flex: 1;
+  background: #fc9510;
+  color: white;
+  border: none;
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.save-btn:hover {
+  background: #e07f00;
+}
+
+.cancel-btn {
+  flex: 1;
+  background: #c8c8c8;
+  color: white;
+  border: none;
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #a0a0a0;
+}
+
+/* ============================================
+   반응형 (모바일/태블릿)
+============================================ */
+@media (max-width: 768px) {
+  .product-edit-container {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .edit-section {
+    flex-direction: column;
+  }
+}

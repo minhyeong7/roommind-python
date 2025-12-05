@@ -1,0 +1,30 @@
+.order-detail-wrapper {
+  padding: 25px;
+  flex: 1;
+}
+
+.order-box {
+  background: #fff7e6;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.order-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-detail-table th,
+.order-detail-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.order-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
