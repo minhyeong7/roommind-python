@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>인테리어 가구 추천 챗봇</title>
+<style>
+body { font-family: Arial; display: flex; padding: 20px; gap: 40px; }
+#chatContainer { width: 450px; height: 600px; border:1px solid #ccc; padding:15px; overflow-y:auto; border-radius:10px;}
+.msg { margin:10px 0; max-width:80%; padding:10px 15px; border-radius:15px; line-height:1.4; }
+.bot { background:#f0f0f0; align-self:flex-start; }
+.user { background:#d1e7ff; align-self:flex-end; margin-left:auto; }
+#chatInputArea { margin-top:10px; display:flex; gap:10px; }
+#chatInput { flex:1; padding:10px; }
+#rightPanel { flex:1; }
+img { max-height:200px; margin:10px 0; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<!-- 챗봇 UI -->
+<div>
+<h2>인테리어 가구 추천 챗봇</h2>
+<div id="chatContainer"></div>
+<div id="chatInputArea">
+<input id="chatInput" type="text" placeholder="메시지를 입력하세요">
+<button onclick="sendMessage()">전송</button>
+</div>
+</div>
+
+<!-- 이미지 / 추천 영역 -->
+<div id="rightPanel">
+<h3>이미지 업로드</h3>
+<input type="file" id="imageInput">
+<button onclick="uploadImage()">업로드</button>
+
+<h3>분석 이미지</h3>
+<div id="detectedArea"></div>
+
+<h3>추천 Top3</h3>
+<div id="top3Area"></div>
+</div>
+
+<script>
+const chat = document.getElementById("chatContainer");
+
+// ================= 챗봇 메시지 =================
+function addBot(text){
+    const div = document.createElement("div");
+    div.className="msg bot";
+    div.innerText=text;
+    chat.appendChild(div);
+    chat.scrollTop=chat.scrollHeight;
+}
+function addUser(text){
+    const div=document.createElement("div");
+    div.className="msg user";
+    div.innerText=text;
+    chat.appendChild(div);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+// ================= AI 챗봇 호출 =================
+async function sendToAI(msg){
+    const res = await fetch("/chat", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({message:msg})
+    });
+    const data = await res.json();
+    
+    // 텍스트 답변 출력
+    addBot(data.reply);
+
+    // Top3 추천이 포함되어 있다면 UI에 자동 표시
+    if(data.top3){
+        const area = document.getElementById("top3Area");
+        area.innerHTML = "";                    
+
+        data.top3.forEach(item=>{
+            const img = document.createElement("img");
+            img.src = item.url;  
+            area.appendChild(img);
+        });
+    }
+}
+
+
+// ================= 채팅 전송 =================
+function sendMessage(){
+    const msg=document.getElementById("chatInput").value.trim();
+    if(!msg) return;
+    addUser(msg);
+    document.getElementById("chatInput").value="";
+    sendToAI(msg);
+}
+
+// ================= 이미지 업로드 =================
+async function uploadImage(){
+    const file=document.getElementById("imageInput").files[0];
+    if(!file) return addBot("이미지를 선택해주세요!");
+    addBot("이미지를 분석 중입니다...🔍");
+
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch("/detect", {method:"POST", body:form});
+    const data = await res.json();
+
+    // 감지 이미지 표시
+    document.getElementById("detectedArea").innerHTML=`<img src="${data.upload_image}">`;
+
+    // Top3 초기화
+    document.getElementById("top3Area").innerHTML="";
+
+    // 감지된 클래스 정보 챗봇에 전달
+    if(data.classes && data.classes.length>0){
+        const clsList = data.classes.join(", ");
+        sendToAI(`이미지 분석 완료. 감지된 객체: ${clsList}. 어떤 가구를 추천받고 싶나요?`);
+    } else {
+        addBot("객체가 감지되지 않았습니다. 다른 이미지를 업로드해주세요.");
+    }
+}
+
+// ================= Top3 추천 =================
+async function loadTop3(cls){
+    const res = await fetch(`/top3?class=${cls}`);
+    const data = await res.json();
+    const area = document.getElementById("top3Area");
+    area.innerHTML="";
+    data.top3.forEach(item=>{
+        const img = document.createElement("img");
+        img.src = item.url;
+        area.appendChild(img);
+    });
+    sendToAI(`${cls} 추천 Top3를 보여줬습니다. 다른 객체를 추천받거나 새 이미지를 업로드할 수 있습니다.`);
+}
+
+// ================= 객체 클릭 시 Top3 호출 =================
+document.getElementById("detectedArea").addEventListener("click", e=>{
+    if(e.target.tagName==="IMG"){
+        const cls = e.target.getAttribute("data-class");
+        if(cls) loadTop3(cls);
+    }
+});
+</script>
+
+</body>
+</html>
