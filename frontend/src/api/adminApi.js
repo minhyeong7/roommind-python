@@ -37,10 +37,29 @@ export const addProduct = (formData) =>
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-
 // 상품 수정
-export const updateProduct = (id, data) =>
-  api.put(`/admin/products/${id}`, data);
+export const updateProduct = (id, productData, files) => {
+  const formData = new FormData();
+
+  // JSON → Blob 처리
+  formData.append(
+    "product",
+    new Blob([JSON.stringify(productData)], { type: "application/json" })
+  );
+
+  // 이미지 파일 추가
+  if (files && files.length > 0) {
+    files.forEach((file) => formData.append("files", file));
+  }
+
+  return api.put(`/admin/products/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+
 
 // 상품 삭제
 export const deleteProduct = (id) =>

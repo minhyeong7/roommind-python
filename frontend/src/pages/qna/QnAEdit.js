@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchQnADetail } from "../../api/qnaboardApi";
-import api from "../../api/userApi";
+import { fetchQnADetail, updateQnABoard } from "../../api/qnaboardApi";
 import "./QnAEdit.css";
 
 export default function QnAEdit() {
@@ -17,15 +16,22 @@ export default function QnAEdit() {
   const storedUser = localStorage.getItem("user");
   const loginUser = storedUser ? JSON.parse(storedUser) : null;
 
-  // ============================
-  // 상세조회 (무한호출 방지)
-  // ============================
+  // ⭐ loginUser를 안정화해서 의존성 문제 해결
+  const loginUserRef = useRef(loginUser);
+
+  /* ============================
+     🔹 상세 조회
+  ============================ */
   useEffect(() => {
     const loadDetail = async () => {
       try {
         const data = await fetchQnADetail(id);
 
-        if (loginUser && loginUser.userId !== data.board.userId) {
+        // ⭐ loginUserRef.current 사용 → 의존성 필요 없음
+        if (
+          loginUserRef.current &&
+          loginUserRef.current.userId !== data.board.userId
+        ) {
           alert("본인 게시물만 수정할 수 있습니다.");
           navigate(`/qna/${id}`);
           return;
@@ -43,20 +49,20 @@ export default function QnAEdit() {
     };
 
     loadDetail();
-  }, [id]); // loginUser, navigate 제거 → 무한 호출 방지
+  }, [id, navigate]); // ⭐ navigate는 포함해도 안전함
 
   // 새 파일 선택
   const handleFileChange = (e) => {
     setNewFiles([...e.target.files]);
   };
 
-  // ============================
-  // 수정 저장 요청
-  // ============================
+  /* ============================
+     🔹 수정 저장 요청
+  ============================ */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!loginUser) {
+    if (!loginUserRef.current) {
       alert("로그인이 필요합니다.");
       return;
     }
@@ -64,29 +70,11 @@ export default function QnAEdit() {
     const boardData = {
       title,
       content,
-      userId: loginUser.userId, // 꼭 필요함!
+      userId: loginUserRef.current.userId,
     };
 
-    const formData = new FormData();
-    formData.append(
-      "board",
-      new Blob([JSON.stringify(boardData)], { type: "application/json" })
-    );
-
-    newFiles.forEach((file) => {
-      formData.append("images", file);
-    });
-
     try {
-      await api.put(
-        `/qnaboards/${id}?userId=${loginUser.userId}`, // ⭐ requestUserId 전달
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await updateQnABoard(id, boardData, newFiles);
 
       alert("수정이 완료되었습니다!");
       navigate(`/qna/${id}`);
@@ -103,7 +91,6 @@ export default function QnAEdit() {
       <h2>Q&A 수정하기</h2>
 
       <form onSubmit={handleSubmit} className="qna-edit-form">
-        {/* 제목 */}
         <label className="qna-edit-label">제목</label>
         <input
           type="text"
@@ -113,7 +100,6 @@ export default function QnAEdit() {
           required
         />
 
-        {/* 내용 */}
         <label className="qna-edit-label">내용</label>
         <textarea
           className="qna-edit-textarea"
@@ -122,7 +108,6 @@ export default function QnAEdit() {
           required
         />
 
-        {/* 기존 이미지 */}
         {files.length > 0 && (
           <div className="qna-edit-old-images">
             <p>📷 기존 첨부 이미지</p>
@@ -143,11 +128,9 @@ export default function QnAEdit() {
           </div>
         )}
 
-        {/* 새 이미지 추가 */}
         <label className="qna-edit-label">새 첨부파일 추가</label>
         <input type="file" multiple onChange={handleFileChange} />
 
-        {/* 버튼 */}
         <div className="qna-edit-buttons">
           <button type="button" onClick={() => navigate(`/qna/${id}`)}>
             취소

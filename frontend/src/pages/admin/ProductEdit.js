@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
-import api from "../../api/userApi";
+import {
+  fetchProduct as apiFetchProduct,
+  fetchCategories as apiFetchCategories,
+  updateProduct as apiUpdateProduct
+} from "../../api/adminApi";   
 import "./ProductEdit.css";
 
 export default function ProductEdit() {
@@ -29,23 +33,23 @@ export default function ProductEdit() {
   const [newImages, setNewImages] = useState([]);
 
   /* =====================================================
-     1) 카테고리 목록 → GET /admin/categories
+     1) 카테고리 조회
   ===================================================== */
-  const fetchCategories = async () => {
-    const res = await api.get("/admin/categories");
+  const fetchCategories = useCallback(async () => {
+    const res = await apiFetchCategories();   // ← API 파일 사용
     const list = res.data;
 
     setCategories(list);
 
     const majors = [...new Set(list.map((c) => c.majorCategory))];
     setMajorList(majors);
-  };
+  }, []);
 
   /* =====================================================
-     2) 상품 정보 → GET /admin/products/{id}
+     2) 상품 조회
   ===================================================== */
-  const fetchProduct = async () => {
-    const res = await api.get(`/admin/products/${id}`);
+  const fetchProduct = useCallback(async () => {
+    const res = await apiFetchProduct(id);   // ← API 파일 사용
     const data = res.data;
 
     setProduct(data);
@@ -62,10 +66,10 @@ export default function ProductEdit() {
     });
 
     setLoading(false);
-  };
+  }, [id]);
 
   /* =====================================================
-     3) majorCategory 선택 → middle 필터링
+     3) majorCategory 선택 → middle 카테고리 필터링
   ===================================================== */
   useEffect(() => {
     if (!form.majorCategory) {
@@ -101,48 +105,37 @@ export default function ProductEdit() {
   useEffect(() => {
     fetchCategories();
     fetchProduct();
-  }, []);
+  }, [fetchCategories, fetchProduct]);
 
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
   /* =====================================================
-     이미지 URL 생성
+     기존 이미지 URL
   ===================================================== */
   const getImageUrl = (img) => {
     if (!img) return "/no-image.png";
-
-    const fixedDir = img.saveDir.replace(/\\/g, "/");
-    const folder = fixedDir.split("uploads/product/")[1];
-    if (!folder) return "/no-image.png";
-
-    return `/uploads/product/${folder}/${img.fileName}`;
+    const fixed = img.saveDir.replace(/\\/g, "/");
+    const folder = fixed.split("uploads/product/")[1];
+    return folder ? `/uploads/product/${folder}/${img.fileName}` : "/no-image.png";
   };
 
   /* 입력 처리 */
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
   const handleFileChange = (e) => {
     setNewImages([...e.target.files]);
   };
 
   /* =====================================================
-     저장하기 (경로 그대로 유지!!)
+     저장하기 (상품 + 이미지 multipart PUT)
   ===================================================== */
   const handleSubmit = async () => {
     if (!window.confirm("상품 정보를 수정하시겠습니까?")) return;
 
-    await api.put(`/admin/products/${id}`, form);
-
-    if (newImages.length > 0) {
-      const fd = new FormData();
-      newImages.forEach((f) => fd.append("files", f));
-
-      await api.post(`/admin/products/${id}/images`, fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-    }
+    await apiUpdateProduct(id, form, newImages); // ← API 파일의 updateProduct 사용
 
     alert("상품 수정이 완료되었습니다!");
     navigate("/admin/products");
@@ -154,7 +147,6 @@ export default function ProductEdit() {
         <h1 className="edit-title">상품 수정</h1>
 
         <div className="edit-section">
-          {/* 기존 이미지 */}
           <div className="edit-image-box">
             <h3>현재 이미지</h3>
             {product.images?.length > 0 ? (
@@ -168,14 +160,12 @@ export default function ProductEdit() {
             )}
           </div>
 
-          {/* 새 이미지 업로드 */}
           <div className="edit-upload-box">
             <h3>새 이미지 업로드</h3>
             <input type="file" multiple onChange={handleFileChange} />
           </div>
         </div>
 
-        {/* 폼 */}
         <div className="edit-form">
           <label>상품명</label>
           <input name="productName" value={form.productName} onChange={handleInput} />

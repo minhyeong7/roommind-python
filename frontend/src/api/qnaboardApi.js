@@ -64,6 +64,34 @@ export const fetchQnADetail = async (id) => {
   return res.data.data;
 };
 
+/* ============================
+   🔹 QnA 수정 API (⭐ 새로 추가)
+=============================== */
+export const updateQnABoard = async (qnaId, boardData, images) => {
+  try {
+    const formData = new FormData();
+
+    formData.append(
+      "board",
+      new Blob([JSON.stringify(boardData)], { type: "application/json" })
+    );
+
+    if (images && images.length > 0) {
+      images.forEach((file) => formData.append("images", file));
+    }
+
+    const res = await api.put(`/qnaboards/${qnaId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error("❌ QnA 수정 실패:", error);
+    throw error;
+  }
+};
+
+
 // 삭제
 export const deleteQnA = async (id) => {
   return await api.delete(`/qnaboards/${id}`);
