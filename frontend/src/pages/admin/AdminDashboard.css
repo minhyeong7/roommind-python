@@ -39,31 +39,17 @@ h1 {
   color: #777;
 }
 
-/* 작은 카드 (Q&A) */
-.small-card {
-  width: 250px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border: 1px solid #eee;
-  margin-bottom: 25px;
-}
-
-.small-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
 /* 재고 부족 상품 */
 .low-stock-section {
   margin-top: 40px;
 }
 
+/* 표 기본 스타일 */
 .low-stock-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  text-align: center; /* ⭐ 가운데 정렬 */
 }
 
 .low-stock-table th,
@@ -72,6 +58,19 @@ h1 {
   border-bottom: 1px solid #ddd;
 }
 
+/* 헤더 */
 .low-stock-table th {
   background: #f8f8f8;
+  font-weight: bold;
+}
+
+/* 클릭되는 행 공통 스타일 */
+.click-row {
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.click-row:hover td {
+  color: #fc9510;        /* 오렌지색 */
+  text-decoration: underline;  /* 밑줄 */
 }

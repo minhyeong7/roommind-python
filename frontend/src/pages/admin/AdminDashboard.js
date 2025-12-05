@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "./AdminLayout";
-import api from "../../api/header"; 
+import api from "../../api/header";
 import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
@@ -14,31 +14,28 @@ export default function AdminDashboard() {
     pendingQna: 0,
     totalQna: 0,
     totalCommunityPosts: 0,
-    recentCommunityPosts: [],
     lowStockProducts: []
   });
 
   useEffect(() => {
     api.get("/admin/dashboard")
       .then(res => {
-        console.log("🔥 서버 응답:", res.data);
+        const d = res.data;
 
-        // undefined 들어오는 값 방지
         setStats({
-          totalUsers: res.data?.totalUsers ?? 0,
-          totalProducts: res.data?.totalProducts ?? 0,
-          totalOrders: res.data?.totalOrders ?? 0,
-          totalRevenue: res.data?.totalRevenue ?? 0,
-          todayOrders: res.data?.todayOrders ?? 0,
-          todayRevenue: res.data?.todayRevenue ?? 0,
-          pendingQna: res.data?.pendingQna ?? 0,
-          totalQna: res.data?.totalQna ?? 0,
-          totalCommunityPosts: res.data?.totalCommunityPosts ?? 0,
-          recentCommunityPosts: res.data?.recentCommunityPosts ?? [],
-          lowStockProducts: res.data?.lowStockProducts ?? []
+          totalUsers: d?.totalUsers ?? 0,
+          totalProducts: d?.totalProducts ?? 0,
+          totalOrders: d?.totalOrders ?? 0,
+          totalRevenue: d?.totalRevenue ?? 0,
+          todayOrders: d?.todayOrders ?? 0,
+          todayRevenue: d?.todayRevenue ?? 0,
+          pendingQna: d?.pendingQna ?? 0,
+          totalQna: d?.totalQna ?? 0,
+          totalCommunityPosts: d?.totalCommunityPosts ?? 0,
+          lowStockProducts: d?.lowStockProducts ?? []
         });
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error("대시보드 로드 오류:", err));
   }, []);
 
   return (
@@ -47,7 +44,6 @@ export default function AdminDashboard() {
 
       {/* ---- 상단 KPI 카드 ---- */}
       <div className="kpi-container">
-
         <div className="kpi-card">
           <h3>총 회원 수</h3>
           <p>{stats.totalUsers}명</p>
@@ -73,7 +69,6 @@ export default function AdminDashboard() {
 
       {/* ---- Q&A / 커뮤니티 정보 ---- */}
       <div className="kpi-container">
-
         <div className="kpi-card">
           <h3>총 Q&A 수</h3>
           <p>{stats.totalQna}건</p>
@@ -90,54 +85,35 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* ---- 최근 커뮤니티 글 ---- */}
-      <div className="recent-posts-section">
-        <h2>최근 등록된 커뮤니티 글</h2>
-
-        {(stats.recentCommunityPosts?.length || 0) === 0 ? (
-          <p>최근 작성된 글이 없습니다.</p>
-        ) : (
-          <table className="recent-table">
-            <thead>
-              <tr>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>작성일</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {stats.recentCommunityPosts.map(post => (
-                <tr key={post.communityId}>
-                  <td>{post.title}</td>
-                  <td>{post.userId}</td>
-                  <td>{post.createdDate?.substring(0, 10)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
       {/* ---- 재고 부족 상품 ---- */}
       <div className="low-stock-section">
         <h2>재고 부족 상품 (10개 미만)</h2>
 
-        {(stats.lowStockProducts?.length || 0) === 0 ? (
+        {stats.lowStockProducts.length === 0 ? (
           <p>재고 부족 상품 없음</p>
         ) : (
           <table className="low-stock-table">
             <thead>
               <tr>
                 <th>상품명</th>
+                <th>원래 가격</th>
+                <th>세일 가격</th>
                 <th>현재 재고</th>
               </tr>
             </thead>
 
             <tbody>
               {stats.lowStockProducts.map(item => (
-                <tr key={item.productId}>
+                <tr
+                  key={item.productId}
+                  className="click-row"
+                  onClick={() => (window.location.href = `/admin/product/${item.productId}`)}
+                >
                   <td>{item.name}</td>
+                  <td>{item.originalPrice?.toLocaleString()} 원</td>
+                  <td>
+                    {item.salePrice?.toLocaleString()} 원
+                  </td>
                   <td>{item.stock}</td>
                 </tr>
               ))}
@@ -145,7 +121,6 @@ export default function AdminDashboard() {
           </table>
         )}
       </div>
-
     </AdminLayout>
   );
 }
