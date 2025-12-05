@@ -6,6 +6,7 @@ from PIL import Image
 from flask import Flask, request, jsonify, render_template, send_file, session
 from ultralytics import YOLO
 from google.generativeai import GenerativeModel, configure
+from flask_cors import CORS 
 
 # ===================== 경로 =====================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,6 +76,7 @@ def find_top3(target_embedding, target_class):
 
 # ===================== Flask 앱 =====================
 app = Flask(__name__)
+CORS(app)
 app.secret_key = "abcd1234"
 
 # ===================== AI 챗봇 설정 =====================

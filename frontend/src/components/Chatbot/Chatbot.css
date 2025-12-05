@@ -230,3 +230,22 @@
     font-size: 18px;
   }
 }
+.chat-image {
+  width: 200px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.top3-box {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.top3-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
