@@ -1,15 +1,31 @@
+/* ------------------------------ */
+/* 기본 전체 스타일 유지          */
+/* ------------------------------ */
 .buy-box {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  padding: 22px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
 }
 
+/* 브랜드 */
+.brand-box {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 상품명 */
 .buy-title {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
+/* 가격 */
 .price-box {
   display: flex;
   align-items: center;
@@ -33,6 +49,66 @@
   text-decoration: line-through;
 }
 
+/* ------------------------------ */
+/* 쿠폰 박스                      */
+/* ------------------------------ */
+.coupon-box {
+  background: #fff5e6;
+  border: 1px solid #ffd7aa;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #a86500;
+}
+
+/* ------------------------------ */
+/* 무료배송 / 오늘출발             */
+/* ------------------------------ */
+.delivery-status {
+  display: flex;
+  gap: 8px;
+}
+
+.delivery-status span {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.free {
+  background: #e6f7e9;
+  color: #1f8b3c;
+}
+
+.today {
+  margin-top: 5px;
+  background: #fff2db;
+  color: #d57a00;
+}
+
+/* ------------------------------ */
+/* 배송 정보 박스                 */
+/* ------------------------------ */
+.info-box {
+  border: 1px solid #eee;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.info-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+/* ------------------------------ */
+/* 옵션 선택                      */
+/* ------------------------------ */
 .option-select {
   padding: 12px;
   border: 1px solid #ddd;
@@ -40,7 +116,9 @@
   font-size: 14px;
 }
 
-/* 선택된 상품 카드 */
+/* ------------------------------ */
+/* 선택된 상품 카드               */
+/* ------------------------------ */
 .selected-item-box {
   padding: 15px;
   border: 1px solid #eee;
@@ -74,6 +152,7 @@
   cursor: pointer;
 }
 
+/* 가격 */
 .selected-price {
   margin-top: 10px;
   text-align: right;
@@ -81,7 +160,9 @@
   font-size: 16px;
 }
 
-/* 총 금액 */
+/* ------------------------------ */
+/* 총 금액                         */
+/* ------------------------------ */
 .total-price-box {
   display: flex;
   justify-content: space-between;
@@ -92,10 +173,12 @@
 
 .total-price {
   font-weight: 700;
-  color: #222;
+  color: #fc9510;
 }
 
-/* 버튼 */
+/* ------------------------------ */
+/* 버튼                             */
+/* ------------------------------ */
 .product-buy-btns {
   display: flex;
   gap: 10px;

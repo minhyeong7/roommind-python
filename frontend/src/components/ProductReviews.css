@@ -1,70 +1,157 @@
+/* ============================
+   🌟 RoomMind 리뷰 스타일 (최종)
+   ============================ */
+
 .review-wrap {
-  padding: 10px 0;
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* 리뷰 작성하기 버튼 */
 .review-create-btn {
-  padding: 8px 14px;
-  background: #ff8b00;
+  background: #fc9510;
   color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 15px;
+  width: 150px;
+  transition: 0.2s ease;
 }
 
-.review-sort-area {
-  margin: 10px 0 20px 0;
+.review-create-btn:hover {
+  background: #e38306;
 }
 
-.review-sort-area button.active {
-  font-weight: bold;
-  color: #ff8b00;
+/* 리뷰 작성 박스 / 수정 박스 */
+.review-box.write-box,
+.edit-box {
+  padding: 16px;
+  background: #fffaf2;
+  border: 1px solid #ffd8a6;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
+/* 리뷰 목록 박스 */
 .review-box {
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.review-box.write-box {
-  background: #fdf7ef;
-}
-
+/* 리뷰 상단 영역 */
 .review-header {
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
 }
 
+.review-header span {
+  color: #555;
+  font-size: 14px;
+}
+
+/* 리뷰 내용 */
 .review-text {
+  padding: 10px 0;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* 작성 / 수정 박스 텍스트 입력 */
+.review-box textarea,
+.edit-box textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  resize: none;
+}
+
+.review-box textarea:focus,
+.edit-box textarea:focus {
+  outline: none;
+  border-color: #fc9510;
+}
+
+/* 수정 · 삭제 버튼 */
+.review-btn-group {
+  display: flex;
+  gap: 10px;
   margin-top: 8px;
 }
 
 .review-btn-group button {
-  margin-right: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  background: #f0f0f0;
+}
+
+.review-btn-group button:hover {
+  background: #e4e4e4;
 }
 
 .review-btn-group .delete {
-  color: red;
+  background: #ffeded;
+  color: #d9534f;
 }
 
-/* 수정 박스 */
-.edit-box {
-  margin-top: 10px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-  background: #f9f9f9;
+.review-btn-group .delete:hover {
+  background: #ffcfcf;
 }
 
-.write-box textarea,
-.edit-box textarea {
-  width: 100%;
-  height: 80px;
+/* 정렬 버튼 영역 */
+.review-sort-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 10px 0;
-  resize: none;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+}
+
+.review-sort-area button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.review-sort-area button.active {
+  border-color: #fc9510;
+  color: #fc9510;
+  font-weight: 600;
+}
+
+.review-sort-area select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* 리뷰 없음 */
+.review-empty {
+  padding: 30px;
+  text-align: center;
+  color: #888;
+  font-size: 15px;
 }

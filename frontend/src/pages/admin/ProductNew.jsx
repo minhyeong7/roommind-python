@@ -11,11 +11,12 @@ export default function ProductNew() {
 
   const [form, setForm] = useState({
     productName: "",
-    categoryId: null, 
+    categoryId: null,
     originalPrice: "",
     salePrice: "",
     stock: "",
     description: "",
+    brand: "",   // ⭐ 추가됨
   });
 
   const [image, setImage] = useState(null);
@@ -29,7 +30,6 @@ export default function ProductNew() {
       try {
         const res = await api.get("/admin/categories");
         setCategories(res.data);
-        console.log("카테고리 데이터:", res.data);
       } catch (err) {
         console.error("카테고리 불러오기 실패:", err);
       }
@@ -37,10 +37,10 @@ export default function ProductNew() {
     loadCategories();
   }, []);
 
-  /**  대분류 리스트 */
+  /** 대분류 리스트 */
   const majorList = [...new Set(categories.map((c) => c.majorCategory))];
 
-  /** 중분류 리스트 자동 필터링 */
+  /** 중분류 리스트 */
   useEffect(() => {
     if (major) {
       setMiddleList(categories.filter((c) => c.majorCategory === major));
@@ -94,6 +94,7 @@ export default function ProductNew() {
 
           <form className="product-add-form" onSubmit={handleSubmit}>
             
+            {/* 상품명 */}
             <label>상품명</label>
             <input
               type="text"
@@ -103,6 +104,18 @@ export default function ProductNew() {
               required
             />
 
+            {/* 브랜드 */}
+            <label>브랜드</label>
+            <input
+              type="text"
+              name="brand"
+              value={form.brand}
+              onChange={handleChange}
+              placeholder="예: IKEA / 한샘 / 리바트"
+              required
+            />
+
+            {/* 대분류 */}
             <label>대분류</label>
             <select
               value={major}
@@ -115,6 +128,7 @@ export default function ProductNew() {
               ))}
             </select>
 
+            {/* 중분류 */}
             <label>중분류</label>
             <div className="category-row">
               <select
@@ -126,7 +140,6 @@ export default function ProductNew() {
                 required
               >
                 <option value="">중분류 선택</option>
-
                 {middleList.map((c) => (
                   <option key={c.categoryId} value={c.categoryId}>
                     {c.middleCategory}
@@ -134,7 +147,6 @@ export default function ProductNew() {
                 ))}
               </select>
 
-              {/* 관리 버튼 → 카테고리 관리 페이지로 이동 */}
               <button
                 type="button"
                 className="category-add-btn"
@@ -144,6 +156,7 @@ export default function ProductNew() {
               </button>
             </div>
 
+            {/* 원가 */}
             <label>원가</label>
             <input
               type="number"
@@ -153,6 +166,7 @@ export default function ProductNew() {
               required
             />
 
+            {/* 판매가 */}
             <label>판매가</label>
             <input
               type="number"
@@ -162,6 +176,7 @@ export default function ProductNew() {
               required
             />
 
+            {/* 재고 */}
             <label>재고</label>
             <input
               type="number"
@@ -171,6 +186,7 @@ export default function ProductNew() {
               required
             />
 
+            {/* 설명 */}
             <label>설명</label>
             <textarea
               name="description"
@@ -179,6 +195,7 @@ export default function ProductNew() {
               required
             />
 
+            {/* 이미지 */}
             <label>대표 이미지</label>
             <input type="file" accept="image/*" onChange={handleFileChange} />
 
