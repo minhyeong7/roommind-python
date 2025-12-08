@@ -156,3 +156,11 @@
   font-size: 17px;
   margin-top: 15px;
 }
+
+.cart-empty {
+  padding: 40px;
+  text-align: center;
+  color: #777;
+  font-size: 18px;
+}
+

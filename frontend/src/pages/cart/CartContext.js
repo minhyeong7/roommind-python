@@ -1,128 +1,120 @@
-// src/context/CartContext.js
+// src/pages/cart/CartContext.js
 import { createContext, useState, useEffect } from "react";
+import {
+  addToCart as apiAddToCart,
+  getCart as apiGetCart,
+  updateCartCount as apiUpdateCartCount,
+  deleteCartItem as apiDeleteCartItem,
+} from "../../api/cartApi";
 
 export const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [cartItems, setCartItems] = useState([]);
+
+  /* ============================
+     🟡 서버에서 장바구니 불러오기
+  ============================ */
+  const loadCartFromServer = async () => {
+    try {
+      const data = await apiGetCart();
+
+      const mapped = data.map((dto) => {
+        const option = dto.selectedOption || "기본옵션";
+        return {
+          cartId: dto.cartId,
+          uniqueId: String(dto.cartId),
+          productId: dto.productId,
+          name: dto.productName ?? "이름없는 상품",
+          price: dto.price ?? 0,
+          image: dto.imageUrl ?? "/images/no-image.png",
+          option,
+          options: [option],
+          quantity: dto.productCount ?? 1,
+        };
+      });
+
+      setCartItems(mapped); // ⭐ 상태 업데이트 → UI 자동 리렌더
+    } catch (e) {
+      console.error("장바구니 불러오기 실패:", e);
+    }
+  };
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    loadCartFromServer();
+  }, []);
 
   /* ============================
      🛒 상품 추가
-     item 안에 최소한 아래 값이 들어오도록 맞추면 됨:
-     - productId (숫자)
-     - name / productName
-     - price / salePrice
-     - image (선택)
-     - option (선택)
   ============================ */
-  const addToCart = (item) => {
-    // 1) productId를 숫자로 강제
-    const productId = Number(
-      item.productId ??
-        item.id // 혹시 옛 코드에서 id로 쓰고 있다면
-    );
-
-    if (!productId) {
-      console.error("❌ productId가 없는 상품입니다. addToCart 실패:", item);
-      alert("장바구니에 담을 수 없는 상품입니다.");
-      return;
-    }
+  const addToCart = async (item) => {
+    const productId = Number(item.productId ?? item.id);
+    if (!productId) return alert("상품 ID가 없습니다.");
 
     const option = item.option || "기본옵션";
-    const quantity = item.quantity && item.quantity > 0 ? item.quantity : 1;
+    const quantity = item.quantity > 0 ? item.quantity : 1;
 
-    // 2) 같은 상품 + 같은 옵션이면 uniqueId 동일
-    const uniqueId = `${productId}_${option}`;
+    try {
+      await apiAddToCart({
+        productId,
+        productCount: quantity,
+        selectedOption: option,
+      });
 
-    const existing = cartItems.find((i) => i.uniqueId === uniqueId);
-
-    if (existing) {
-      // 이미 있으면 수량만 증가
-      setCartItems((prev) =>
-        prev.map((i) =>
-          i.uniqueId === uniqueId
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
-        )
-      );
-    } else {
-      // 새로 추가
-      setCartItems((prev) => [
-        ...prev,
-        {
-          uniqueId,
-          productId,
-          name: item.name ?? item.productName ?? "이름없는 상품",
-          price: item.price ?? item.salePrice ?? 0,
-          image: item.image ?? item.images?.[0] ?? "/images/no-image.png",
-          option,
-          options: item.options || item.allOptions || ["기본옵션"],
-          quantity,
-        },
-      ]);
+      await loadCartFromServer();
+    } catch (e) {
+      console.error("장바구니 추가 실패:", e);
     }
-  };
-
-  // 수량 변경
-  const updateQuantity = (uniqueId, newQty) => {
-    if (newQty < 1) return;
-
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.uniqueId === uniqueId ? { ...item, quantity: newQty } : item
-      )
-    );
   };
 
   /* ============================
-     옵션 변경
-     - uniqueId: 기존 아이템 키 (ex: "61_기본옵션")
-     - productId: 상품 PK (숫자)
-     - newOption: 변경할 옵션 문자열
+     수량 변경
   ============================ */
-  const updateOption = (uniqueId, productId, newOption) => {
-    const oldItem = cartItems.find((i) => i.uniqueId === uniqueId);
-    if (!oldItem) return;
+  const updateQuantity = async (cartId, newQty) => {
+    if (newQty < 1) return;
 
-    const newUniqueId = `${productId}_${newOption}`;
-    const exists = cartItems.find((i) => i.uniqueId === newUniqueId);
-
-    if (exists) {
-      // 이미 같은 상품+옵션이 있으면 수량 합치고 옛 아이템 제거
-      setCartItems((prev) =>
-        prev
-          .map((item) =>
-            item.uniqueId === newUniqueId
-              ? { ...item, quantity: item.quantity + oldItem.quantity }
-              : item
-          )
-          .filter((item) => item.uniqueId !== uniqueId)
-      );
-    } else {
-      // 그냥 uniqueId와 option만 변경
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.uniqueId === uniqueId
-            ? { ...item, option: newOption, uniqueId: newUniqueId }
-            : item
-        )
-      );
+    try {
+      await apiUpdateCartCount(cartId, newQty);
+      await loadCartFromServer();
+    } catch (e) {
+      console.error("수량 변경 실패:", e);
     }
   };
 
-  // 삭제
-  const removeFromCart = (uniqueId) => {
-    setCartItems((prev) => prev.filter((i) => i.uniqueId !== uniqueId));
+  /* ============================
+     옵션 변경 (재생성 방식)
+  ============================ */
+  const updateOption = async (cartId, productId, newOption) => {
+    const target = cartItems.find((item) => item.cartId === cartId);
+    if (!target) return;
+
+    try {
+      await apiDeleteCartItem(cartId);
+
+      await apiAddToCart({
+        productId,
+        productCount: target.quantity,
+        selectedOption: newOption,
+      });
+
+      await loadCartFromServer();
+    } catch (e) {
+      console.error("옵션 변경 실패:", e);
+    }
   };
 
-  // 총 금액
+  /* ============================
+     삭제
+  ============================ */
+  const removeFromCart = async (cartId) => {
+    try {
+      await apiDeleteCartItem(cartId);
+      await loadCartFromServer();
+    } catch (e) {
+      console.error("장바구니 삭제 실패:", e);
+    }
+  };
+
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -133,9 +125,9 @@ export function CartProvider({ children }) {
       value={{
         cartItems,
         addToCart,
-        removeFromCart,
         updateQuantity,
         updateOption,
+        removeFromCart,
         totalPrice,
       }}
     >
