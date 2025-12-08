@@ -1,6 +1,6 @@
 // src/pages/CartPage.js
 import React, { useContext, useState } from "react";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "./CartContext";
 import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
 
@@ -13,7 +13,7 @@ function CartPage() {
     updateOption,
   } = useContext(CartContext);
 
-  // 선택 상품 ID 저장 (문자열로 강제)
+  // 선택 상품 uniqueId 목록
   const [selectedItems, setSelectedItems] = useState([]);
 
   // 전체 선택
@@ -39,12 +39,9 @@ function CartPage() {
   // 선택상품 총합
   const selectedTotal = cartItems
     .filter((item) => selectedItems.includes(String(item.uniqueId)))
-    .reduce((acc, item) => {
-      const price = Number(String(item.price).replace(/,/g, "")) || 0;
-      return acc + price * item.quantity;
-    }, 0);
+    .reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  // 주문하기
+  // 주문하기 (선택된 uniqueId 리스트를 OrderPage로 전달)
   const handleOrder = () => {
     if (selectedItems.length === 0) {
       alert("선택된 상품이 없습니다.");
@@ -58,15 +55,16 @@ function CartPage() {
       <h2 className="cart-title">🛒 장바구니</h2>
 
       <div className="cart-wrapper">
-
-        {/* 💛 왼쪽 상품 리스트 */}
+        {/* 왼쪽 리스트 */}
         <div className="cart-left">
-
           {/* 전체 선택 */}
           <div className="cart-select-all">
             <input
               type="checkbox"
-              checked={selectedItems.length === cartItems.length}
+              checked={
+                cartItems.length > 0 &&
+                selectedItems.length === cartItems.length
+              }
               onChange={toggleSelectAll}
             />
             <span>전체 선택</span>
@@ -75,8 +73,6 @@ function CartPage() {
           {/* 상품 목록 */}
           {cartItems.map((item) => (
             <div key={item.uniqueId} className="cart-item">
-
-              {/* 개별 선택 */}
               <input
                 type="checkbox"
                 checked={selectedItems.includes(String(item.uniqueId))}
@@ -114,7 +110,11 @@ function CartPage() {
                 <select
                   value={item.option}
                   onChange={(e) =>
-                    updateOption(item.uniqueId, item.id, e.target.value)
+                    updateOption(
+                      item.uniqueId,
+                      item.productId, // 🔥 productId 사용
+                      e.target.value
+                    )
                   }
                   className="option-select"
                 >
@@ -126,7 +126,6 @@ function CartPage() {
                 </select>
               </div>
 
-              {/* 삭제 버튼 */}
               <button
                 className="cart-remove"
                 onClick={() => removeFromCart(item.uniqueId)}
@@ -137,10 +136,9 @@ function CartPage() {
           ))}
         </div>
 
-        {/* 💛 오른쪽 요약 */}
+        {/* 오른쪽 요약 */}
         <div className="cart-right">
           <div className="summary-box">
-
             <div className="summary-row">
               <span>총 상품금액</span>
               <strong>{selectedTotal.toLocaleString()}원</strong>
@@ -170,7 +168,6 @@ function CartPage() {
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatbotInput from "./ChatbotInput";
-import { sendChatMessage, uploadImage } from "../../services/ChatService";
+import { sendChatMessage, uploadImage } from "./ChatService";
 import "./Chatbot.css";
 
 function ChatbotUI() {

@@ -4,7 +4,7 @@ import {
   createReview,
   updateReview,
   deleteReview
-} from "../api/reviewApi";
+} from "../../api/reviewApi";
 import "./ProductReviews.css";
 
 function ProductReviews({ productId }) {

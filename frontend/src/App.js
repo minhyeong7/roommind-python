@@ -10,9 +10,9 @@ import TopButton from "./components/TopButton";
 /* 일반 페이지 */
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
-import CartPage from "./pages/CartPage";
+import Signup from "./pages/login/Signup";
+import Login from "./pages/login/Login";
+import CartPage from "./pages/cart/CartPage";
 
 /* QnA */
 import QnAList from "./pages/qna/QnAList";
@@ -26,7 +26,7 @@ import CommunityDetailPage from "./pages/community/CommunityDetailPage/Community
 
 
 /* 맥락 */
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "./pages/cart/CartContext";
 
 /* 기타 페이지 */
 import InteriorPage from "./pages/InteriorPage";
@@ -64,14 +64,13 @@ import AddressList from "./pages/user/AddressList";
 
 
 /* 주문서페이지 */
-import OrderPage from "./pages/OrderPage";
-
-import OrderSuccess from "./pages/OrderSuccess";
-import OrderBank from "./pages/OrderCompleteBank";
+import OrderPage from "./pages/order/OrderPage";
+import OrderSuccess from "./pages/order/OrderSuccess";
+import OrderBank from "./pages/order/OrderCompleteBank";
 
 /* 소셜 로그인 처리 페이지들 */
-import LoginSuccess from "./pages/LoginSuccess";
-import LoginError from "./pages/LoginError";
+import LoginSuccess from "./pages/login/LoginSuccess";
+import LoginError from "./pages/login/LoginError";
 import QnADetail from "./pages/qna/QnADetail";
 import QnAEdit from "./pages/qna/QnAEdit";
 import CommunityEditPage from "./pages/community/CommunityDetailPage/CommunityEditPage";

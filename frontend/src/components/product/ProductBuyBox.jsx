@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { CartContext } from "../context/CartContext"; 
+import { CartContext } from "../../pages/cart/CartContext"; 
 import "./ProductBuyBox.css";
 
 function ProductBuyBox({ product }) {

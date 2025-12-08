@@ -1,29 +1,44 @@
 // src/pages/OrderPage.js
 
-import React, { useState, useContext, useEffect } from "react";
-import { CartContext } from "../context/CartContext";
-import AddressModal from "../components/AddressModal";
-import api from "../api/userApi";
+import React, { useState, useContext, useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import { CartContext } from "../cart/CartContext";
+import AddressModal from "../../components/AddressModal";
+import api from "../../api/userApi";
+import { createOrder } from "../../api/orderApi";
 import "./OrderPage.css";
 
 function OrderPage() {
-  const { cartItems, totalPrice } = useContext(CartContext);
+  const location = useLocation();
+  const { cartItems } = useContext(CartContext);
+  const selectedIds = location.state?.selectedItems || null; // ["61_기본옵션", ...] 또는 null
+
+  // 선택된 상품만 필터 (선택 안 넘어온 경우 전체)
+  const orderItems = useMemo(() => {
+    if (!selectedIds || selectedIds.length === 0) return cartItems;
+    return cartItems.filter((item) =>
+      selectedIds.includes(String(item.uniqueId))
+    );
+  }, [cartItems, selectedIds]);
+
+  // 주문 총액
+  const orderTotal = useMemo(
+    () =>
+      orderItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      ),
+    [orderItems]
+  );
 
   /* ======================================================
-      상세주소 자동 분리 함수 ⭐ 추가됨
+      상세주소 자동 분리 함수 
   ====================================================== */
   const splitAddress = (full) => {
     if (!full) return ["", ""];
-
-    // 상세주소가 끝에 붙은 경우 ex) "판교로 166 202호"
     const regex = /(.*)\s(\d+호|\d+층|\d+동|\d+호수?)$/;
-
     const match = full.match(regex);
-    if (match) {
-      return [match[1], match[2]]; // [기본주소, 상세주소]
-    }
-
-    // 규칙에 안 맞으면 상세주소 없음
+    if (match) return [match[1], match[2]];
     return [full, ""];
   };
 
@@ -49,7 +64,7 @@ function OrderPage() {
   const [payMethod, setPayMethod] = useState("CARD");
 
   /* ======================================================
-      🔥 회원 정보 불러오기 + 주소 자동 파싱
+       회원 정보 불러오기 + 주소 자동 파싱
   ====================================================== */
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,22 +81,13 @@ function OrderPage() {
         let addr1 = "";
         let addr2 = "";
 
-        /* -----------------------------------------
-           CASE 1: "12345||주소||상세" (정상 저장된 경우)
-        ------------------------------------------ */
         if (user.address?.includes("||")) {
           const parts = user.address.split("||");
           zipcode = parts[0] || "";
           addr1 = parts[1] || "";
           addr2 = parts[2] || "";
-        }
-        /* -----------------------------------------
-           CASE 2: "경기 성남시 ~~ 202호" 같은 한 줄 주소
-           → 자동으로 기본주소 + 상세주소 분리 ⭐ 변경됨
-        ------------------------------------------ */
-        else if (user.address) {
+        } else if (user.address) {
           const [base, detail] = splitAddress(user.address);
-          zipcode = "";
           addr1 = base;
           addr2 = detail;
         }
@@ -106,7 +112,7 @@ function OrderPage() {
         }
       })
       .catch((err) => console.error("회원 정보 조회 실패:", err));
-  }, []);
+  }, [sameAsAddress]);
 
   /* ======================================================
       배송지 선택 모달에서 선택했을 때
@@ -128,56 +134,82 @@ function OrderPage() {
   /* ======================================================
       🔥 포트원 결제 요청
   ====================================================== */
-  const requestPortOne = async (method) => {
+
+  const TOSS_CHANNEL_KEY = process.env.REACT_APP_TOSS_CHANNEL_KEY;
+
+  const channelKeyMap = {
+    CARD: "channel_test_81cb64f5-4954-47bf-85d3-1fa9d6af4540",
+    TOSSPAY: TOSS_CHANNEL_KEY,
+    NAVERPAY: "channel_test_55bba057-85ce-4fb1-af98-dc4c8c7f5555",
+    KAKAOPAY: "channel_test_c11c113c-a31a-4a7e-9f8b-3123123bbb11",
+  };
+
+  const requestPortOne = async (method, amount) => {
     if (!window.PortOne) {
-      alert("결제 모듈 로딩 실패! 새로고침 후 다시 시도해주세요.");
-      return;
+      throw new Error("결제 모듈 로딩 실패! 새로고침 후 다시 시도해주세요.");
     }
 
-    const channelKeyMap = {
-      CARD: "channel_test_81cb64f5-4954-47bf-85d3-1fa9d6af4540",
-      TOSSPAY: "channel_test_ed04567d-9a71-487b-9c63-e38d1f00cbba",
-      NAVERPAY: "channel_test_55bba057-85ce-4fb1-af98-dc4c8c7f5555",
-      KAKAOPAY: "channel_test_c11c113c-a31a-4a7e-9f8b-3123123bbb11",
-    };
+    const firstName = orderItems[0]?.name || "가구 상품";
 
-    try {
-      await window.PortOne.requestPayment({
-        storeId: "store_test_72bbef3b-8348-47f9-9a6a-65cc5e9022d3",
-        channelKey: channelKeyMap[method],
-        payMethod: method,
-        paymentId: `payment_${Date.now()}`,
-        orderName:
-          cartItems.length > 1
-            ? `${cartItems[0].name} 외 ${cartItems.length - 1}개`
-            : cartItems[0].name,
-        totalAmount: totalPrice,
-        currency: "KRW",
-
-        customer: {
-          fullName: buyer.name,
-          phoneNumber: buyer.phone,
-          email: buyer.email,
-        },
-
-        redirectUrl: `${window.location.origin}/order/success`,
-      });
-    } catch (err) {
-      console.error(err);
-      alert("결제 실패 또는 취소되었습니다.");
-    }
+    return window.PortOne.requestPayment({
+      storeId: "store_test_72bbef3b-8348-47f9-9a6a-65cc5e9022d3",
+      channelKey: channelKeyMap[method],
+      payMethod: method,
+      paymentId: `payment_${Date.now()}`,
+      orderName:
+        orderItems.length > 1
+          ? `${firstName} 외 ${orderItems.length - 1}개`
+          : firstName,
+      totalAmount: amount,
+      currency: "KRW",
+      customer: {
+        fullName: buyer.name,
+        phoneNumber: buyer.phone,
+        email: buyer.email,
+      },
+      redirectUrl: `${window.location.origin}/order/success`,
+    });
   };
 
   /* ======================================================
       결제하기
   ====================================================== */
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (payMethod === "BANK") {
       window.location.href = "/order/bank";
       return;
     }
 
-    requestPortOne(payMethod);
+    if (orderItems.length === 0) {
+      alert("주문할 상품이 없습니다.");
+      return;
+    }
+
+    try {
+      // 1) 주문 생성 요청 → /api/orders (PENDING)
+      const orderData = {
+        deliveryAddress: `${address.address1} ${address.address2}`.trim(),
+        items: orderItems.map((item) => ({
+          productId: Number(item.productId), // 🔥 숫자 보장
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      };
+
+      const order = await createOrder(orderData); // { orderId, totalPrice, status }
+
+      // /order/success 에서 사용하기 위해 저장
+      sessionStorage.setItem("orderId", order.orderId);
+
+      // 2) PortOne 결제창 실행 (서버 계산 금액 사용)
+      await requestPortOne(payMethod, order.totalPrice);
+
+      // 이후 /order/success로 리다이렉트
+
+    } catch (err) {
+      console.error("주문 또는 결제 요청 중 오류:", err);
+      alert("주문/결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -268,7 +300,7 @@ function OrderPage() {
         <section className="order-box">
           <h3>주문 상품</h3>
 
-          {cartItems.map((item) => (
+          {orderItems.map((item) => (
             <div className="order-product" key={item.uniqueId}>
               <img src={item.image} alt="" />
 
@@ -333,7 +365,7 @@ function OrderPage() {
 
           <div className="sum-row">
             <span>총 상품 금액</span>
-            <span>{totalPrice.toLocaleString()}원</span>
+            <span>{orderTotal.toLocaleString()}원</span>
           </div>
 
           <div className="sum-row">
@@ -345,7 +377,9 @@ function OrderPage() {
 
           <div className="sum-final">
             <span>최종 결제 금액</span>
-            <span className="final-price">{totalPrice.toLocaleString()}원</span>
+            <span className="final-price">
+              {orderTotal.toLocaleString()}원
+            </span>
           </div>
 
           <button className="pay-btn" onClick={handlePayment}>

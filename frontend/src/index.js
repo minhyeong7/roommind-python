@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { CartProvider } from './context/CartContext'; // ✅ 추가
+import { CartProvider } from './pages/cart/CartContext'; // ✅ 추가
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

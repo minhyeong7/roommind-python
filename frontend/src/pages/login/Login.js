@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/userApi";
+import { loginUser } from "../../api/userApi";
 import Swal from "sweetalert2";
 import "./Login.css";
 

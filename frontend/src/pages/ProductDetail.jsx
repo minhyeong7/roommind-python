@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import ProductImageSlider from "../components/ProductImageSlider";
-import ProductBuyBox from "../components/ProductBuyBox";
-import ProductDetailContent from "../components/ProductDetailContent";
-import ProductReviews from "../components/ProductReviews";
-import ProductQA from "../components/ProductQA";
-import ProductRecommend from "../components/ProductRecommend";
+import ProductImageSlider from "../components/product/ProductImageSlider";
+import ProductBuyBox from "../components/product/ProductBuyBox";
+import ProductDetailContent from "../components/product/ProductDetailContent";
+import ProductReviews from "../components/product/ProductReviews";
+import ProductQA from "../components/product/ProductQA";
+import ProductRecommend from "../components/product/ProductRecommend";
 
 import { fetchProductById } from "../api/productApi";
 import "./ProductDetail.css";
