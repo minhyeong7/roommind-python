@@ -3,19 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { confirmPayment } from "../../api/paymentApi";
+import "./OrderSuccess.css";
 
 export default function OrderSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [status, setStatus] = useState("LOADING"); // LOADING / SUCCESS / FAIL
-  const [message, setMessage] = useState("결제 검증 중입니다...");
+  const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
-    // PortOne Redirect에 따라 이름이 다를 수 있어 여러 후보 체크
     const paymentId =
       params.get("paymentId") ||
       params.get("payment_id") ||
@@ -25,8 +24,8 @@ export default function OrderSuccess() {
     const orderId = orderIdStr ? Number(orderIdStr) : null;
 
     if (!paymentId || !orderId) {
-      setStatus("FAIL");
-      setMessage("필수 결제 정보가 누락되었습니다. (orderId 또는 paymentId)");
+      // 필수 정보 없으면 실패 페이지로
+      navigate("/order/fail?message=필수 결제 정보가 누락되었습니다.");
       return;
     }
 
@@ -35,71 +34,73 @@ export default function OrderSuccess() {
         const res = await confirmPayment({ orderId, paymentId });
 
         setOrder(res);
-        setStatus("SUCCESS");
-        setMessage("결제가 성공적으로 완료되었습니다!");
+        setLoading(false);
 
-        // 더 이상 필요없으니 제거
         sessionStorage.removeItem("orderId");
       } catch (err) {
         console.error("결제 검증 실패:", err);
-        setStatus("FAIL");
-        setMessage(
-          "결제 검증 중 오류가 발생했습니다. 결제 내역을 확인 후 관리자에게 문의해주세요."
-        );
+        const errorMsg = err.response?.data?.message || "결제 검증 중 오류가 발생했습니다.";
+        // 검증 실패 시 실패 페이지로
+        navigate(`/order/fail?message=${encodeURIComponent(errorMsg)}&type=verify`);
       }
     })();
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const goHome = () => navigate("/");
-  const goMyOrders = () => navigate("/mypage/orders"); // 마이페이지 주문내역 경로에 맞게 수정
+  const goMyOrders = () => navigate("/mypage/orders");
+
+  if (loading) {
+    return (
+      <div className="order-result-page loading">
+        <div className="result-container">
+          <div className="loading-spinner"></div>
+          <h2>결제를 처리 중입니다...</h2>
+          <p>결제 검증 중입니다...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: "40px", textAlign: "center" }}>
-      {status === "LOADING" && (
-        <>
-          <h2>결제를 처리 중입니다...</h2>
-          <p>{message}</p>
-        </>
-      )}
+    <div className="order-result-page success">
+      <div className="result-container">
+        <div className="icon-box success-icon">✓</div>
+        <h2>결제가 완료되었습니다!</h2>
+        <p className="success-message">결제가 성공적으로 완료되었습니다!</p>
 
-      {status === "SUCCESS" && (
-        <>
-          <h2>결제가 성공적으로 완료되었습니다!</h2>
-          <p>{message}</p>
-
-          {order && (
-            <div style={{ marginTop: "24px" }}>
-              <p>
-                <strong>주문 번호:</strong> {order.orderId}
-              </p>
-              <p>
-                <strong>결제 금액:</strong>{" "}
-                {order.totalPrice?.toLocaleString()}원
-              </p>
-              <p>
-                <strong>주문 상태:</strong> {order.status}
-              </p>
+        {order && (
+          <div className="order-info">
+            <div className="info-row">
+              <span className="label">주문 번호</span>
+              <span className="value">{order.orderId}</span>
             </div>
-          )}
-
-          <div style={{ marginTop: "32px" }}>
-            <button onClick={goHome} style={{ marginRight: "16px" }}>
-              홈으로 가기
-            </button>
-            <button onClick={goMyOrders}>주문내역 보러가기</button>
+            <div className="info-row">
+              <span className="label">결제 금액</span>
+              <span className="value highlight">
+                {order.totalPrice?.toLocaleString()}원
+              </span>
+            </div>
+            <div className="info-row">
+              <span className="label">주문 상태</span>
+              <span className="value status">{order.status}</span>
+            </div>
           </div>
-        </>
-      )}
+        )}
 
-      {status === "FAIL" && (
-        <>
-          <h2>결제 처리에 실패했습니다.</h2>
-          <p>{message}</p>
-          <div style={{ marginTop: "32px" }}>
-            <button onClick={goHome}>홈으로 가기</button>
-          </div>
-        </>
-      )}
+        <div className="notice-box">
+          <p>주문하신 상품은 배송 준비 중입니다.</p>
+          <p>배송 정보는 마이페이지에서 확인하실 수 있습니다.</p>
+        </div>
+
+        <div className="button-group">
+          <button className="btn-secondary" onClick={goHome}>
+            홈으로 가기
+          </button>
+          <button className="btn-primary" onClick={goMyOrders}>
+            주문내역 보기
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

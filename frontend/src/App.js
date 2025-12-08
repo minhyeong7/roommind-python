@@ -66,6 +66,7 @@ import AddressList from "./pages/user/AddressList";
 /* 주문서페이지 */
 import OrderPage from "./pages/order/OrderPage";
 import OrderSuccess from "./pages/order/OrderSuccess";
+import OrderFail from "./pages/order/OrderFail"
 import OrderBank from "./pages/order/OrderCompleteBank";
 
 /* 소셜 로그인 처리 페이지들 */
@@ -128,6 +129,8 @@ function App() {
     <Route path="/order" element={<OrderPage />} />
     <Route path="/order/success" element={<OrderSuccess />} />
     <Route path="/order/bank" element={<OrderBank />} />
+    <Route path="/order/fail" element={<OrderFail />} />
+    
 
     {/* ============================ */}
     {/* 👤 마이페이지 (공통 레이아웃) */}

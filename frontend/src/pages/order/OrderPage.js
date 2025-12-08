@@ -1,19 +1,22 @@
 // src/pages/OrderPage.js
 
 import React, { useState, useContext, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "../cart/CartContext";
 import AddressModal from "../../components/AddressModal";
 import api from "../../api/userApi";
 import { createOrder } from "../../api/orderApi";
 import "./OrderPage.css";
 
+
 function OrderPage() {
+  const navigate = useNavigate();  // 반드시 선언 필요!
   const location = useLocation();
   const { cartItems } = useContext(CartContext);
-  const selectedIds = location.state?.selectedItems || null; // ["61_기본옵션", ...] 또는 null
 
-  // 선택된 상품만 필터 (선택 안 넘어온 경우 전체)
+  const selectedIds = location.state?.selectedItems || null;
+
+  /* 선택된 상품만 필터링 */
   const orderItems = useMemo(() => {
     if (!selectedIds || selectedIds.length === 0) return cartItems;
     return cartItems.filter((item) =>
@@ -21,19 +24,13 @@ function OrderPage() {
     );
   }, [cartItems, selectedIds]);
 
-  // 주문 총액
+  /* 주문 총액 */
   const orderTotal = useMemo(
-    () =>
-      orderItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      ),
+    () => orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [orderItems]
   );
 
-  /* ======================================================
-      상세주소 자동 분리 함수 
-  ====================================================== */
+  /* 주소 파싱 */
   const splitAddress = (full) => {
     if (!full) return ["", ""];
     const regex = /(.*)\s(\d+호|\d+층|\d+동|\d+호수?)$/;
@@ -42,7 +39,7 @@ function OrderPage() {
     return [full, ""];
   };
 
-  // 배송지 정보
+  /* 배송지 정보 */
   const [address, setAddress] = useState({
     name: "",
     phone: "",
@@ -52,7 +49,7 @@ function OrderPage() {
     address2: "",
   });
 
-  // 주문자 정보
+  /* 주문자 정보 */
   const [buyer, setBuyer] = useState({
     name: "",
     phone: "",
@@ -61,11 +58,12 @@ function OrderPage() {
 
   const [sameAsAddress, setSameAsAddress] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+
   const [payMethod, setPayMethod] = useState("CARD");
 
-  /* ======================================================
-       회원 정보 불러오기 + 주소 자동 파싱
-  ====================================================== */
+  /* ============================
+      회원 정보 불러오기
+  ============================ */
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -114,9 +112,7 @@ function OrderPage() {
       .catch((err) => console.error("회원 정보 조회 실패:", err));
   }, [sameAsAddress]);
 
-  /* ======================================================
-      배송지 선택 모달에서 선택했을 때
-  ====================================================== */
+  /* 배송지 모달에서 선택 시 */
   const handleSelectAddress = (addr) => {
     setAddress(addr);
 
@@ -131,9 +127,9 @@ function OrderPage() {
     setOpenModal(false);
   };
 
-  /* ======================================================
-      🔥 포트원 결제 요청
-  ====================================================== */
+  /* ============================
+      PortOne 결제 요청
+  ============================ */
 
   const TOSS_CHANNEL_KEY = process.env.REACT_APP_TOSS_CHANNEL_KEY;
 
@@ -145,21 +141,15 @@ function OrderPage() {
   };
 
   const requestPortOne = async (method, amount) => {
-    if (!window.PortOne) {
-      throw new Error("결제 모듈 로딩 실패! 새로고침 후 다시 시도해주세요.");
-    }
+    if (!window.PortOne) throw new Error("결제 모듈 로딩 실패");
 
     const firstName = orderItems[0]?.name || "가구 상품";
 
-    return window.PortOne.requestPayment({
-      storeId: "store_test_72bbef3b-8348-47f9-9a6a-65cc5e9022d3",
-      channelKey: channelKeyMap[method],
-      payMethod: method,
+    // 공통 설정
+    const baseConfig = {
+      storeId: "store-bc957181-cc9e-4901-a983-39117669bd68",
       paymentId: `payment_${Date.now()}`,
-      orderName:
-        orderItems.length > 1
-          ? `${firstName} 외 ${orderItems.length - 1}개`
-          : firstName,
+      orderName: firstName,
       totalAmount: amount,
       currency: "KRW",
       customer: {
@@ -168,54 +158,96 @@ function OrderPage() {
         email: buyer.email,
       },
       redirectUrl: `${window.location.origin}/order/success`,
+      failUrl: `${window.location.origin}/order/fail`,
+    };
+
+    // 토스페이먼츠 일반결제
+    if (method === "TOSSPAY") {
+      return window.PortOne.requestPayment({
+        ...baseConfig,
+        channelKey: channelKeyMap.TOSSPAY,
+        payMethod: "CARD",
+      });
+    }
+
+    // 카드
+    if (method === "CARD") {
+      return window.PortOne.requestPayment({
+        ...baseConfig,
+        channelKey: channelKeyMap.CARD,
+        payMethod: "CARD",
+      });
+    }
+
+    // 네이버/카카오페이는 EASY_PAY
+    return window.PortOne.requestPayment({
+      ...baseConfig,
+      channelKey: channelKeyMap[method],
+      payMethod: "EASY_PAY",
+      easyPayProvider: method,
     });
   };
 
-  /* ======================================================
+  /* ============================
       결제하기
-  ====================================================== */
+  ============================ */
   const handlePayment = async () => {
-    if (payMethod === "BANK") {
-      window.location.href = "/order/bank";
+  if (payMethod === "BANK") {
+    navigate("/order/bank");
+    return;
+  }
+
+  if (orderItems.length === 0) {
+    alert("주문할 상품이 없습니다.");
+    return;
+  }
+
+  try {
+    const orderData = {
+      deliveryAddress: `${address.address1} ${address.address2}`.trim(),
+      items: orderItems.map((item) => ({
+        productId: Number(item.productId),
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    };
+
+    // 1) 주문 생성
+    const createdOrder = await createOrder(orderData);
+    sessionStorage.setItem("orderId", createdOrder.orderId);
+
+    // 2) 결제 실행 → res 받기
+    const res = await requestPortOne(payMethod, createdOrder.totalPrice);
+    console.log("PortOne 응답:", res);
+
+    // 3) 결제 실패
+    if (res.code) {
+      navigate(`/order/fail?message=${encodeURIComponent(res.message)}`);
       return;
     }
 
-    if (orderItems.length === 0) {
-      alert("주문할 상품이 없습니다.");
+    // 4) 결제 성공 → paymentId 확보
+    const paymentId =
+      res.paymentId || res.payment_id || res.paymentKey || res.txId;
+
+    if (!paymentId) {
+      navigate("/order/fail?message=결제정보 누락");
       return;
     }
 
-    try {
-      // 1) 주문 생성 요청 → /api/orders (PENDING)
-      const orderData = {
-        deliveryAddress: `${address.address1} ${address.address2}`.trim(),
-        items: orderItems.map((item) => ({
-          productId: Number(item.productId), // 🔥 숫자 보장
-          price: item.price,
-          quantity: item.quantity,
-        })),
-      };
+    // 5) 성공 페이지 이동
+    navigate(`/order/success?paymentId=${paymentId}`);
 
-      const order = await createOrder(orderData); // { orderId, totalPrice, status }
-
-      // /order/success 에서 사용하기 위해 저장
-      sessionStorage.setItem("orderId", order.orderId);
-
-      // 2) PortOne 결제창 실행 (서버 계산 금액 사용)
-      await requestPortOne(payMethod, order.totalPrice);
-
-      // 이후 /order/success로 리다이렉트
-
-    } catch (err) {
-      console.error("주문 또는 결제 요청 중 오류:", err);
-      alert("주문/결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
-    }
-  };
+  } catch (err) {
+    console.error("결제 오류:", err);
+    navigate(`/order/fail?message=결제 중 오류 발생`);
+  }
+};
 
   return (
     <div className="order-page">
       <div className="order-left">
-        {/* 배송지 정보 */}
+        {/* 배송지 */}
         <section className="order-box address-box">
           <div className="box-header">
             <h3>배송지 정보</h3>
@@ -246,7 +278,6 @@ function OrderPage() {
         {/* 주문자 정보 */}
         <section className="order-box">
           <h3>주문자 정보</h3>
-
           <label className="checkbox-row">
             <input
               type="checkbox"
@@ -262,7 +293,7 @@ function OrderPage() {
                 }
               }}
             />
-            주문 정보와 동일
+            배송지 정보와 동일
           </label>
 
           <div className="input-row">
@@ -296,10 +327,9 @@ function OrderPage() {
           </div>
         </section>
 
-        {/* 주문 상품 */}
+        {/* 주문 상품 목록 */}
         <section className="order-box">
           <h3>주문 상품</h3>
-
           {orderItems.map((item) => (
             <div className="order-product" key={item.uniqueId}>
               <img src={item.image} alt="" />
@@ -307,7 +337,9 @@ function OrderPage() {
               <div className="p-info">
                 <p className="p-name">{item.name}</p>
                 <p className="p-option">옵션: {item.option}</p>
-                <p className="p-qty">수량: {item.quantity}</p>
+                <p className="p-qty">
+                  수량: {item.quantity}
+                </p>
               </div>
 
               <div className="p-price">
@@ -320,7 +352,6 @@ function OrderPage() {
         {/* 쿠폰/포인트 */}
         <section className="order-box">
           <h3>쿠폰 / 포인트</h3>
-
           <div className="input-row">
             <label>쿠폰</label>
             <input placeholder="사용 가능한 쿠폰이 없습니다" readOnly />
@@ -335,7 +366,6 @@ function OrderPage() {
         {/* 결제수단 */}
         <section className="order-box">
           <h3>결제수단</h3>
-
           <div className="payment-methods">
             {["CARD", "TOSSPAY", "NAVERPAY", "KAKAOPAY", "BANK"].map((m) => (
               <button
@@ -358,7 +388,7 @@ function OrderPage() {
         </section>
       </div>
 
-      {/* 결제 요약 */}
+      {/* 우측 결제요약 */}
       <div className="order-right">
         <div className="summary-box">
           <h3>결제 금액</h3>
