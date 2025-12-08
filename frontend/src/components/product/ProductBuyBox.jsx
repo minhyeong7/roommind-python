@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { CartContext } from "../../pages/cart/CartContext"; 
+import { CartContext } from "../../pages/cart/CartContext";
 import "./ProductBuyBox.css";
 
 function ProductBuyBox({ product }) {
 
-  // 🔥 옵션 없는 상품이면 기본옵션 자동 생성
+  // 옵션 없는 경우 기본 옵션 자동 생성
   const optionList =
     product.options && product.options.length > 0
       ? product.options
@@ -15,7 +15,7 @@ function ProductBuyBox({ product }) {
 
   const { addToCart } = useContext(CartContext);
 
-  const totalPrice = product.price * quantity;
+  const totalPrice = product.salePrice * quantity;
 
   const handleSelectOption = (value) => {
     setSelectedOption(value);
@@ -28,32 +28,55 @@ function ProductBuyBox({ product }) {
       return;
     }
 
-     addToCart({
-      id: product.id ?? product.title,   // ★ 요거 추가
-      name: product.title,
+    addToCart({
+      id: product.productId,
+      name: product.productName,
       option: selectedOption,
-      quantity: quantity,
-      price: product.price,
+      quantity,
+      price: product.salePrice,
       image: product.image,
     });
 
-
-    alert("장바구니에 상품이 담겼습니다!");
+    alert("장바구니에 담겼습니다!");
   };
 
   return (
     <div className="buy-box">
 
-      {/* 상품명 */}
-      <h2 className="buy-title">{product.title}</h2>
+      {/* 브랜드 */}
+      <div className="brand-box">{product.brand || "브랜드 미표기"}</div>
 
-      {/* 가격 박스 */}
+      {/* 상품명 */}
+      <h2 className="buy-title">{product.productName}</h2>
+
+      {/* 가격 */}
       <div className="price-box">
-        <span className="discount">{product.discount}%</span>
-        <span className="price">{product.price.toLocaleString()}원</span>
+        <span className="discount">20%</span>
+        <span className="price">{product.salePrice.toLocaleString()}원</span>
       </div>
       <div className="original">
         {product.originalPrice.toLocaleString()}원
+      </div>
+
+      {/* 쿠폰 박스 */}
+      <div className="coupon-box">
+        <strong>🎟 쿠폰 할인 상품이 있어요!</strong><br />
+        아래 상품에서 사용할 수 있는 쿠폰을 확인해보세요.
+      </div>
+
+      {/* 무료배송 / 오늘출발 */}
+      <div className="delivery-status">
+        <span className="free">🚚 무료배송</span>
+        <span className="today">📦 오늘출발</span>
+      </div>
+
+      {/* 배송 정보 */}
+      <div className="info-box">
+        <div className="info-title">배송</div>
+        <div className="info-content">
+          결제 완료 후 평균 1~2일 이내 발송됩니다.<br />
+          지역 및 상품에 따라 배송비가 달라질 수 있습니다.
+        </div>
       </div>
 
       {/* 옵션 선택 */}
@@ -70,15 +93,14 @@ function ProductBuyBox({ product }) {
         ))}
       </select>
 
-      {/* 선택된 옵션 박스 */}
+      {/* 선택된 옵션 표시 */}
       {selectedOption && (
         <div className="selected-item-box">
           <div className="selected-info">
             <div className="selected-name">
-              {product.title} - {selectedOption}
+              {product.productName} - {selectedOption}
             </div>
 
-            {/* 수량 조절 버튼 */}
             <div className="quantity-box">
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
                 -
@@ -90,9 +112,8 @@ function ProductBuyBox({ product }) {
             </div>
           </div>
 
-          {/* 옵션 가격 */}
           <div className="selected-price">
-            {(product.price * quantity).toLocaleString()}원
+            {(product.salePrice * quantity).toLocaleString()}원
           </div>
         </div>
       )}
@@ -100,9 +121,7 @@ function ProductBuyBox({ product }) {
       {/* 총 금액 */}
       <div className="total-price-box">
         <span>총 상품금액</span>
-        <span className="total-price">
-          {totalPrice.toLocaleString()}원
-        </span>
+        <span className="total-price">{totalPrice.toLocaleString()}원</span>
       </div>
 
       {/* 버튼 */}

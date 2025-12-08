@@ -28,6 +28,7 @@ export default function ProductEdit() {
     majorCategory: "",
     middleCategory: "",
     categoryId: "",
+    brand: "",   // ⭐ 추가
   });
 
   const [newImages, setNewImages] = useState([]);
@@ -36,7 +37,7 @@ export default function ProductEdit() {
      1) 카테고리 조회
   ===================================================== */
   const fetchCategories = useCallback(async () => {
-    const res = await apiFetchCategories();   // ← API 파일 사용
+    const res = await apiFetchCategories();
     const list = res.data;
 
     setCategories(list);
@@ -49,7 +50,7 @@ export default function ProductEdit() {
      2) 상품 조회
   ===================================================== */
   const fetchProduct = useCallback(async () => {
-    const res = await apiFetchProduct(id);   // ← API 파일 사용
+    const res = await apiFetchProduct(id);
     const data = res.data;
 
     setProduct(data);
@@ -63,13 +64,14 @@ export default function ProductEdit() {
       majorCategory: data.majorCategory,
       middleCategory: data.middleCategory,
       categoryId: data.categoryId,
+      brand: data.brand || "",   // ⭐ 추가
     });
 
     setLoading(false);
   }, [id]);
 
   /* =====================================================
-     3) majorCategory 선택 → middle 카테고리 필터링
+     3) majorCategory 선택 → middle 필터링
   ===================================================== */
   useEffect(() => {
     if (!form.majorCategory) {
@@ -85,7 +87,7 @@ export default function ProductEdit() {
   }, [form.majorCategory, categories]);
 
   /* =====================================================
-     4) major + middle => categoryId 자동 설정
+     4) major + middle ⇒ categoryId 자동 설정
   ===================================================== */
   useEffect(() => {
     const match = categories.find(
@@ -110,9 +112,6 @@ export default function ProductEdit() {
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
-  /* =====================================================
-     기존 이미지 URL
-  ===================================================== */
   const getImageUrl = (img) => {
     if (!img) return "/no-image.png";
     const fixed = img.saveDir.replace(/\\/g, "/");
@@ -120,7 +119,6 @@ export default function ProductEdit() {
     return folder ? `/uploads/product/${folder}/${img.fileName}` : "/no-image.png";
   };
 
-  /* 입력 처리 */
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -130,12 +128,12 @@ export default function ProductEdit() {
   };
 
   /* =====================================================
-     저장하기 (상품 + 이미지 multipart PUT)
+     저장하기
   ===================================================== */
   const handleSubmit = async () => {
     if (!window.confirm("상품 정보를 수정하시겠습니까?")) return;
 
-    await apiUpdateProduct(id, form, newImages); // ← API 파일의 updateProduct 사용
+    await apiUpdateProduct(id, form, newImages);
 
     alert("상품 수정이 완료되었습니다!");
     navigate("/admin/products");
@@ -179,7 +177,10 @@ export default function ProductEdit() {
           <label>재고</label>
           <input type="number" name="stock" value={form.stock} onChange={handleInput} />
 
-          {/* 대분류 */}
+          {/* ⭐ 브랜드 */}
+          <label>브랜드</label>
+          <input name="brand" value={form.brand} onChange={handleInput} />
+
           <label>대분류 카테고리</label>
           <select
             name="majorCategory"
@@ -200,7 +201,6 @@ export default function ProductEdit() {
             ))}
           </select>
 
-          {/* 중분류 */}
           <label>중분류 카테고리</label>
           <select
             name="middleCategory"

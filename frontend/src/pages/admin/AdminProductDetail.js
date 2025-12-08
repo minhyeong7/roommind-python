@@ -24,21 +24,17 @@ export default function ProductDetail() {
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
-  // ⭐ 이미지 경로 처리 (프론트에서만 변환)
+  // ⭐ 이미지 경로 처리
   const getProductImage = (images) => {
     if (!images || images.length === 0) return "/no-image.png";
 
     const img = images[0];
 
-    // Windows 경로 → URL 경로로 변환
     const fixedDir = img.saveDir.replace(/\\/g, "/");
-
-    // uploads/product/ 뒤의 날짜 폴더 추출
     const folderName = fixedDir.split("uploads/product/")[1];
 
     if (!folderName) return "/no-image.png";
 
-    // 최종 URL
     return `/uploads/product/${folderName}/${img.fileName}`;
   };
 
@@ -52,7 +48,7 @@ export default function ProductDetail() {
 
         <div className="detail-top">
 
-          {/* ✔ 왼쪽 이미지 */}
+          {/* 왼쪽 이미지 */}
           <div className="detail-image-box">
             <img src={firstImage} alt="상품 이미지" />
           </div>
@@ -64,6 +60,11 @@ export default function ProductDetail() {
               {product.majorCategory && product.middleCategory
                 ? `${product.majorCategory} > ${product.middleCategory}`
                 : "-"}
+            </p>
+
+            {/* 브랜드 추가 */}
+            <p>
+              <strong>브랜드:</strong> {product.brand || "-"}
             </p>
 
             <p><strong>원가:</strong> {product.originalPrice?.toLocaleString()}원</p>
