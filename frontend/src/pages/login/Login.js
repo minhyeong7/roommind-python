@@ -1,22 +1,37 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/userApi";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { loginUser } from "../../api/userApi";
 import Swal from "sweetalert2";
 import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  // 비밀번호 보기/숨기기
   const [showPassword, setShowPassword] = useState(false);
-
-  // CapsLock 상태
   const [isCapsLockOn, setIsCapsLockOn] = useState(false);
+
+  // ==========================
+  // 🔥 로그인 필요할 때 알림(1번만)
+  // ==========================
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const reason = params.get("reason");
+
+    if (reason === "needLogin") {
+      Swal.fire({
+        icon: "warning",
+        title: "로그인이 필요한 서비스입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  }, [location.search]);
 
   // ==========================
   // 입력 변경
@@ -72,10 +87,10 @@ function Login() {
         title: "로그인 실패",
         text: "이메일 또는 비밀번호가 잘못되었습니다.",
       });
+
     } catch (error) {
       console.error(error);
 
-      // 서버 응답이 있는 경우 (400, 401 등)
       if (error.response) {
         const status = error.response.status;
 
@@ -93,7 +108,6 @@ function Login() {
           });
         }
       } else {
-        // 서버 자체가 안 켜짐
         Swal.fire({
           icon: "error",
           title: "연결 실패",
@@ -132,7 +146,6 @@ function Login() {
 
         <label>비밀번호</label>
 
-        {/* 🔥 비밀번호 입력 + 눈 아이콘 + CapsLock */}
         <div className="pw-input-wrapper">
           <input
             type={showPassword ? "text" : "password"}
@@ -149,7 +162,6 @@ function Login() {
           </span>
         </div>
 
-        {/* 🔥 CapsLock 경고 */}
         {isCapsLockOn && (
           <div className="caps-warning">⚠️ CapsLock이 켜져 있습니다!</div>
         )}

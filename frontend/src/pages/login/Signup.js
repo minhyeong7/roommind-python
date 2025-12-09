@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ 추가
-import { registerUser } from "../api/userApi";
+import { registerUser } from "../../api/userApi";
 import "./Signup.css";
 
 function Signup() {
