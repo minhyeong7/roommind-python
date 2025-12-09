@@ -1,100 +1,212 @@
-import React, { useState } from "react";
-import ChatMessage from "./ChatMessage";
-import ChatbotInput from "./ChatbotInput";
-import { sendChatMessage, uploadImage } from "./ChatService";
-import "./Chatbot.css";
+import React, { useState, useRef, useEffect } from 'react';
+import ChatService from './ChatService';
+import './Chatbot.css';
 
-function ChatbotUI() {
+const ChatbotUI = () => {
   const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);   // 🔥 추가
+  const [inputValue, setInputValue] = useState('');
+  const [detectedImage, setDetectedImage] = useState(null);
+  const [top3Images, setTop3Images] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [detectedClasses, setDetectedClasses] = useState([]);
 
-  // 🔹 텍스트 메시지 처리
-  const handleSendText = async (text) => {
-    setMessages((prev) => [...prev, { sender: "user", text }]);
+  const chatContainerRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-    // 🔥 챗봇이 입력 중 표시
-    setIsTyping(true);
-
-    const res = await sendChatMessage(text);
-
-    // typing 종료
-    setIsTyping(false);
-
-    // 기본 bot 메시지
-    setMessages((prev) => [
-      ...prev,
-      { sender: "bot", text: res.reply }
-    ]);
-
-    if (res.top3) {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", top3: res.top3 }
-      ]);
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  }, [messages]);
+
+  const addBotMessage = (text) => {
+    setMessages((prev) => [...prev, { type: 'bot', text }]);
   };
 
-  // 🔹 이미지 업로드 메시지 처리
-  const handleSendImage = async (imageFile) => {
-    setMessages((prev) => [
-      ...prev,
-      { sender: "user", image: URL.createObjectURL(imageFile) }
-    ]);
+  const addUserMessage = (text) => {
+    setMessages((prev) => [...prev, { type: 'user', text }]);
+  };
 
-    setIsTyping(true);  // 🔥 이미지 처리중
+  const handleImageUpload = async () => {
+    const file = fileInputRef.current?.files?.[0];
 
-    const res = await uploadImage(imageFile);
-
-    setIsTyping(false);
-
-    if (!res || res.error) {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "이미지 분석에 실패했습니다." }
-      ]);
+    if (!file) {
+      addBotMessage('이미지를 선택해주세요!');
       return;
     }
 
-    if (res.classes) {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: `감지된 가구: ${res.classes.join(", ")}` }
-      ]);
+    setIsLoading(true);
+    addBotMessage('이미지를 분석 중입니다...🔍');
+
+    const result = await ChatService.uploadAndDetect(file);
+
+    if (result.success) {
+      setDetectedImage(ChatService.getLocalFileUrl(result.uploadImage));
+      setDetectedClasses(result.classes);
+      setTop3Images([]);
+
+      if (result.classes.length > 0) {
+        const classList = result.classes.join(', ');
+        await sendAIMessage(`이미지 분석 완료! 감지된 객체: ${classList}.\n추천받고 싶은 가구를 선택하세요.`);
+      } else {
+        addBotMessage('객체가 감지되지 않았습니다. 다른 이미지를 업로드해주세요.');
+      }
+    } else {
+      addBotMessage(`오류: ${result.error}`);
     }
 
-    if (res.top3) {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", top3: res.top3 }
-      ]);
+    setIsLoading(false);
+    fileInputRef.current.value = '';
+  };
+
+  const sendAIMessage = async (message) => {
+    const result = await ChatService.sendChatMessage(message);
+
+    if (result.success) {
+      addBotMessage(result.reply);
+
+      if (result.top3?.length > 0) {
+        const urls = result.top3.map((item) => ChatService.getLocalFileUrl(item.url));
+        setTop3Images(urls);
+      }
+    } else {
+      addBotMessage(`오류: ${result.error}`);
     }
   };
 
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    addUserMessage(inputValue);
+    const msg = inputValue;
+    setInputValue('');
+    setIsLoading(true);
+
+    await sendAIMessage(msg);
+
+    setIsLoading(false);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const loadTop3 = async (cls) => {
+    setIsLoading(true);
+    const result = await ChatService.getTop3Recommendations(cls);
+
+    if (result.success) {
+      const urls = result.top3.map((item) => ChatService.getLocalFileUrl(item.url));
+      setTop3Images(urls);
+
+      addBotMessage(`${cls} 추천 Top3입니다!`);
+    } else {
+      addBotMessage(`오류: ${result.error}`);
+    }
+
+    setIsLoading(false);
+  };
+
+  const openFilePicker = () => fileInputRef.current.click();
+
   return (
-    <div className="chatbot-container">
-      <div className="chat-window">
+    <div className="chat-app-container">
+      {/* 왼쪽 챗봇 영역 */}
+      <div className="chat-section">
+        <h2>인테리어 가구 추천 챗봇</h2>
 
-        {messages.map((msg, idx) => (
-          <ChatMessage key={idx} {...msg} />
-        ))}
+        <div className="chat-container" ref={chatContainerRef}>
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`message ${msg.type}`}>
+              {msg.text}
+            </div>
+          ))}
 
-        {/* 🔥 챗봇 '입력 중...' 표시 */}
-        {isTyping && (
-          <div className="typing-indicator">
-            <div className="dot"></div>
-            <div className="dot"></div>
-            <div className="dot"></div>
+          {isLoading && (
+            <div className="message bot loading">
+              <span>...</span>
+            </div>
+          )}
+        </div>
+
+        {/* 메시지 입력창 + 이미지 버튼 */}
+        <div className="chat-input-area">
+
+          {/* 📷 이미지 업로드 버튼 (입력창 왼쪽) */}
+          <div
+            className="image-upload"
+            onClick={openFilePicker}
+            title="이미지 업로드"
+          >
+            업로드
           </div>
-        )}
 
+          {/* 실제 숨겨진 파일 input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleImageUpload}
+          />
+
+          <input
+            type="text"
+            className="chat-input"
+            placeholder="메시지를 입력하세요"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            disabled={isLoading}
+          />
+
+          <button
+            className="send-button"
+            onClick={handleSendMessage}
+            disabled={isLoading}
+          >
+            전송
+          </button>
+        </div>
       </div>
 
-      <ChatbotInput 
-        onSend={handleSendText}
-        onImageSend={handleSendImage}
-      />
+      {/* 오른쪽: 이미지 및 추천 패널 */}
+      <div className="right-panel">
+        <div className="panel-section">
+          <h3>분석 이미지</h3>
+          {detectedImage && (
+            <img src={detectedImage} className="preview-image" alt="detected" />
+          )}
+
+          {detectedClasses.length > 0 && (
+            <div className="class-buttons">
+              {detectedClasses.map((cls, i) => (
+                <button
+                  key={i}
+                  className="class-button"
+                  onClick={() => loadTop3(cls)}
+                >
+                  {cls}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="panel-section">
+          <h3>추천 Top3</h3>
+          <div className="top3-area">
+            {top3Images.map((url, i) => (
+              <img key={i} src={url} className="recommendation-image" alt="top3" />
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default ChatbotUI;
