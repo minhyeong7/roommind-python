@@ -18,7 +18,7 @@ function LoginSuccess() {
     const socialType = searchParams.get("socialType") || searchParams.get("socialtype");
     const role = searchParams.get("role") || "user";
 
-    // ⭐⭐⭐ 핵심 추가 ⭐⭐⭐
+   
     const userId = searchParams.get("userId");
 
     console.log("token:", token);
