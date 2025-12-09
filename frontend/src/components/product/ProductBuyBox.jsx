@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./ProductBuyBox.css";
-import { addToCart as apiAddToCart } from "../../api/cartApi";
+import { CartContext } from "../../pages/cart/CartContext"; // ⭐ 추가
 
 function ProductBuyBox({ product }) {
+  // ⭐ Context에서 addToCart 가져오기
+  const { addToCart } = useContext(CartContext);
 
   const optionList =
     product.options && product.options.length > 0
@@ -19,6 +21,7 @@ function ProductBuyBox({ product }) {
     setQuantity(1);
   };
 
+  // ⭐ Context의 addToCart 사용으로 변경
   const handleAddToCart = async () => {
     if (!selectedOption) {
       alert("옵션을 선택해주세요!");
@@ -26,13 +29,20 @@ function ProductBuyBox({ product }) {
     }
 
     try {
-      await apiAddToCart({
+      // Context의 addToCart 호출 (자동으로 상태 업데이트됨)
+      const success = await addToCart({
         productId: product.productId,
-        productCount: quantity,
-        selectedOption: selectedOption,
+        id: product.productId, // 혹시 몰라서 id도 추가
+        name: product.productName,
+        price: product.salePrice,
+        image: product.imageUrl || product.image,
+        quantity: quantity,
+        option: selectedOption,
       });
 
-      alert("장바구니에 담겼습니다!");
+      if (success) {
+        alert("장바구니에 담겼습니다!");
+      }
     } catch (error) {
       console.error("장바구니 등록 실패:", error);
       alert("장바구니 등록 중 오류가 발생했습니다.");
