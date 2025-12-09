@@ -17,6 +17,13 @@ function ProductReviews({ productId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  /** 유저 이름 마스킹 함수 추가 */
+  const maskName = (name) => {
+    if (!name) return "";
+    if (name.length === 2) return name[0] + "*";
+    return name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
+  };
+
   /** 작성 박스 상태 */
   const [showCreateBox, setShowCreateBox] = useState(false);
   const [newRating, setNewRating] = useState(5);
@@ -113,13 +120,12 @@ function ProductReviews({ productId }) {
         : b.rating - a.rating
     );
 
-  if (loading) return <div>⏳ 불러오는 중...</div>;
+  if (loading) return <div>불러오는 중...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="review-wrap">
 
-      {/* 리뷰 작성 버튼 */}
       {currentUserId && (
         <button
           className="review-create-btn"
@@ -129,9 +135,6 @@ function ProductReviews({ productId }) {
         </button>
       )}
 
-      {/* =========================== */}
-      {/* 리뷰 작성 박스 */}
-      {/* =========================== */}
       {showCreateBox && (
         <div className="review-box write-box">
           <h4>리뷰 작성</h4>
@@ -160,7 +163,6 @@ function ProductReviews({ productId }) {
         </div>
       )}
 
-      {/* 정렬 / 필터 */}
       <div className="review-sort-area">
         <button
           className={sortType === "latest" ? "active" : ""}
@@ -188,20 +190,21 @@ function ProductReviews({ productId }) {
         </select>
       </div>
 
-      {/* =========================== */}
-      {/* 리뷰 목록 */}
-      {/* =========================== */}
       {sorted.map((review) => (
         <div className="review-box" key={review.reviewId}>
           <div className="review-header">
-            <strong>User {review.userId}</strong>
-            {" "}<span>{"★".repeat(review.rating)}</span>
-            {" "}<span>{new Date(review.createdDate).toLocaleDateString()}</span>
+
+            {/* 수정된 유저 이름 표시 */}
+            <strong>{maskName(review.username)}</strong>
+
+            {" "}
+            <span>{"★".repeat(review.rating)}</span>
+            {" "}
+            <span>{new Date(review.createdDate).toLocaleDateString()}</span>
           </div>
 
           <div className="review-text">{review.content}</div>
 
-          {/* 본인 리뷰일 때만 표시 */}
           {currentUserId === review.userId && (
             <div className="review-btn-group">
               <button onClick={() => openEditBox(review)}>수정</button>
@@ -211,7 +214,6 @@ function ProductReviews({ productId }) {
             </div>
           )}
 
-          {/* 수정 박스 */}
           {editReviewId === review.reviewId && (
             <div className="edit-box">
               <h4>리뷰 수정</h4>

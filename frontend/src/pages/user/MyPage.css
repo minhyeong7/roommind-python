@@ -14,3 +14,21 @@
   margin-top: 25px;
   text-align: center; /* ⬅️ 가운데 정렬 */
 }
+
+/* 오른쪽 본문 여백 유지 */
+.mypage-content {
+  padding-left: 20px;
+}
+
+/* 링크들을 한 줄에 나열되지 않게 block으로 */
+.mypage-links a {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #5a3eff;
+  text-decoration: none;
+}
+
+.mypage-links a:hover {
+  text-decoration: underline;
+}

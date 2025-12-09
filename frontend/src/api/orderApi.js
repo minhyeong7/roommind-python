@@ -1,4 +1,4 @@
-import api from "./header";
+import api from "./userApi";
 
 /**
  * 🟡 주문 생성 (PENDING)

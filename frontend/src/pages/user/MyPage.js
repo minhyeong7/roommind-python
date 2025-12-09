@@ -1,10 +1,16 @@
 import "./MyPage.css";
+import { Link } from "react-router-dom";
 
 const MyPage = () => {
   return (
-    <div>
+    <div className="mypage-content">
       <h2 className="mypage-title">마이페이지</h2>
-      <p>여기에 기본 마이페이지 안내 또는 위젯 넣기!</p>
+
+      <div className="mypage-links">
+        <Link to="/mypage/orders">주문 내역 보기</Link>
+        <Link to="/mypage/reviews">내 리뷰 보기</Link>
+        <Link to="/mypage/qna">내가 쓴 Q&A</Link>
+      </div>
     </div>
   );
 };

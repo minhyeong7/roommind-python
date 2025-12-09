@@ -15,6 +15,8 @@ const MyCommunity = () => {
         const list = res.data.data;
 
         const email = JSON.parse(atob(token.split(".")[1])).sub;
+
+        // 내 글만 필터링
         const filtered = list.filter((item) => item.email === email);
 
         setMyPosts(filtered);
@@ -51,7 +53,9 @@ const MyCommunity = () => {
                 <td>{index + 1}</td>
                 <td className="clickable-title">{post.title}</td>
                 <td>{post.createdDate?.split("T")[0]}</td>
-                <td></td>
+
+                {/* 댓글 수 출력 */}
+                <td>{post.commentCount ?? 0}</td>
               </tr>
             ))}
           </tbody>

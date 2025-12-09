@@ -4,7 +4,7 @@ import "./ProductTabs.css";
 function ProductTabs() {
   return (
     <div className="product-tabs">
-      <p>탭 영역</p>
+      <p></p>
     </div>
   );
 }

@@ -192,10 +192,43 @@ function OrderPage() {
       결제하기
   ============================ */
   const handlePayment = async () => {
-  if (payMethod === "BANK") {
-    navigate("/order/bank");
-    return;
-  }
+    if (payMethod === "BANK") {
+      try {
+        const token = localStorage.getItem("token");
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const userId = payload.userId || payload.id;
+
+       const orderData = {
+        deliveryAddress: `${address.address1} ${address.address2}`.trim(),
+        totalPrice: orderTotal,
+        status: "PENDING",   // 주문 상태 기본값
+        items: orderItems.map((item) => ({
+          productId: Number(item.productId),
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      };
+
+
+        const createdOrder = await createOrder(orderData);
+
+        sessionStorage.setItem("orderId", createdOrder.orderId);
+
+        navigate("/order/bank", {
+          state: { orderId: createdOrder.orderId },
+        });
+
+        return;
+      } catch (err) {
+        console.error("무통장입금 주문 오류:", err);
+        navigate(`/order/fail?message=무통장입금 주문 생성 오류`);
+        return;
+      }
+    }
+
+
+
+
 
   if (orderItems.length === 0) {
     alert("주문할 상품이 없습니다.");

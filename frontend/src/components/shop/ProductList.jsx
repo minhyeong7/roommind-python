@@ -71,7 +71,10 @@ function ProductList({ category }) {
                   </div>
                 )}
 
-                <div className="card-review">⭐ 0 리뷰 0</div>
+                <div className="card-review">
+                ⭐ {p.avgRating ? p.avgRating.toFixed(1) : "0.0"} 리뷰 {p.reviewCount || 0}
+              </div>
+
               </div>
             </Link>
           );
