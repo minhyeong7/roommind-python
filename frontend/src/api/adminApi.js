@@ -84,3 +84,7 @@ export const updateCategory = (id, data) =>
 // 카테고리 삭제
 export const deleteCategory = (id) =>
   api.delete(`/admin/categories/${id}`);
+
+// 상태변경 
+export const updateOrderStatus = (orderId, status) =>
+  api.patch(`/admin/orders/${orderId}/status`, { status });
