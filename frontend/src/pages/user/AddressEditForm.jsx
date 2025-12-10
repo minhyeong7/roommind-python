@@ -56,7 +56,7 @@ const AddressEditForm = ({ address, onClose, onUpdated }) => {
   const handleSubmit = async () => {
     try {
       await axios.put(
-        "http://localhost:8080/api/address",
+        "http://13.209.6.113:8080/api/address",
         {
           addressId: address.addressId,
           userId: address.userId,

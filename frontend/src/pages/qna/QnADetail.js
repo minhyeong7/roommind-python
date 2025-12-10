@@ -31,7 +31,7 @@ export default function QnADetail() {
   const getImageUrl = (file) => {
     if (!file) return "/default-thumbnail.png";
     const folder = file.createdDate.slice(0, 10);
-    return `http://localhost:8080/uploads/qna/${folder}/${file.fileName}`;
+    return `http://13.209.6.113:8080/uploads/qna/${folder}/${file.fileName}`;
   };
 
   const isOwner = loginUser && post && loginUser.userId === post.userId;

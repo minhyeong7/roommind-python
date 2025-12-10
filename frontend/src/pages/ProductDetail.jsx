@@ -58,7 +58,7 @@ function ProductDetail() {
 
   // ⭐ 이미지 URL 생성
   const imageList = product.images && product.images.length > 0
-    ? product.images.map(img => `http://localhost:8080/${img.saveDir}/${img.fileName}`)
+    ? product.images.map(img => `http://13.209.6.113:8080/${img.saveDir}/${img.fileName}`)
     : ["/images/no-image.png"];
 
   // ⭐ ProductBuyBox용 이미지 추가

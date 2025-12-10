@@ -120,11 +120,11 @@ function Login() {
   // 소셜 로그인
   const handleSocialLogin = (provider) => {
     if (provider === "kakao") {
-      window.location.href = "http://localhost:8080/oauth/kakao";
+      window.location.href = "http://13.209.6.113:8080/oauth/kakao";
     } else if (provider === "naver") {
-      window.location.href = "http://localhost:8080/oauth/naver";
+      window.location.href = "http://13.209.6.113:8080/oauth/naver";
     } else if (provider === "google") {
-      window.location.href = "http://localhost:8080/oauth/google";
+      window.location.href = "http://13.209.6.113:8080/oauth/google";
     }
   };
 

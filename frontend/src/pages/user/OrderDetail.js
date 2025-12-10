@@ -9,7 +9,7 @@ const OrderDetail = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/orders/${orderId}`)
+      .get(`http://13.209.6.113:8080/api/orders/${orderId}`)
       .then(res => setOrder(res.data))
       .catch(err => console.error(err));
   }, [orderId]);

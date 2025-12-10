@@ -114,7 +114,7 @@ export default function QnAEdit() {
             <div className="qna-edit-old-image-list">
               {files.map((file) => {
                 const folder = file.saveDir.split("uploads/qna/")[1];
-                const imgUrl = `http://localhost:8080/uploads/qna/${folder}/${file.fileName}`;
+                const imgUrl = `http://13.209.6.113:8080/uploads/qna/${folder}/${file.fileName}`;
                 return (
                   <img
                     key={file.uuid}

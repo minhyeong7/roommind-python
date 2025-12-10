@@ -39,7 +39,7 @@ const ProfileEdit = () => {
     const email = payload.sub;
 
     axios
-      .get(`http://localhost:8080/api/users/email/${email}`, {
+      .get(`http://13.209.6.113:8080/api/users/email/${email}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -59,7 +59,7 @@ const ProfileEdit = () => {
   const handleUpdateProfile = () => {
     axios
       .put(
-        "http://localhost:8080/api/users/update",
+        "http://13.209.6.113:8080/api/users/update",
         { email: user.email, userName, phone },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -137,7 +137,7 @@ const ProfileEdit = () => {
 
     axios
       .put(
-        "http://localhost:8080/api/users/password",
+        "http://13.209.6.113:8080/api/users/password",
         { email: user.email, currentPw, newPw },
         { headers: { Authorization: `Bearer ${token}` } }
       )

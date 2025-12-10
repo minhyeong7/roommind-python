@@ -25,7 +25,7 @@ function ProductList({ category }) {
         products.map((p) => {
           const img = p.images && p.images.length > 0 ? p.images[0] : null;
           const imageUrl = img
-            ? `http://localhost:8080/${img.saveDir}/${img.fileName}`
+            ? `http://13.209.6.113:8080/${img.saveDir}/${img.fileName}`
             : "/images/no-image.png";
 
           const discountAmount = p.originalPrice - p.salePrice;

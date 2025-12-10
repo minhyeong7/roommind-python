@@ -17,7 +17,7 @@ export default function CommunityItem({ post }) {
     const idx = path.indexOf("uploads");
     const relative = path.substring(idx);
 
-    return `http://localhost:8080/${relative}/${image.fileName}`;
+    return `http://13.209.6.113:8080/${relative}/${image.fileName}`;
   };
 
   return (

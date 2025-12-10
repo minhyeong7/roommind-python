@@ -11,10 +11,13 @@ function Card({ product }) {
     images,
   } = product;
 
-  // ⭐ 실제 이미지 URL 생성 (백엔드 도메인 포함)
+  // ⭐ 배포 서버 이미지 base URL
+  const BASE_URL = "http://13.209.6.113:8080";
+
+  // ⭐ 실제 이미지 URL 생성
   const imageUrl =
     images && images.length > 0
-      ? `http://localhost:8080/${images[0].saveDir}/${images[0].fileName}`
+      ? `${BASE_URL}/${images[0].saveDir}/${images[0].fileName}`
       : "/images/no-image.png";
 
   // ❤️ 위시리스트 로컬스토리지
@@ -51,13 +54,8 @@ function Card({ product }) {
 
   console.log("🔥 Card product:", product);
 
-
   return (
-    <Link
-      to={`/product/${productId}`}
-      
-      className="card"
-    >
+    <Link to={`/product/${productId}`} className="card">
       <div className="card-img-box">
         <img src={imageUrl} alt={productName} />
 
