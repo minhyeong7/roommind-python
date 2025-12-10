@@ -6,7 +6,8 @@
 .chat-app-container {
   display: flex;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
+  min-width: 1500px;
   height: 700px;
   margin: 0 auto;
   border-radius: 16px;
@@ -39,7 +40,7 @@
 
 /* 채팅창 */
 .chat-container {
-  flex: 1;
+  flex: 1.5;
   padding: 18px;
   overflow-y: auto;
   display: flex;
@@ -167,7 +168,8 @@
    =============================== */
 
 .right-panel {
-  flex: 1;
+  flex: 1.5;
+  width: 50%;
   background: #ffffff;
   padding: 20px;
   overflow-y: auto;
