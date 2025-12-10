@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./AdminSidebar.css";
 
 export default function AdminSidebar() {
@@ -9,24 +9,41 @@ export default function AdminSidebar() {
 
       <ul>
         <li>
-          <Link to="/admin">📊 관리자 메인</Link>
-        </li>
-        <li>
-          <Link to="/admin/qna">📝 Q&A 관리</Link>
-        </li>
-        <li>
-          <Link to="/admin/products">📦 상품 관리</Link>
-        </li>
-        <li>
-          <Link to="/admin/users">👥 회원 관리</Link>
-        </li>
-           <li>
-          <Link to="/admin/orders">🔆 결제 관리</Link>
-        </li>
-        <li>
-        <Link to="/admin/profile">⚙️ 내 정보 수정</Link>
-      </li>
+        <NavLink to="/admin" end className="sidebar-link">
+          📊 관리자 메인
+        </NavLink>
 
+        </li>
+
+        <li>
+          <NavLink to="/admin/qna" className="sidebar-link">
+            📝 Q&A 관리
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/products" className="sidebar-link">
+            📦 상품 관리
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/users" className="sidebar-link">
+            👥 회원 관리
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/orders" className="sidebar-link">
+            🔆 결제 관리
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/profile" className="sidebar-link">
+            ⚙️ 내 정보 수정
+          </NavLink>
+        </li>
       </ul>
     </aside>
   );

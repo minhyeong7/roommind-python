@@ -3,7 +3,7 @@
   height: 400px; /* 🔥 배너 높이 넉넉하게 */
   margin: 20px auto 50px; /* 위아래 간격 + 가운데 정렬 */
   overflow: hidden;
-  border-radius: 16px;
+  /* border-radius: 16px; */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 

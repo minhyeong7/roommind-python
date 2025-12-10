@@ -1,10 +1,11 @@
 import React, { useState, useContext } from "react";
 import "./ProductBuyBox.css";
-import { CartContext } from "../../pages/cart/CartContext"; // ⭐ 추가
+import { CartContext } from "../../pages/cart/CartContext";
+import { useNavigate } from "react-router-dom";
 
 function ProductBuyBox({ product }) {
-  // ⭐ Context에서 addToCart 가져오기
   const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
   const optionList =
     product.options && product.options.length > 0
@@ -21,7 +22,6 @@ function ProductBuyBox({ product }) {
     setQuantity(1);
   };
 
-  // ⭐ Context의 addToCart 사용으로 변경
   const handleAddToCart = async () => {
     if (!selectedOption) {
       alert("옵션을 선택해주세요!");
@@ -29,14 +29,13 @@ function ProductBuyBox({ product }) {
     }
 
     try {
-      // Context의 addToCart 호출 (자동으로 상태 업데이트됨)
       const success = await addToCart({
         productId: product.productId,
-        id: product.productId, // 혹시 몰라서 id도 추가
+        id: product.productId,
         name: product.productName,
         price: product.salePrice,
         image: product.imageUrl || product.image,
-        quantity: quantity,
+        quantity,
         option: selectedOption,
       });
 
@@ -49,9 +48,30 @@ function ProductBuyBox({ product }) {
     }
   };
 
+  // ⭐ 바로구매 → 주문 페이지로 데이터 넘기기
+  const handleBuyNow = () => {
+    if (!selectedOption) {
+      alert("옵션을 선택해주세요!");
+      return;
+    }
+
+    navigate("/order", {
+      state: {
+        buyNowItem: {
+          uniqueId: "buy-" + Date.now(),
+          productId: product.productId,
+          name: product.productName,
+          price: product.salePrice,
+          image: product.imageUrl || product.image,
+          quantity,
+          option: selectedOption,
+        },
+      },
+    });
+  };
+
   return (
     <div className="buy-box">
-
       <div className="brand-box">{product.brand || "브랜드 미표기"}</div>
 
       <h2 className="buy-title">{product.productName}</h2>
@@ -129,7 +149,9 @@ function ProductBuyBox({ product }) {
         <button className="cart-btn" onClick={handleAddToCart}>
           장바구니
         </button>
-        <button className="buy-btn">
+
+        {/* 여기!!! 이 부분이 꼭 있어야 바로구매가 동작함 */}
+        <button className="buy-btn" onClick={handleBuyNow}>
           바로구매
         </button>
       </div>

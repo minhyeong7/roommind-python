@@ -25,3 +25,26 @@
   margin-bottom: 20px;
   font-weight: bold;
 }
+
+/* 기본 링크 스타일 */
+.sidebar-link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+/* Hover 시 효과 */
+.sidebar-link:hover {
+  background: #ffe5c2;
+  color: #fc9510;
+}
+
+/* 현재 페이지(active) 효과 */
+.sidebar-link.active {
+  background: #fc9510;
+  color: white;
+  font-weight: 600;
+}
