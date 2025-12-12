@@ -5,7 +5,7 @@ import {
   fetchProduct as apiFetchProduct,
   fetchCategories as apiFetchCategories,
   updateProduct as apiUpdateProduct
-} from "../../api/adminApi";   
+} from "../../api/adminApi";
 import "./ProductEdit.css";
 
 export default function ProductEdit() {
@@ -28,7 +28,7 @@ export default function ProductEdit() {
     majorCategory: "",
     middleCategory: "",
     categoryId: "",
-    brand: "",   // ⭐ 추가
+    brand: "",
   });
 
   const [newImages, setNewImages] = useState([]);
@@ -64,7 +64,7 @@ export default function ProductEdit() {
       majorCategory: data.majorCategory,
       middleCategory: data.middleCategory,
       categoryId: data.categoryId,
-      brand: data.brand || "",   // ⭐ 추가
+      brand: data.brand || "",
     });
 
     setLoading(false);
@@ -112,13 +112,23 @@ export default function ProductEdit() {
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
+  /* =====================================================
+     ⭐ ProductManage와 100% 동일한 이미지 로직
+  ===================================================== */
+  const BASE_URL = "http://13.209.6.113:8080";
+
   const getImageUrl = (img) => {
     if (!img) return "/no-image.png";
-    const fixed = img.saveDir.replace(/\\/g, "/");
-    const folder = fixed.split("uploads/product/")[1];
-    return folder ? `/uploads/product/${folder}/${img.fileName}` : "/no-image.png";
+
+    // saveDir 앞에 / 제거 + 역슬래시 통일
+    const cleanDir = img.saveDir.replace(/^\/+/, "").replace(/\\/g, "/");
+
+    return `${BASE_URL}/${cleanDir}/${img.fileName}`;
   };
 
+  /* =====================================================
+     입력 핸들러
+  ===================================================== */
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -128,7 +138,7 @@ export default function ProductEdit() {
   };
 
   /* =====================================================
-     저장하기
+     저장
   ===================================================== */
   const handleSubmit = async () => {
     if (!window.confirm("상품 정보를 수정하시겠습니까?")) return;
@@ -150,7 +160,7 @@ export default function ProductEdit() {
             {product.images?.length > 0 ? (
               <img
                 src={getImageUrl(product.images[0])}
-                alt=""
+                alt="상품 이미지"
                 className="edit-image-preview"
               />
             ) : (
@@ -166,20 +176,42 @@ export default function ProductEdit() {
 
         <div className="edit-form">
           <label>상품명</label>
-          <input name="productName" value={form.productName} onChange={handleInput} />
+          <input
+            name="productName"
+            value={form.productName}
+            onChange={handleInput}
+          />
 
           <label>원가</label>
-          <input type="number" name="originalPrice" value={form.originalPrice} onChange={handleInput} />
+          <input
+            type="number"
+            name="originalPrice"
+            value={form.originalPrice}
+            onChange={handleInput}
+          />
 
           <label>판매가</label>
-          <input type="number" name="salePrice" value={form.salePrice} onChange={handleInput} />
+          <input
+            type="number"
+            name="salePrice"
+            value={form.salePrice}
+            onChange={handleInput}
+          />
 
           <label>재고</label>
-          <input type="number" name="stock" value={form.stock} onChange={handleInput} />
+          <input
+            type="number"
+            name="stock"
+            value={form.stock}
+            onChange={handleInput}
+          />
 
-          {/* ⭐ 브랜드 */}
           <label>브랜드</label>
-          <input name="brand" value={form.brand} onChange={handleInput} />
+          <input
+            name="brand"
+            value={form.brand}
+            onChange={handleInput}
+          />
 
           <label>대분류 카테고리</label>
           <select
@@ -205,7 +237,9 @@ export default function ProductEdit() {
           <select
             name="middleCategory"
             value={form.middleCategory}
-            onChange={(e) => setForm({ ...form, middleCategory: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, middleCategory: e.target.value })
+            }
           >
             <option value="">선택</option>
             {middleList.map((m) => (
@@ -216,13 +250,20 @@ export default function ProductEdit() {
           </select>
 
           <label>상품 설명</label>
-          <textarea name="description" value={form.description} onChange={handleInput} />
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleInput}
+          />
 
           <div className="edit-buttons">
             <button className="save-btn" onClick={handleSubmit}>
               저장하기
             </button>
-            <button className="cancel-btn" onClick={() => navigate("/admin/products")}>
+            <button
+              className="cancel-btn"
+              onClick={() => navigate("/admin/products")}
+            >
               취소
             </button>
           </div>

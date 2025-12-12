@@ -85,7 +85,20 @@ function Navbar() {
         <li><Link to="/">홈</Link></li>
         <li><Link to="/popular">인기</Link></li>
         <li><Link to="/shop">쇼핑</Link></li>
-        <li><Link to="/interior">AI 인테리어 추천</Link></li>
+
+        {/* 임시 비활성화 */}
+        <li className="disabled-menu">
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              alert("아직 서비스 준비중입니다.");
+            }}
+          >
+            AI 인테리어 추천
+          </a>
+        </li>
+
         <li><Link to="/community">커뮤니티</Link></li>
         <li><Link to="/qna">Q & A</Link></li>
       </ul>

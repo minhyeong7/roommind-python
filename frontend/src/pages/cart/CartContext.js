@@ -9,6 +9,9 @@ import {
 
 export const CartContext = createContext();
 
+// ⭐ 배포 반영된 이미지 경로 설정
+const BASE_URL = "http://13.209.6.113:8080";
+
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
@@ -22,13 +25,19 @@ export function CartProvider({ children }) {
 
       const mapped = data.map((dto) => {
         const option = dto.selectedOption || "기본옵션";
+
         return {
           cartId: dto.cartId,
           uniqueId: String(dto.cartId),
           productId: dto.productId,
           name: dto.productName ?? "이름없는 상품",
           price: dto.price ?? 0,
-          image: dto.imageUrl ?? "/images/no-image.png",
+
+          // ⭐ EC2 배포 환경에서도 이미지 정상 출력되도록 절대 URL 생성
+          image: dto.imageUrl
+            ? `${BASE_URL}${dto.imageUrl}`
+            : "/images/no-image.png",
+
           option,
           options: [option],
           quantity: dto.productCount ?? 1,
@@ -63,7 +72,6 @@ export function CartProvider({ children }) {
     try {
       console.log("🛒 장바구니에 추가 중...", { productId, quantity, option });
       
-      // 서버에 추가 요청
       await apiAddToCart({
         productId,
         productCount: quantity,
@@ -72,11 +80,10 @@ export function CartProvider({ children }) {
 
       console.log("✅ 서버에 추가 완료");
 
-      // ⭐ 장바구니 최신 데이터 다시 불러오기
       await loadCartFromServer();
-      
       console.log("✅ 장바구니 UI 업데이트 완료");
       return true;
+      
     } catch (e) {
       console.error("❌ 장바구니 추가 실패:", e);
       alert("장바구니 추가에 실패했습니다.");
@@ -110,11 +117,9 @@ export function CartProvider({ children }) {
 
     try {
       console.log("🔄 옵션 변경 중...", { cartId, newOption });
-      
-      // 기존 항목 삭제
+
       await apiDeleteCartItem(cartId);
 
-      // 새 옵션으로 다시 추가
       await apiAddToCart({
         productId,
         productCount: target.quantity,

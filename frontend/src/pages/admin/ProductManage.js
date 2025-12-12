@@ -155,13 +155,19 @@ export default function ProductManage() {
     return Math.round((1 - sale / original) * 100) + "%";
   };
 
-  const getProductImage = (images) => {
-    if (!images || images.length === 0) return "/no-image.png";
-    const img = images[0];
-    const fixedDir = img.saveDir.replace(/\\/g, "/");
-    const folder = fixedDir.split("uploads/product/")[1];
-    return `/uploads/product/${folder}/${img.fileName}`;
-  };
+const BASE_URL = "http://13.209.6.113:8080";
+
+const getProductImage = (images) => {
+  if (!images || images.length === 0) return "/no-image.png";
+
+  const img = images[0];
+
+  // saveDir 앞에 / 있으면 제거 + 역슬래시 변환
+  const cleanDir = img.saveDir.replace(/^\/+/, "").replace(/\\/g, "/");
+
+  return `${BASE_URL}/${cleanDir}/${img.fileName}`;
+};
+
 
   return (
     <div className="admin-layout">

@@ -12,9 +12,14 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
 
   const fetchProduct = async () => {
-    const res = await api.get(`/admin/products/${id}`);
-    setProduct(res.data);
-    setLoading(false);
+    try {
+      const res = await api.get(`/admin/products/${id}`);
+      setProduct(res.data);
+    } catch (err) {
+      console.error("상품 조회 실패:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -24,18 +29,20 @@ export default function ProductDetail() {
   if (loading) return <div>⏳ 불러오는 중...</div>;
   if (!product) return <div>❌ 상품을 찾을 수 없습니다.</div>;
 
-  // ⭐ 이미지 경로 처리
+  /* ==========================================
+     ⭐ ProductManage와 100% 동일한 이미지 로직
+  ========================================== */
+  const BASE_URL = "http://13.209.6.113:8080";
+
   const getProductImage = (images) => {
     if (!images || images.length === 0) return "/no-image.png";
 
     const img = images[0];
 
-    const fixedDir = img.saveDir.replace(/\\/g, "/");
-    const folderName = fixedDir.split("uploads/product/")[1];
+    // saveDir 앞에 / 있으면 제거 + 역슬래시 변환
+    const cleanDir = img.saveDir.replace(/^\/+/, "").replace(/\\/g, "/");
 
-    if (!folderName) return "/no-image.png";
-
-    return `/uploads/product/${folderName}/${img.fileName}`;
+    return `${BASE_URL}/${cleanDir}/${img.fileName}`;
   };
 
   const firstImage = getProductImage(product.images);
@@ -43,11 +50,9 @@ export default function ProductDetail() {
   return (
     <AdminLayout>
       <div className="product-detail-container">
-
         <h1 className="detail-title">{product.productName}</h1>
 
         <div className="detail-top">
-
           {/* 왼쪽 이미지 */}
           <div className="detail-image-box">
             <img src={firstImage} alt="상품 이미지" />
@@ -62,20 +67,35 @@ export default function ProductDetail() {
                 : "-"}
             </p>
 
-            {/* 브랜드 추가 */}
             <p>
               <strong>브랜드:</strong> {product.brand || "-"}
             </p>
 
-            <p><strong>원가:</strong> {product.originalPrice?.toLocaleString()}원</p>
-            <p><strong>판매가:</strong> {product.salePrice?.toLocaleString()}원</p>
-            <p><strong>재고:</strong> {product.stock}</p>
-            <p><strong>등록일:</strong> {product.createdDate?.slice(0, 10)}</p>
+            <p>
+              <strong>원가:</strong>{" "}
+              {product.originalPrice?.toLocaleString()}원
+            </p>
+
+            <p>
+              <strong>판매가:</strong>{" "}
+              {product.salePrice?.toLocaleString()}원
+            </p>
+
+            <p>
+              <strong>재고:</strong> {product.stock}
+            </p>
+
+            <p>
+              <strong>등록일:</strong>{" "}
+              {product.createdDate?.slice(0, 10)}
+            </p>
 
             <div className="detail-buttons">
               <button
                 className="edit-btn"
-                onClick={() => navigate(`/admin/products/${id}/edit`)}
+                onClick={() =>
+                  navigate(`/admin/products/${id}/edit`)
+                }
               >
                 수정하기
               </button>
