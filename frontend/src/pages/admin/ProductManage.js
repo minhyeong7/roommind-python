@@ -1,5 +1,3 @@
-// src/admin/ProductManage.js
-
 import React, { useEffect, useState, useCallback } from "react";
 import "./ProductManage.css";
 import AdminSidebar from "./AdminSidebar";
@@ -23,12 +21,12 @@ export default function ProductManage() {
   const [selectedMajor, setSelectedMajor] = useState("");
   const [selectedMiddle, setSelectedMiddle] = useState("");
 
-  // 전체 선택 기능
+  // 전체 선택
   const [checkedItems, setCheckedItems] = useState([]);
 
-  /* ==========================================
+  /* =========================
      카테고리 불러오기
-  ========================================== */
+  ========================= */
   const fetchCategories = async () => {
     try {
       const res = await api.get("/admin/categories");
@@ -41,9 +39,9 @@ export default function ProductManage() {
     }
   };
 
-  /* ==========================================
+  /* =========================
      상품 불러오기
-  ========================================== */
+  ========================= */
   const fetchProducts = useCallback(async () => {
     try {
       const res = await api.get("/admin/products", {
@@ -54,7 +52,6 @@ export default function ProductManage() {
           middle: selectedMiddle,
         },
       });
-
       setProducts(res.data || []);
     } catch (err) {
       console.error("상품 조회 실패:", err);
@@ -69,9 +66,9 @@ export default function ProductManage() {
     fetchProducts();
   }, [fetchProducts]);
 
-  /* ==========================================
-     대분류 선택 → 중분류 자동 세팅
-  ========================================== */
+  /* =========================
+     대분류 → 중분류
+  ========================= */
   useEffect(() => {
     if (!selectedMajor) {
       setMiddleList([]);
@@ -87,23 +84,30 @@ export default function ProductManage() {
     setSelectedMiddle("");
   }, [selectedMajor, categories]);
 
-  /* ==========================================
-     삭제 (단건)
-  ========================================== */
+  /* =========================
+     단건 삭제 (⭐ 핵심 수정)
+  ========================= */
   const handleDelete = async (productId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     try {
       await api.delete(`/admin/products/${productId}`);
+      alert("상품이 삭제되었습니다.");
       fetchProducts();
     } catch (err) {
       console.error("삭제 실패:", err);
+
+      const message =
+        err.response?.data?.message ||
+        "주문·리뷰·장바구니에 사용 중인 상품은 삭제할 수 없습니다.";
+
+      alert(message);
     }
   };
 
-  /* ==========================================
-     전체 선택 체크박스
-  ========================================== */
+  /* =========================
+     전체 선택
+  ========================= */
   const handleSelectAll = (checked) => {
     if (checked) {
       setCheckedItems(products.map((p) => p.productId));
@@ -120,16 +124,18 @@ export default function ProductManage() {
     );
   };
 
-  /* ==========================================
-     선택된 상품 일괄 삭제
-  ========================================== */
+  /* =========================
+     선택 삭제 (⭐ alert 추가)
+  ========================= */
   const handleDeleteSelected = async () => {
     if (checkedItems.length === 0) {
       alert("삭제할 상품을 선택해주세요.");
       return;
     }
 
-    if (!window.confirm(`선택한 ${checkedItems.length}개 상품을 삭제하시겠습니까?`))
+    if (
+      !window.confirm(`선택한 ${checkedItems.length}개 상품을 삭제하시겠습니까?`)
+    )
       return;
 
     try {
@@ -142,12 +148,18 @@ export default function ProductManage() {
       fetchProducts();
     } catch (err) {
       console.error("일괄 삭제 실패:", err);
+
+      const message =
+        err.response?.data?.message ||
+        "삭제할 수 없는 상품이 포함되어 있습니다.";
+
+      alert(message);
     }
   };
 
-  /* ==========================================
-     숫자 포맷터
-  ========================================== */
+  /* =========================
+     유틸
+  ========================= */
   const formatNumber = (v) => (v ? Number(v).toLocaleString() : "-");
 
   const calcDiscount = (sale, original) => {
@@ -155,26 +167,23 @@ export default function ProductManage() {
     return Math.round((1 - sale / original) * 100) + "%";
   };
 
-const BASE_URL = "http://13.209.6.113:8080";
+  const BASE_URL = "http://13.209.6.113:8080";
 
-const getProductImage = (images) => {
-  if (!images || images.length === 0) return "/no-image.png";
+  const getProductImage = (images) => {
+    if (!images || images.length === 0) return "/no-image.png";
 
-  const img = images[0];
+    const img = images[0];
+    const cleanDir = img.saveDir.replace(/^\/+/, "").replace(/\\/g, "/");
 
-  // saveDir 앞에 / 있으면 제거 + 역슬래시 변환
-  const cleanDir = img.saveDir.replace(/^\/+/, "").replace(/\\/g, "/");
-
-  return `${BASE_URL}/${cleanDir}/${img.fileName}`;
-};
-
+    return `${BASE_URL}/${cleanDir}/${img.fileName}`;
+  };
 
   return (
     <div className="admin-layout">
       <AdminSidebar />
 
       <div className="product-manage-wrapper">
-        {/* ================= 헤더 ================= */}
+        {/* 헤더 */}
         <div className="product-manage-header">
           <h1>상품 관리</h1>
 
@@ -195,7 +204,7 @@ const getProductImage = (images) => {
           </div>
         </div>
 
-        {/* ================= 필터 ================= */}
+        {/* 필터 */}
         <div className="product-filter-box">
           <input
             type="text"
@@ -211,7 +220,6 @@ const getProductImage = (images) => {
             <option value="low-price">가격 낮은순</option>
           </select>
 
-          {/* 대분류 */}
           <select
             value={selectedMajor}
             onChange={(e) => setSelectedMajor(e.target.value)}
@@ -224,7 +232,6 @@ const getProductImage = (images) => {
             ))}
           </select>
 
-          {/* 중분류 */}
           <select
             value={selectedMiddle}
             onChange={(e) => setSelectedMiddle(e.target.value)}
@@ -243,7 +250,7 @@ const getProductImage = (images) => {
           </button>
         </div>
 
-        {/* ================= 테이블 ================= */}
+        {/* 테이블 */}
         <table className="product-table">
           <thead>
             <tr>
@@ -251,7 +258,10 @@ const getProductImage = (images) => {
                 <input
                   type="checkbox"
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  checked={checkedItems.length === products.length && products.length > 0}
+                  checked={
+                    checkedItems.length === products.length &&
+                    products.length > 0
+                  }
                 />
               </th>
               <th>사진</th>
@@ -283,12 +293,14 @@ const getProductImage = (images) => {
                     />
                   </td>
 
-                  {/* 사진 */}
                   <td>
-                    <img src={getProductImage(p.images)} alt="" className="product-img" />
+                    <img
+                      src={getProductImage(p.images)}
+                      alt=""
+                      className="product-img"
+                    />
                   </td>
 
-                  {/* 상품명 */}
                   <td
                     className="product-name-link"
                     onClick={() => navigate(`/admin/product/${p.productId}`)}
@@ -296,24 +308,17 @@ const getProductImage = (images) => {
                     {p.productName}
                   </td>
 
-                  {/* 원래 가격 */}
                   <td>{formatNumber(p.originalPrice)}원</td>
-
-                  {/* 세일 가격 */}
                   <td>{formatNumber(p.salePrice)}원</td>
-
-                  {/* 할인률 */}
                   <td>{calcDiscount(p.salePrice, p.originalPrice)}</td>
-
-                  {/* 재고 */}
                   <td>{formatNumber(p.stock)}</td>
-
-                  {/* 등록일 */}
                   <td>{p.createdDate?.slice(0, 10)}</td>
 
-                  {/* 삭제 버튼 */}
                   <td>
-                    <button className="delete-btn" onClick={() => handleDelete(p.productId)}>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(p.productId)}
+                    >
                       삭제
                     </button>
                   </td>
