@@ -120,9 +120,9 @@ function Login() {
   // 소셜 로그인
 const handleSocialLogin = (provider) => {
   if (provider === "kakao") {
-    window.location.href = "http://13.209.6.113:8080/oauth/kakao";
+    window.location.href = "http://13.209.66.16:8080/oauth/kakao";
   } else if (provider === "naver") {
-    window.location.href = "http://13.209.6.113:8080/oauth/naver";
+    window.location.href = "http://13.209.66.16:8080/oauth/naver";
   } else if (provider === "google") {
     Swal.fire({
       icon: "info",
@@ -146,7 +146,7 @@ const handleSocialLogin = (provider) => {
           name="email"
           value={form.email}
           onChange={handleChange}
-          placeholder="이메일을 입력하세요"
+          placeholder="이메일을 입력하세요 (관리자:qqqq1111@naver.com)"
           required
         />
 
@@ -160,7 +160,7 @@ const handleSocialLogin = (provider) => {
             onChange={handleChange}
             onKeyDown={handleKeyCheck}
             onKeyUp={handleKeyCheck}
-            placeholder="비밀번호를 입력하세요"
+            placeholder="비밀번호를 입력하세요 (관리자:qqqq1111@)"
             required
           />
           <span className="pw-toggle" onClick={togglePassword}>

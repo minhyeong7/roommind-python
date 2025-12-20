@@ -162,6 +162,11 @@
   font-weight: 700;
 }
 
+.super-admin-label {
+  color: red;
+  font-weight: 700;
+}
+
 
 
 /* 애니메이션 */

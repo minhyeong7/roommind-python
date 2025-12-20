@@ -115,7 +115,7 @@ export default function ProductEdit() {
   /* =====================================================
      ⭐ ProductManage와 100% 동일한 이미지 로직
   ===================================================== */
-  const BASE_URL = "http://13.209.6.113:8080";
+  const BASE_URL = "http://13.209.66.16:8080";
 
   const getImageUrl = (img) => {
     if (!img) return "/no-image.png";

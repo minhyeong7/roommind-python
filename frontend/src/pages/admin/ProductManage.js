@@ -167,7 +167,7 @@ export default function ProductManage() {
     return Math.round((1 - sale / original) * 100) + "%";
   };
 
-  const BASE_URL = "http://13.209.6.113:8080";
+  const BASE_URL = "http://13.209.66.16:8080";
 
   const getProductImage = (images) => {
     if (!images || images.length === 0) return "/no-image.png";

@@ -4,7 +4,7 @@ export default function PostContent({ content, files = [] }) {
   // 로컬 서버용 이미지 URL 생성 함수
   const getImageUrl = (file) => {
     const folder = file.createdDate.slice(0, 10); // yyyy-MM-dd
-    return `http://13.209.6.113:8080/uploads/community/${folder}/${file.fileName}`;
+    return `http://13.209.66.16:8080/uploads/community/${folder}/${file.fileName}`;
   };
 
   return (

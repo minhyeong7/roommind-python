@@ -109,7 +109,7 @@ function QnAList() {
               let imageSrc = "";
               if (hasImage) {
                 const img = post.images[0];
-                imageSrc = `http://13.209.6.113:8080/uploads/qna/${img.createdDate.slice(
+                imageSrc = `http://13.209.66.16:8080/uploads/qna/${img.createdDate.slice(
                   0,
                   10
                 )}/${img.fileName}`;

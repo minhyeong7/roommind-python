@@ -6,6 +6,10 @@ import api from "../../api/userApi";
 import { useNavigate } from "react-router-dom";
 import "./ProductNew.css";
 
+/** 숫자 제한 상수 */
+const MAX_PRICE = 100000000; // 1억
+const MAX_STOCK = 10000;
+
 export default function ProductNew() {
   const navigate = useNavigate();
 
@@ -16,7 +20,7 @@ export default function ProductNew() {
     salePrice: "",
     stock: "",
     description: "",
-    brand: "",   // ⭐ 추가됨
+    brand: "",
   });
 
   const [image, setImage] = useState(null);
@@ -26,15 +30,9 @@ export default function ProductNew() {
 
   /** 카테고리 불러오기 */
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const res = await api.get("/admin/categories");
-        setCategories(res.data);
-      } catch (err) {
-        console.error("카테고리 불러오기 실패:", err);
-      }
-    };
-    loadCategories();
+    api.get("/admin/categories")
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("카테고리 불러오기 실패:", err));
   }, []);
 
   /** 대분류 리스트 */
@@ -50,9 +48,40 @@ export default function ProductNew() {
     }
   }, [major, categories]);
 
-  /** 입력 변경 */
+  /** 입력 변경 (숫자 검증 포함) */
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // 숫자 필드 검증
+    if (["originalPrice", "salePrice"].includes(name)) {
+      if (value === "") {
+        setForm({ ...form, [name]: "" });
+        return;
+      }
+
+      const num = Number(value);
+      if (!Number.isSafeInteger(num)) return;
+      if (num < 0 || num > MAX_PRICE) return;
+
+      setForm({ ...form, [name]: num });
+      return;
+    }
+
+    if (name === "stock") {
+      if (value === "") {
+        setForm({ ...form, stock: "" });
+        return;
+      }
+
+      const num = Number(value);
+      if (!Number.isInteger(num)) return;
+      if (num < 0 || num > MAX_STOCK) return;
+
+      setForm({ ...form, stock: num });
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   /** 파일 선택 */
@@ -67,8 +96,11 @@ export default function ProductNew() {
     if (!form.categoryId) return alert("카테고리를 선택해주세요!");
     if (!image) return alert("이미지를 선택해주세요!");
 
-    const formData = new FormData();
+    if (form.salePrice > form.originalPrice) {
+      return alert("판매가는 원가보다 클 수 없습니다.");
+    }
 
+    const formData = new FormData();
     const productJson = new Blob([JSON.stringify(form)], {
       type: "application/json",
     });
@@ -93,8 +125,6 @@ export default function ProductNew() {
           <h1>상품 등록</h1>
 
           <form className="product-add-form" onSubmit={handleSubmit}>
-            
-            {/* 상품명 */}
             <label>상품명</label>
             <input
               type="text"
@@ -104,89 +134,76 @@ export default function ProductNew() {
               required
             />
 
-            {/* 브랜드 */}
             <label>브랜드</label>
             <input
               type="text"
               name="brand"
               value={form.brand}
               onChange={handleChange}
-              placeholder="예: IKEA / 한샘 / 리바트"
               required
             />
 
-            {/* 대분류 */}
             <label>대분류</label>
-            <select
-              value={major}
-              onChange={(e) => setMajor(e.target.value)}
-              required
-            >
+            <select value={major} onChange={(e) => setMajor(e.target.value)} required>
               <option value="">대분류 선택</option>
               {majorList.map((m, idx) => (
                 <option key={idx} value={m}>{m}</option>
               ))}
             </select>
 
-            {/* 중분류 */}
             <label>중분류</label>
-            <div className="category-row">
-              <select
-                value={form.categoryId || ""}
-                onChange={(e) =>
-                  setForm({ ...form, categoryId: Number(e.target.value) })
-                }
-                disabled={!major}
-                required
-              >
-                <option value="">중분류 선택</option>
-                {middleList.map((c) => (
-                  <option key={c.categoryId} value={c.categoryId}>
-                    {c.middleCategory}
-                  </option>
-                ))}
-              </select>
+            <select
+              value={form.categoryId || ""}
+              onChange={(e) =>
+                setForm({ ...form, categoryId: Number(e.target.value) })
+              }
+              disabled={!major}
+              required
+            >
+              <option value="">중분류 선택</option>
+              {middleList.map((c) => (
+                <option key={c.categoryId} value={c.categoryId}>
+                  {c.middleCategory}
+                </option>
+              ))}
+            </select>
 
-              <button
-                type="button"
-                className="category-add-btn"
-                onClick={() => navigate("/admin/categories")}
-              >
-                관리
-              </button>
-            </div>
-
-            {/* 원가 */}
             <label>원가</label>
             <input
               type="number"
               name="originalPrice"
+              min="0"
+              max={MAX_PRICE}
+              step="1"
               value={form.originalPrice}
               onChange={handleChange}
               required
             />
 
-            {/* 판매가 */}
             <label>판매가</label>
             <input
               type="number"
               name="salePrice"
+              min="0"
+              max={MAX_PRICE}
+              step="1"
               value={form.salePrice}
               onChange={handleChange}
               required
             />
 
-            {/* 재고 */}
             <label>재고</label>
             <input
               type="number"
               name="stock"
+              min="0"
+              max={MAX_STOCK}
+              step="1"
               value={form.stock}
               onChange={handleChange}
               required
             />
 
-            {/* 설명 */}
             <label>설명</label>
             <textarea
               name="description"
@@ -195,7 +212,6 @@ export default function ProductNew() {
               required
             />
 
-            {/* 이미지 */}
             <label>대표 이미지</label>
             <input type="file" accept="image/*" onChange={handleFileChange} />
 

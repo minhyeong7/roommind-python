@@ -29,7 +29,7 @@ const AddressList = () => {
 
     try {
       const res = await axios.get(
-        `http://13.209.6.113:8080/api/users/email/${email}`,
+        `http://13.209.66.16:8080/api/users/email/${email}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -46,7 +46,7 @@ const AddressList = () => {
   const fetchAddresses = async (userId) => {
     try {
       const res = await axios.get(
-        `http://13.209.6.113:8080/api/address/${userId}`,
+        `http://13.209.66.16:8080/api/address/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -61,7 +61,7 @@ const AddressList = () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     try {
-      await axios.delete(`http://13.209.6.113:8080/api/address/${addressId}`, {
+      await axios.delete(`http://13.209.66.16:8080/api/address/${addressId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

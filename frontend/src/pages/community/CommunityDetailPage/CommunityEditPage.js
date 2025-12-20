@@ -107,7 +107,7 @@ export default function CommunityEditPage() {
             <p>📷 기존 이미지</p>
             <div className="old-img-list">
               {oldFiles.map((file) => {
-                const imgUrl = `http://13.209.6.113:8080/uploads/community/${file.createdDate.slice(
+                const imgUrl = `http://13.209.66.16:8080/uploads/community/${file.createdDate.slice(
                   0,
                   10
                 )}/${file.fileName}`;

@@ -16,7 +16,7 @@ const ReviewList = () => {
 
         // 내가 쓴 리뷰 조회 API 호출
         const res = await axios.get(
-          `http://13.209.6.113:8080/api/reviews/user/${email}`
+          `http://13.209.66.16:8080/api/reviews/user/${email}`
         );
 
         setMyReviews(res.data || []);

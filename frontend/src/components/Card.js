@@ -12,7 +12,7 @@ function Card({ product }) {
   } = product;
 
   // ⭐ 배포 서버 이미지 base URL
-  const BASE_URL = "http://13.209.6.113:8080";
+  const BASE_URL = "http://13.209.66.16:8080";
 
   // ⭐ 실제 이미지 URL 생성
   const imageUrl =

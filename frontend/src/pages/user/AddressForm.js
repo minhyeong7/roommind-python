@@ -44,7 +44,7 @@ const AddressForm = ({ onClose, userId, onAdded }) => {
 
     try {
       await axios.post(
-        "http://13.209.6.113:8080/api/address",
+        "http://13.209.66.16:8080/api/address",
         {
           userId,
           recipient,

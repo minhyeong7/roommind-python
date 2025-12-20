@@ -41,7 +41,7 @@ export default function AdminProfile() {
     const email = payload.sub;
 
     axios
-      .get(`http://13.209.6.113:8080/api/users/email/${email}`, {
+      .get(`http://13.209.66.16:8080/api/users/email/${email}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -115,7 +115,7 @@ export default function AdminProfile() {
   const onSaveProfile = () => {
     axios
       .put(
-        "http://13.209.6.113:8080/api/users/update",
+        "http://13.209.66.16:8080/api/users/update",
         {
           email: info.email,
           userName: info.userName,
@@ -154,7 +154,7 @@ export default function AdminProfile() {
 
     axios
       .put(
-        "http://13.209.6.113:8080/api/users/password",
+        "http://13.209.66.16:8080/api/users/password",
         { email: info.email, currentPw, newPw },
         { headers: { Authorization: `Bearer ${token}` } }
       )

@@ -4,6 +4,9 @@ import AdminLayout from "./AdminLayout";
 import { fetchAllUsers, updateUserRole } from "../../api/adminApi";
 import "./UserManage.css";
 
+/** 🔒 관리자 권한 회수 금지 이메일 */
+const PROTECTED_ADMIN_EMAIL = "qwer1234@naver.com";
+
 export default function UserManage() {
   const [users, setUsers] = useState([]);
   const [keyword, setKeyword] = useState("");
@@ -13,22 +16,23 @@ export default function UserManage() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   /* ================================
-      🔥 전체 회원 조회 (경고 해결 버전)
+      전체 회원 조회
   ================================= */
   useEffect(() => {
-    const loadUsers = () => {
-      fetchAllUsers(keyword, filterRole, sort)
-        .then((res) => setUsers(res.data))
-        .catch((err) => console.error("회원 조회 실패:", err));
-    };
-
-    loadUsers();
+    fetchAllUsers(keyword, filterRole, sort)
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.error("회원 조회 실패:", err));
   }, [keyword, filterRole, sort]);
 
   /* ================================
-      🔥 권한 변경
+       권한 변경 (프론트 전용 차단)
   ================================= */
-  const handleRoleChange = async (id, currentRole) => {
+  const handleRoleChange = async (id, currentRole, email) => {
+    if (email === PROTECTED_ADMIN_EMAIL) {
+      alert("해당 계정은 최고 관리자이므로 권한 변경이 불가능합니다.");
+      return;
+    }
+
     const newRole = currentRole === "admin" ? "user" : "admin";
 
     if (!window.confirm(`해당 회원을 '${newRole}'로 변경하시겠습니까?`)) return;
@@ -54,7 +58,7 @@ export default function UserManage() {
       <h1>회원 관리 페이지</h1>
       <p>전체 회원을 조회하고 관리합니다.</p>
 
-      {/* 검색 + 권한 + 정렬 */}
+      {/* 검색 / 필터 / 정렬 */}
       <div className="user-search-filter">
         <input
           className="search-input"
@@ -88,7 +92,7 @@ export default function UserManage() {
         </select>
       </div>
 
-      {/* 사용자 목록 */}
+      {/* 회원 목록 */}
       <table className="user-table">
         <thead>
           <tr>
@@ -103,38 +107,55 @@ export default function UserManage() {
         </thead>
 
         <tbody>
-          {users.map((u) => (
-            <tr
-              key={u.userId}
-              className={u.role === "admin" ? "admin-row" : ""}
-              onClick={() => setSelectedUser(u)}
-            >
-              <td>{u.userId}</td>
-              <td>{u.userName}</td>
-              <td>{u.phone || "-"}</td>
-              <td>{u.email}</td>
-              <td>{u.createdDate}</td>
-              <td>
-                <span className={u.role === "admin" ? "admin-label" : ""}>
-                  {u.role === "admin" ? "관리자" : "일반회원"}
-                </span>
-              </td>
+          {users.map((u) => {
+            const isProtectedAdmin =
+              u.role === "admin" && u.email === PROTECTED_ADMIN_EMAIL;
 
-              <td>
-                <button
-                  className="role-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRoleChange(u.userId, u.role);
-                  }}
-                >
-                  {u.role === "admin"
-                    ? "일반회원으로 변경"
-                    : "관리자 권한 부여"}
-                </button>
-              </td>
-            </tr>
-          ))}
+            return (
+              <tr
+                key={u.userId}
+                className={u.role === "admin" ? "admin-row" : ""}
+                onClick={() => setSelectedUser(u)}
+              >
+                <td>{u.userId}</td>
+                <td>{u.userName}</td>
+                <td>{u.phone || "-"}</td>
+                <td>{u.email}</td>
+                <td>{u.createdDate}</td>
+                <td>
+                  {u.role === "admin" ? (
+                    <span
+                      className={
+                        isProtectedAdmin ? "super-admin-label" : "admin-label"
+                      }
+                    >
+                      {isProtectedAdmin ? "슈퍼 관리자" : "관리자"}
+                    </span>
+                  ) : (
+                    "일반회원"
+                  )}
+                </td>
+
+                <td>
+                  {isProtectedAdmin ? (
+                    <span className="protected-text">변경 불가</span>
+                  ) : (
+                    <button
+                      className="role-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRoleChange(u.userId, u.role, u.email);
+                      }}
+                    >
+                      {u.role === "admin"
+                        ? "일반회원으로 변경"
+                        : "관리자 권한 부여"}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -154,8 +175,10 @@ export default function UserManage() {
             <p><strong>이메일:</strong> {selectedUser.email}</p>
             <p><strong>주소:</strong> {selectedUser.address || "-"}</p>
             <p>
-              <strong>권한:</strong>
-              {selectedUser.role === "admin" ? (
+              <strong>권한:</strong>{" "}
+              {selectedUser.email === PROTECTED_ADMIN_EMAIL ? (
+                <span className="super-admin-badge">최고 관리자</span>
+              ) : selectedUser.role === "admin" ? (
                 <span className="admin-badge">관리자</span>
               ) : (
                 "일반회원"

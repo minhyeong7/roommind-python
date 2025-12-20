@@ -71,7 +71,7 @@ function OrderPage() {
 
   const [sameAsAddress, setSameAsAddress] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [payMethod, setPayMethod] = useState("CARD");
+  const [payMethod, setPayMethod] = useState("TOSSPAY");
 
   /* ============================
       회원 정보 불러오기
@@ -365,21 +365,28 @@ function OrderPage() {
               <button
                 key={m}
                 className={`pm ${payMethod === m ? "active" : ""}`}
-                onClick={() => setPayMethod(m)}
+                onClick={() => {
+                  if (m !== "TOSSPAY") {
+                    alert("현재 서비스 예정중입니다. 토스페이를 이용해주세요.");
+                    return;
+                  }
+                  setPayMethod(m);
+                }}
               >
-                {m === "CARD"
-                  ? "카드 결제"
-                  : m === "TOSSPAY"
-                  ? "토스페이"
-                  : m === "NAVERPAY"
-                  ? "네이버페이"
-                  : m === "KAKAOPAY"
-                  ? "카카오페이"
-                  : "무통장입금"}
+                    {m === "CARD"
+                    ? "카드 결제"
+                    : m === "TOSSPAY"
+                    ? "토스페이"
+                    : m === "NAVERPAY"
+                    ? "네이버페이"
+                    : m === "KAKAOPAY"
+                    ? "카카오페이"
+                    : "무통장입금"}
               </button>
             ))}
           </div>
         </section>
+
       </div>
 
       {/* 우측 요약 */}

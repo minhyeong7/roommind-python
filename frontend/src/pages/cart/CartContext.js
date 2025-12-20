@@ -10,7 +10,7 @@ import {
 export const CartContext = createContext();
 
 // ⭐ 배포 반영된 이미지 경로 설정
-const BASE_URL = "http://13.209.6.113:8080";
+const BASE_URL = "http://13.209.66.16:8080";
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
