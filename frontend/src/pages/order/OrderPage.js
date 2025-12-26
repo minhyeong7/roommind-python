@@ -74,7 +74,7 @@ function OrderPage() {
   const [payMethod, setPayMethod] = useState("TOSSPAY");
 
   /* ============================
-      회원 정보 불러오기
+      회원 정보 불러오기 
   ============================ */
   useEffect(() => {
     const token = localStorage.getItem("token");
